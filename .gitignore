@@ -38,7 +38,7 @@
 *.i*86
 *.x86_64
 *.hex
-cub3D
+webserv
 
 # Debug files
 *.dSYM/
