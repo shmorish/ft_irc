@@ -1,18 +1,30 @@
 #include "Server.hpp"
-
-#define BLUE "\033[0;34m"
-#define RESET "\033[0m"
-#define DEBUG_MSG(x, ...) cout << BLUE << "[DEBUG]: " << x << " " << __VA_ARGS__ << RESET << endl
+#include "utils.hpp"
 
 Server::Server(const long port, const string &password) : _port(port), _password(password)
 {
-    #ifdef DEBUG
-        DEBUG_MSG("Port Number =", _port);
-        DEBUG_MSG("Password    =", _password);
-    #endif
+    DEBUG_MSG("Port Number =", _port);
+    DEBUG_MSG("Password    =", _password);
     (void)_port;
 }
 
 Server::~Server()
 {
+}
+
+void Server::setup()
+{
+    int server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (server_sockfd == -1) {
+		throw runtime_error("ERROR: socket: " + string(strerror(errno)));
+	}
+    DEBUG_MSG("Server socket created");
+    struct sockaddr_in server_addr;
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(_port);
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+    if (bind(server_sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1) {
+        throw runtime_error("ERROR: bind: " + string(strerror(errno)));
+    }
+    DEBUG_MSG("Server socket binded");
 }
