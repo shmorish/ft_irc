@@ -12,11 +12,11 @@ using namespace std;
 class Server
 {
     public:
-        Server(const string &config_file);
+        Server(const long port, const string &password);
         ~Server();
-        void run();
     private:
-        const string _config_file;
+        const long  _port;
+        const string _password;
 };
 
 #endif
