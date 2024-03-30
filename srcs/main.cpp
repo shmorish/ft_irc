@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     try {
         Server IrcServer(checkport(argv[1]), argv[2]);
         IrcServer.setup();
-    } catch (const std::exception &e) {
+    } catch (const exception &e) {
         cerr << e.what() << endl;
         exit(1);
     }

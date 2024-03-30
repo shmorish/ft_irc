@@ -18,7 +18,7 @@ void Server::setup()
 	if (server_sockfd == -1) {
 		throw runtime_error("ERROR: socket: " + string(strerror(errno)));
 	}
-    DEBUG_MSG("Server socket created");
+    DEBUG_MSG("Server socket created", server_sockfd);
     struct sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(_port);
@@ -26,5 +26,5 @@ void Server::setup()
     if (bind(server_sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1) {
         throw runtime_error("ERROR: bind: " + string(strerror(errno)));
     }
-    DEBUG_MSG("Server socket binded");
+    DEBUG_MSG("Server socket binded to port", _port);
 }
