@@ -1,6 +1,8 @@
 #include "Server.hpp"
 #include "utils.hpp"
 
+bool    server_running = true;
+
 long checkport(const char *port)
 {
     if (!port || *port == '\0')
@@ -12,6 +14,13 @@ long checkport(const char *port)
     return port_num;
 }
 
+void    sigint_handler(int signum)
+{
+    (void)signum;
+    cout << "Exiting..." << endl;
+    server_running = false;
+}
+
 int main(int argc, char **argv)
 {
 
@@ -19,6 +28,7 @@ int main(int argc, char **argv)
         cerr << "usage: " << argv[0] << " <port> <password>" << endl;
         return 1;
     }
+    signal(SIGINT, sigint_handler);
     try {
         Server IrcServer(checkport(argv[1]), argv[2]);
         IrcServer.setup();

@@ -12,7 +12,7 @@ Server::~Server()
 {
 }
 
-void Server::setup()
+void Server::setup(void)
 {
     int server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (server_sockfd == -1) {

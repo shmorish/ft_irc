@@ -11,6 +11,7 @@
 # include <unistd.h>
 # include <cstdlib>
 # include <iomanip>
+# include <signal.h>
 
 using namespace std;
 
