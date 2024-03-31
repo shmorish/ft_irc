@@ -17,6 +17,7 @@ long checkport(const char *port)
 void    sigint_handler(int signum)
 {
     (void)signum;
+    endl(cout);
     cout << "Exiting..." << endl;
     server_running = false;
 }
