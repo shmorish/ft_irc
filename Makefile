@@ -1,4 +1,6 @@
 NAME		:= ircserv
+PORT		:= 6667
+PSWD		:= password
 INC			:= $(shell find srcs -type d | sed 's/^/-I /')
 SRCS_DIR	:= ./srcs
 SRCS	    := $(shell find srcs -name "*.cpp"| sed 's/^/.\//')
@@ -33,6 +35,9 @@ re			: fclean all
 
 debug		: re
 
+run			: all
+	./$(NAME) $(PORT) $(PSWD)
+
 help		: Makefile
 	@echo "Usage: make [target]"
 	@echo ""
@@ -42,8 +47,9 @@ help		: Makefile
 	@echo "  fclean	- remove object files and $(NAME)"
 	@echo "  re		- remove object files and $(NAME) then build"
 	@echo "  debug		- build $(NAME) with debug flag"
+	@echo "  run		- run $(NAME) with $(PORT) and $(PSWD)"
 	@echo "  help		- show this help"
 
-.PHONY		: all clean fclean re debug help
+.PHONY		: all clean fclean re debug help run
 
 -include $(DEPS)
