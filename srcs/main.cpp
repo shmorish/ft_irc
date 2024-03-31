@@ -33,6 +33,7 @@ int main(int argc, char **argv)
     try {
         Server IrcServer(checkport(argv[1]), argv[2]);
         IrcServer.setup();
+        IrcServer.run();
     } catch (const exception &e) {
         cerr << e.what() << endl;
         exit(1);
