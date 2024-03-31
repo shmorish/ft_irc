@@ -50,6 +50,7 @@ void Server::run(void)
             // recieve commands from clients
         } catch (const exception &e) {
             cerr << e.what() << endl;
+            continue;
         }
     }
     close(_server_sockfd);
