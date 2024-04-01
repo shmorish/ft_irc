@@ -3,7 +3,7 @@
 
 extern bool server_running;
 
-Server::Server(const long port, const string &password) : _port(port), _password(password)
+Server::Server(long port, const string &password) : _port(port), _password(password), _server_sockfd()
 {
     DEBUG_MSG("Port Number =", _port);
     DEBUG_MSG("Password    =", _password);
@@ -39,13 +39,12 @@ void Server::setup(void)
     // poll initialization
 }
 
-void Server::run(void)
+void Server::run() const
 {
     while (server_running) {
         // poll
         ;
         try {
-            ;
             // handle poll events
             // recieve commands from clients
         } catch (const exception &e) {

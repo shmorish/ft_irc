@@ -12,10 +12,10 @@ using namespace std;
 class Server
 {
     public:
-        Server(const long port, const string &password);
+        Server(long port, const string &password);
         ~Server();
         void setup();
-        void run();
+        void run() const;
     private:
         const long  _port;
         const string _password;
