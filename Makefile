@@ -26,7 +26,7 @@ $(OBJS_DIR)/%.o: srcs/%.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 clean		:
-	rm -rf $(OBJS_DIR)
+	rm -rf $(OBJS_DIR) $(shell find . -name '*.o')
 
 fclean		: clean
 	$(RM) $(NAME)
@@ -38,6 +38,12 @@ debug		: re
 run			: all
 	./$(NAME) $(PORT) $(PSWD)
 
+# ./client が存在したら./clientを削除してから./clientをコンパイルする
+client		:
+	$(RM) client
+	$(CXX) -o client.o client.cpp
+	./client.o
+
 help		: Makefile
 	@echo "Usage: make [target]"
 	@echo ""
@@ -47,7 +53,8 @@ help		: Makefile
 	@echo "  fclean	- remove object files and $(NAME)"
 	@echo "  re		- remove object files and $(NAME) then build"
 	@echo "  debug		- build $(NAME) with debug flag"
-	@echo "  run		- run $(NAME) with $(PORT) and $(PSWD)"
+	@echo "  run		- run $(NAME) with $(PORT) and '$(PSWD)'"
+	@echo "  client	- run client with $(PORT) run server first"
 	@echo "  help		- show this help"
 
 .PHONY		: all clean fclean re debug help run
