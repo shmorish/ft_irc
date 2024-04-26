@@ -1,24 +1,7 @@
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
-# include <iostream>
-# include <string>
-# include <vector>
-# include <map>
-# include <exception>
-# include <poll.h>
-# include <arpa/inet.h>
-# include <cerrno>
-# include <iomanip>
-# include <iostream>
-# include <map>
-# include <poll.h>
-# include <set>
-# include <sstream>
-# include <string>
-# include <sys/socket.h>
-# include <unistd.h>
-# include <vector>
+# include "utils.hpp"
 
 using namespace std;
 

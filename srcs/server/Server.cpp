@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include "utils.hpp"
 
 extern bool server_running;
 
