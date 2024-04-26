@@ -54,7 +54,7 @@ void Server::handle_new_client_connection(void)
         close(_server_sockfd);
         throw runtime_error("ERROR: accept: " + string(strerror(errno)));
     }
-    DEBUG_MSG("New client connected fd -> ", client_sockfd);
+    cout << "New client connected with fd [" << client_sockfd << "]" << endl;
     struct pollfd client_pollfd;
     client_pollfd.fd = client_sockfd;
     client_pollfd.events = POLLIN;
@@ -63,7 +63,7 @@ void Server::handle_new_client_connection(void)
     // client fd and client user make pair
 }
 
-string Server::recieve_command(int client_sockfd)
+string Server::recieve_command(int client_sockfd, size_t i)
 {
     char buffer[BUFSIZ + 1] = {0};
     ssize_t bytes_read = recv(client_sockfd, buffer, sizeof(buffer), 0);
@@ -74,6 +74,7 @@ string Server::recieve_command(int client_sockfd)
     }
     if (bytes_read == 0) {
         close(client_sockfd);
+        _pollfd_vector.erase(_pollfd_vector.begin() + i);
         string msg = "client -> fd [" + to_string(client_sockfd) + "] client disconnected";
         throw runtime_error(msg);
     }
@@ -102,8 +103,8 @@ void Server::run()
                 } else {
                     try
                     {
-                        string msg = recieve_command(_pollfd_vector[i].fd);
-                        if (msg == "\n")
+                        string msg = recieve_command(_pollfd_vector[i].fd, i);
+                        if (msg.size() == 0)
                             continue ;
                         cout << "Client " << _pollfd_vector[i].fd << " says: " << msg << endl;
                         // recieve commands from clients
