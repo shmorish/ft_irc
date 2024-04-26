@@ -5,6 +5,10 @@
 
 using namespace std;
 
+#ifndef BUFSIZ
+# define BUFSIZ 1024
+#endif
+
 class Server
 {
     public:

@@ -65,7 +65,7 @@ void Server::handle_new_client_connection(void)
 
 string Server::recieve_command(int client_sockfd)
 {
-    char buffer[1024] = {0};
+    char buffer[BUFSIZ + 1] = {0};
     ssize_t bytes_read = recv(client_sockfd, buffer, sizeof(buffer), 0);
     if (bytes_read == -1) {
         close(client_sockfd);
@@ -74,10 +74,13 @@ string Server::recieve_command(int client_sockfd)
     }
     if (bytes_read == 0) {
         close(client_sockfd);
-        close(_server_sockfd);
-        throw runtime_error("ERROR: client disconnected");
+        string msg = "client -> fd [" + to_string(client_sockfd) + "] client disconnected";
+        throw runtime_error(msg);
     }
-    buffer[bytes_read] = '\0';
+    if (bytes_read > BUFSIZ) {
+        throw runtime_error("ERROR: message too long");
+    }
+    buffer[bytes_read - 1] = '\0';
     return string(buffer);
 }
 
@@ -97,13 +100,24 @@ void Server::run()
                     // handle new client connections
                     handle_new_client_connection();
                 } else {
-                    string msg = recieve_command(_pollfd_vector[i].fd);
-                    cout << "Client " << _pollfd_vector[i].fd << " says: " << msg << endl;
-                    // recieve commands from clients
-                    // handle poll events
+                    try
+                    {
+                        string msg = recieve_command(_pollfd_vector[i].fd);
+                        if (msg == "\n")
+                            continue ;
+                        cout << "Client " << _pollfd_vector[i].fd << " says: " << msg << endl;
+                        // recieve commands from clients
+                        // handle poll events
+                    }
+                    catch (const exception &e)
+                    {
+                        cerr << e.what() << endl;
+                        continue ;
+                    }
                 }
             }
         }
     }
     close(_server_sockfd);
+    cout << "Server stopped" << endl;
 }
