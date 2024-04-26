@@ -13,6 +13,8 @@ class Server
         void setup();
         void run();
         void handle_new_client_connection();
+        // void handle_client_disconnection(int client_sockfd);
+        string recieve_command(int client_sockfd);
     private:
         const long              _port;
         const string            _password;

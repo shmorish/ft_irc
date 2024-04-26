@@ -63,6 +63,24 @@ void Server::handle_new_client_connection(void)
     // client fd and client user make pair
 }
 
+string Server::recieve_command(int client_sockfd)
+{
+    char buffer[1024] = {0};
+    ssize_t bytes_read = recv(client_sockfd, buffer, sizeof(buffer), 0);
+    if (bytes_read == -1) {
+        close(client_sockfd);
+        close(_server_sockfd);
+        throw runtime_error("ERROR: recv: " + string(strerror(errno)));
+    }
+    if (bytes_read == 0) {
+        close(client_sockfd);
+        close(_server_sockfd);
+        throw runtime_error("ERROR: client disconnected");
+    }
+    buffer[bytes_read] = '\0';
+    return string(buffer);
+}
+
 void Server::run()
 {
     int poll_ret;
@@ -79,8 +97,10 @@ void Server::run()
                     // handle new client connections
                     handle_new_client_connection();
                 } else {
-                    // handle poll events
+                    string msg = recieve_command(_pollfd_vector[i].fd);
+                    cout << "Client " << _pollfd_vector[i].fd << " says: " << msg << endl;
                     // recieve commands from clients
+                    // handle poll events
                 }
             }
         }
