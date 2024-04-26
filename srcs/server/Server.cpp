@@ -44,7 +44,27 @@ void Server::setup(void)
     _pollfd_vector.push_back(server_pollfd);
 }
 
-void Server::run() const
+void Server::handle_new_client_connection(void)
+{
+    struct sockaddr_in client_addr;
+    socklen_t client_addr_len = sizeof(client_addr);
+    int client_sockfd = accept(_server_sockfd,
+                               (struct sockaddr *)&client_addr,
+                               &client_addr_len);
+    if (client_sockfd == -1) {
+        close(_server_sockfd);
+        throw runtime_error("ERROR: accept: " + string(strerror(errno)));
+    }
+    DEBUG_MSG("New client connected fd -> ", client_sockfd);
+    struct pollfd client_pollfd;
+    client_pollfd.fd = client_sockfd;
+    client_pollfd.events = POLLIN;
+    client_pollfd.revents = 0;
+    _pollfd_vector.push_back(client_pollfd);
+    // client fd and client user make pair
+}
+
+void Server::run()
 {
     int poll_ret;
     while (server_running) {
@@ -58,6 +78,7 @@ void Server::run() const
             if (_pollfd_vector[i].revents & POLLIN) {
                 if (_pollfd_vector[i].fd == _server_sockfd) {
                     // handle new client connections
+                    handle_new_client_connection();
                 } else {
                     // handle poll events
                     // recieve commands from clients

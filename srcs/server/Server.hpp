@@ -28,7 +28,8 @@ class Server
         Server(long port, const string &password);
         ~Server();
         void setup();
-        void run() const;
+        void run();
+        void handle_new_client_connection();
     private:
         const long              _port;
         const string            _password;
