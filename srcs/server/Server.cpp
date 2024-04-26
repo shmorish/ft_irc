@@ -43,7 +43,7 @@ void Server::setup(void)
     _pollfd_vector.push_back(server_pollfd);
 }
 
-void Server::handle_new_client_connection(void)
+void Server::handle_new_client_connections(void)
 {
     struct sockaddr_in client_addr;
     socklen_t client_addr_len = sizeof(client_addr);
@@ -85,40 +85,53 @@ string Server::recieve_command(int client_sockfd, size_t i)
     return string(buffer);
 }
 
-void Server::run()
+void Server::make_polls()
 {
-    int poll_ret;
-    while (server_running) {
-        poll_ret = poll((pollfd *)_pollfd_vector.data(),
-                        (nfds_t)_pollfd_vector.size(), -1);
-        if (poll_ret == -1) {
-            close(_server_sockfd);
-            throw runtime_error("ERROR: poll: " + string(strerror(errno)));
-        }
-        for (size_t i = 0; i < _pollfd_vector.size(); i++) {
-            if (_pollfd_vector[i].revents & POLLIN) {
-                if (_pollfd_vector[i].fd == _server_sockfd) {
-                    // handle new client connections
-                    handle_new_client_connection();
-                } else {
-                    try
-                    {
-                        string msg = recieve_command(_pollfd_vector[i].fd, i);
-                        if (msg.size() == 0)
-                            continue ;
-                        cout << "Client " << _pollfd_vector[i].fd << " says: " << msg << endl;
-                        // recieve commands from clients
-                        // handle poll events
-                    }
-                    catch (const exception &e)
-                    {
-                        cerr << e.what() << endl;
-                        continue ;
-                    }
-                }
-            }
+    int numReadyForIo = poll((pollfd *)_pollfd_vector.data(),
+                    (nfds_t)_pollfd_vector.size(), -1);
+    if (numReadyForIo == -1) {
+        close(_server_sockfd);
+        throw runtime_error("ERROR: poll: " + string(strerror(errno)));
+    }
+}
+
+void    Server::recieve_and_execute_commands(size_t i)
+{
+    try
+    {
+        string msg = recieve_command(_pollfd_vector[i].fd, i);
+        if (msg.size() == 0)
+            return ;
+        std::cout << "Client " << _pollfd_vector[i].fd << " says: " << msg << endl;
+        // recieve commands from clients
+        // handle poll events
+    }
+    catch (const exception &e)
+    {
+        cerr << e.what() << endl;
+        return ;
+    }
+}
+
+void    Server::check_all_polls()
+{
+    for (size_t i = 0; i < _pollfd_vector.size(); i++) {
+        if (_pollfd_vector[i].revents & POLLIN) {
+            if (_pollfd_vector[i].fd == _server_sockfd)
+                handle_new_client_connections();
+            else
+                recieve_and_execute_commands(i);
         }
     }
+}
+
+void Server::run()
+{
+    while (server_running)
+    {
+        make_polls();
+        check_all_polls();
+    }
     close(_server_sockfd);
-    cout << "Server stopped" << endl;
+    std::cout << "Server stopped" << endl;
 }
