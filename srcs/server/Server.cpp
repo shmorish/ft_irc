@@ -21,11 +21,12 @@ void Server::setup(void)
 		throw runtime_error("ERROR: socket: " + string(strerror(errno)));
 	}
     DEBUG_MSG("Server socket created fd -> ", _server_sockfd);
-    struct sockaddr_in server_addr;
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(_port);
-    server_addr.sin_addr.s_addr = INADDR_ANY;
-    if (bind(_server_sockfd, (const struct sockaddr *)&server_addr, (socklen_t)sizeof(server_addr)) == -1) {
+    _server_addr.sin_family = AF_INET;
+    _server_addr.sin_port = htons(_port);
+    _server_addr.sin_addr.s_addr = INADDR_ANY;
+    if (bind(_server_sockfd,
+        (const struct sockaddr *)&_server_addr,
+        (socklen_t)sizeof(_server_addr)) == -1) {
         close(_server_sockfd);
         throw runtime_error("ERROR: bind: " + string(strerror(errno)));
     }
@@ -36,20 +37,32 @@ void Server::setup(void)
     }
     DEBUG_MSG("Server socket listening on port -> ", _port);
 
-    // poll initialization
+    struct pollfd server_pollfd;
+    server_pollfd.fd = _server_sockfd;
+    server_pollfd.events = POLLIN;
+    server_pollfd.revents = 0;
+    _pollfd_vector.push_back(server_pollfd);
 }
 
 void Server::run() const
 {
+    int poll_ret;
     while (server_running) {
-        // poll
-        ;
-        try {
-            // handle poll events
-            // recieve commands from clients
-        } catch (const exception &e) {
-            cerr << e.what() << endl;
-            continue;
+        poll_ret = poll((pollfd *)_pollfd_vector.data(),
+                        (nfds_t)_pollfd_vector.size(), -1);
+        if (poll_ret == -1) {
+            close(_server_sockfd);
+            throw runtime_error("ERROR: poll: " + string(strerror(errno)));
+        }
+        for (size_t i = 0; i < _pollfd_vector.size(); i++) {
+            if (_pollfd_vector[i].revents & POLLIN) {
+                if (_pollfd_vector[i].fd == _server_sockfd) {
+                    // handle new client connections
+                } else {
+                    // handle poll events
+                    // recieve commands from clients
+                }
+            }
         }
     }
     close(_server_sockfd);
