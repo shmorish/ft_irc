@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "parser.hpp"
 
 extern bool server_running;
 
@@ -20,9 +21,12 @@ void Server::setup(void)
 		throw runtime_error("ERROR: socket: " + string(strerror(errno)));
 	}
     DEBUG_MSG("Server socket created fd -> ", _server_sockfd);
+
     _server_addr.sin_family = AF_INET;
     _server_addr.sin_port = htons(_port);
     _server_addr.sin_addr.s_addr = INADDR_ANY;
+
+    setsockopt(_server_sockfd, SOL_SOCKET, SO_REUSEADDR, NULL, 0);
     if (bind(_server_sockfd,
         (const struct sockaddr *)&_server_addr,
         (socklen_t)sizeof(_server_addr)) == -1) {
@@ -102,7 +106,8 @@ void    Server::recieve_and_execute_commands(size_t i)
         string msg = recieve_command(_pollfd_vector[i].fd, i);
         if (msg.size() == 0)
             return ;
-        std::cout << "Client " << _pollfd_vector[i].fd << " says: " << msg << endl;
+        // cout << "Client " << _pollfd_vector[i].fd << " says: " << msg << endl;
+        Parser(msg, _pollfd_vector[i].fd, _password);
         // recieve commands from clients
         // handle poll events
     }
@@ -133,5 +138,5 @@ void Server::run()
         check_all_polls();
     }
     close(_server_sockfd);
-    std::cout << "Server stopped" << endl;
+    cout << "Server stopped" << endl;
 }
