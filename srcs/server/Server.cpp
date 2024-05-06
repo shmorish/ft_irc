@@ -72,6 +72,9 @@ string Server::recieve_command(int client_sockfd, size_t i)
     char buffer[BUFSIZ + 1] = {0};
     ssize_t bytes_read = recv(client_sockfd, buffer, sizeof(buffer), 0);
     if (bytes_read == -1) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            return ("");
+        }
         close(client_sockfd);
         close(_server_sockfd);
         throw runtime_error("ERROR: recv: " + string(strerror(errno)));
@@ -89,14 +92,19 @@ string Server::recieve_command(int client_sockfd, size_t i)
     return string(buffer);
 }
 
-void Server::make_polls()
+int Server::make_polls()
 {
-    int numReadyForIo = poll((pollfd *)_pollfd_vector.data(),
-                    (nfds_t)_pollfd_vector.size(), -1);
+    const int timeout = -1; // wait infinitely
+    int numReadyForIo = poll(
+                            (pollfd *)_pollfd_vector.data(),
+                            (nfds_t)_pollfd_vector.size(),
+                            timeout
+                            );
     if (numReadyForIo == -1) {
         close(_server_sockfd);
         throw runtime_error("ERROR: poll: " + string(strerror(errno)));
     }
+    return numReadyForIo;
 }
 
 void    Server::recieve_and_execute_commands(size_t i)
@@ -127,6 +135,10 @@ void    Server::check_all_polls()
             else
                 recieve_and_execute_commands(i);
         }
+        // else if (_pollfd_vector[i].revents & POLLHUP) {
+        //     close(_pollfd_vector[i].fd);
+        //     _pollfd_vector.erase(_pollfd_vector.begin() + i);
+        // }
     }
 }
 

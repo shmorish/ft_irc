@@ -30,14 +30,16 @@ Parser::Parser(string &message, int fd, const string &password) : _message(messa
     DEBUG_MSG("Password=", _password);
     (void)_fd;
 
-    istringstream iss(_message);
-    string command_token;
-    iss >> command_token;
-    check_command(command_token);
-    cout << "Command: " << command_token << endl;
-    while (iss >> command_token) {
-        cout << "Token: " << command_token << endl;
-    }
+    cout << "Message: " << _message << endl;
+
+    // istringstream iss(_message);
+    // string command_token;
+    // iss >> command_token;
+    // check_command(command_token);
+    // cout << "Command: " << command_token << endl;
+    // while (iss >> command_token) {
+    //     cout <https://lh5.googleusercontent.com/p/AF1QipP1ZNL5kKy29kBRchg2raiBKCP4yrqxWn9hqkdE=w408-h244-k-no< "Token: " << command_token << endl;
+    // }
 }
 
 Parser::~Parser()
