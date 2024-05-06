@@ -110,15 +110,13 @@ void    Server::recieve_and_execute_commands(size_t i)
         // recieve command from client
         // ↓
         long recived_fd = _pollfd_vector[i].fd;
-        for (unsigned long i = 0; i < _pollfd_vector.size(); i++){
-            if (_pollfd_vector[i].fd != recived_fd)
-            {
+        for (unsigned long i = 0; i < _pollfd_vector.size(); i++) {
+            if (_pollfd_vector[i].fd != recived_fd) {
                 string client_msg = "Client [" + to_string(recived_fd) + "] says: " + msg;
                 send(_pollfd_vector[i].fd, client_msg.c_str(), client_msg.size(), 0);
             }
         }
         // ↑
-        
     }
     catch (const exception &e)
     {
