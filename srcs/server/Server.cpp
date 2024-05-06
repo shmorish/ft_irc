@@ -68,9 +68,7 @@ string Server::recieve_command(int client_sockfd, size_t i)
     char buffer[BUFSIZ + 1] = {0};
     ssize_t bytes_read = recv(client_sockfd, buffer, sizeof(buffer), 0);
     if (bytes_read == EOF) {
-        if (errno == EAGAIN || errno == EWOULDBLOCK) {
-            return ("");
-        }
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {return ("");}
         close(client_sockfd);
         close(_server_sockfd);
         throw runtime_error("ERROR: recv: " + string(strerror(errno)));
@@ -81,21 +79,15 @@ string Server::recieve_command(int client_sockfd, size_t i)
         string msg = "client -> fd [" + to_string(client_sockfd) + "] client disconnected";
         throw runtime_error(msg);
     }
-    if (bytes_read > BUFSIZ) {
+    if (bytes_read > BUFSIZ)
         throw runtime_error("ERROR: message too long");
-    }
-    buffer[bytes_read - 1] = '\0';
     return string(buffer);
 }
 
 int Server::make_polls()
 {
     const int timeout = -1; // wait infinitely
-    int numReadyForIo = poll(
-                            (pollfd *)_pollfd_vector.data(),
-                            (nfds_t)_pollfd_vector.size(),
-                            timeout
-                            );
+    int numReadyForIo = poll((pollfd *)_pollfd_vector.data(), (nfds_t)_pollfd_vector.size(), timeout);
     if (numReadyForIo == -1) {
         close(_server_sockfd);
         throw runtime_error("ERROR: poll: " + string(strerror(errno)));
@@ -115,15 +107,17 @@ void    Server::recieve_and_execute_commands(size_t i)
         // recieve commands from clients
         // handle poll events
 
+        // recieve command from client
+        // ↓
         long recived_fd = _pollfd_vector[i].fd;
-        // recieve command                
         for (unsigned long i = 0; i < _pollfd_vector.size(); i++){
             if (_pollfd_vector[i].fd != recived_fd)
             {
-                send(_pollfd_vector[i].fd, msg.c_str(), msg.size(), 0);
-                send(_pollfd_vector[i].fd, "\n", 1, 0);
+                string client_msg = "Client [" + to_string(recived_fd) + "] says: " + msg;
+                send(_pollfd_vector[i].fd, client_msg.c_str(), client_msg.size(), 0);
             }
         }
+        // ↑
         
     }
     catch (const exception &e)
