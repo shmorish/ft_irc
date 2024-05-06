@@ -9,6 +9,10 @@ using namespace std;
 # define BUFSIZ 1024
 #endif
 
+#ifndef EOF
+# define EOF (-1)
+#endif
+
 class Server
 {
     public:

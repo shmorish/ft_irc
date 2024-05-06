@@ -27,9 +27,7 @@ void Server::setup(void)
     _server_addr.sin_addr.s_addr = INADDR_ANY;
 
     setsockopt(_server_sockfd, SOL_SOCKET, SO_REUSEADDR, NULL, 0);
-    if (bind(_server_sockfd,
-        (const struct sockaddr *)&_server_addr,
-        (socklen_t)sizeof(_server_addr)) == -1) {
+    if (bind(_server_sockfd, (const struct sockaddr *)&_server_addr, (socklen_t)sizeof(_server_addr)) == -1) {
         close(_server_sockfd);
         throw runtime_error("ERROR: bind: " + string(strerror(errno)));
     }
@@ -51,9 +49,7 @@ void Server::handle_new_client_connections(void)
 {
     struct sockaddr_in client_addr;
     socklen_t client_addr_len = sizeof(client_addr);
-    int client_sockfd = accept(_server_sockfd,
-                               (struct sockaddr *)&client_addr,
-                               &client_addr_len);
+    int client_sockfd = accept(_server_sockfd, (struct sockaddr *)&client_addr, &client_addr_len);
     if (client_sockfd == -1) {
         close(_server_sockfd);
         throw runtime_error("ERROR: accept: " + string(strerror(errno)));
@@ -71,7 +67,7 @@ string Server::recieve_command(int client_sockfd, size_t i)
 {
     char buffer[BUFSIZ + 1] = {0};
     ssize_t bytes_read = recv(client_sockfd, buffer, sizeof(buffer), 0);
-    if (bytes_read == -1) {
+    if (bytes_read == EOF) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             return ("");
         }
@@ -115,9 +111,20 @@ void    Server::recieve_and_execute_commands(size_t i)
         if (msg.size() == 0)
             return ;
         // cout << "Client " << _pollfd_vector[i].fd << " says: " << msg << endl;
-        Parser(msg, _pollfd_vector[i].fd, _password);
+        // Parser(msg, _pollfd_vector[i].fd, _password);
         // recieve commands from clients
         // handle poll events
+
+        long recived_fd = _pollfd_vector[i].fd;
+        // recieve command                
+        for (unsigned long i = 0; i < _pollfd_vector.size(); i++){
+            if (_pollfd_vector[i].fd != recived_fd)
+            {
+                send(_pollfd_vector[i].fd, msg.c_str(), msg.size(), 0);
+                send(_pollfd_vector[i].fd, "\n", 1, 0);
+            }
+        }
+        
     }
     catch (const exception &e)
     {
