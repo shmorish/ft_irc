@@ -4,6 +4,7 @@
 #include "utils.hpp"
 
 typedef enum CommandType {
+    PASS,
     NICK,
     USER,
     JOIN,
@@ -18,6 +19,7 @@ class Parser {
 public:
     Parser(string &message, int fd, const string &password);
     ~Parser();
+    CommandType get_command();
 private:
     string _message;
     int _fd;

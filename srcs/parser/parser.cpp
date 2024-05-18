@@ -1,9 +1,15 @@
 #include "parser.hpp"
 
+CommandType Parser::get_command(){
+    return this->_command;
+}
+
 void    Parser::check_command(string &command)
 {
     transform(command.begin(), command.end(), command.begin(), ::toupper);
-    if (command == "NICK")
+    if (command == "PASS")
+        _command = PASS;
+    else if (command == "NICK")
         _command = NICK;
     else if (command == "USER")
         _command = USER;
