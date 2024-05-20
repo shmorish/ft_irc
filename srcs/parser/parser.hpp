@@ -20,6 +20,8 @@ public:
     Parser(string &message, int fd, const string &password);
     ~Parser();
     CommandType get_command();
+    string get_password();
+    string get_message();
 private:
     string _message;
     int _fd;

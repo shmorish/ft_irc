@@ -14,14 +14,14 @@ public:
 	~Command();
 private:
 	void	pass(Server &server, Parser &parser);
-	void	nick(Server &server, Parser &parser);
-	void	user(Server &server, Parser &parser);
-	void	join();
-	void	part();
-	void	privmsg();
-	void	quit();
-	void	ping();
-	void	pong();
+	void	nick(Server &server, Parser &parser){cout << "nick" << endl; (void)server; (void)parser;};
+	void	user(Server &server, Parser &parser){cout << "user" << endl; (void)server; (void)parser;};
+	void	join(){};
+	void	part(){};
+	void	privmsg(){};
+	void	quit(){};
+	void	ping(){};
+	void	pong(){};
 
 	Server	&_server;
 	Parser	&_parser;

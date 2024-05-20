@@ -1,5 +1,5 @@
 #include "Server.hpp"
-#include "parser.hpp"
+#include "Parser.hpp"
 
 extern bool server_running;
 
