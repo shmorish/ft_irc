@@ -1,7 +1,15 @@
-#include "parser.hpp"
+#include "Parser.hpp"
 
 CommandType Parser::get_command(){
 	return this->_command;
+}
+
+string Parser::get_password(){
+	return this->_password;
+}
+
+string Parser::get_message(){
+	return this->_message;
 }
 
 void	Parser::check_command(string &command)
