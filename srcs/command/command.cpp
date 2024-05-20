@@ -1,4 +1,4 @@
-#include "command.hpp"
+#include "Command.hpp"
 
 Command::Command(Server &server, Parser &parser):_server(server), _parser(parser){
 	switch(_parser.get_command()) {
