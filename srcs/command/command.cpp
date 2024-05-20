@@ -3,13 +3,13 @@
 Command::Command(Server &server, Parser &parser):_server(server), _parser(parser){
 	switch(_parser.get_command()) {
 		case PASS:
-			this->pass();
+			this->pass(this->_server, this->_parser);
 			break;
 		case NICK:
-			this->nick();
+			this->nick(this->_server, this->_parser);
 				break;
 		case USER:
-			this->user();
+			this->user(this->_server, this->_parser);
 			break;
 		case JOIN:
 			this->join();

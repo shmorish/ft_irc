@@ -13,9 +13,9 @@ public:
 	Command(Server &server, Parser &parser);
 	~Command();
 private:
-	void	pass();
-	void	nick();
-	void	user();
+	void	pass(Server &server, Parser &parser);
+	void	nick(Server &server, Parser &parser);
+	void	user(Server &server, Parser &parser);
 	void	join();
 	void	part();
 	void	privmsg();
