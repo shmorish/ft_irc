@@ -100,14 +100,15 @@ void    Server::recieve_and_execute_commands(size_t i)
     try
     {
         string msg = recieve_command(_pollfd_vector[i].fd, i);
-        if (msg.size() == 0)
-            return ;
-        // cout << "Client " << _pollfd_vector[i].fd << " says: " << msg << endl;
-        // Parser(msg, _pollfd_vector[i].fd, _password);
+        if (msg.size() == 0) return ;
+        while (msg[0] == ' ') msg.erase(0, 1);
+        if (msg.size() == 0 || msg == "\n") return ;
+        cout << "Client " << _pollfd_vector[i].fd << " says: " << msg;
+        Parser(msg, _pollfd_vector[i].fd, _password);
         // recieve commands from clients
         // handle poll events
 
-        // recieve command from client
+        // recieve command from client [PRIVMSG]
         // ↓
         long recived_fd = _pollfd_vector[i].fd;
         for (unsigned long i = 0; i < _pollfd_vector.size(); i++) {

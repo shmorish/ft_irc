@@ -2,6 +2,8 @@
 # define WEBSERV_HPP
 
 # include "utils.hpp"
+# include "Channel.hpp"
+# include "User.hpp"
 
 using namespace std;
 
@@ -12,6 +14,9 @@ using namespace std;
 #ifndef EOF
 # define EOF (-1)
 #endif
+
+class Channel;
+class User;
 
 class Server
 {
@@ -34,7 +39,9 @@ class Server
         vector<struct pollfd>   _pollfd_vector;
         
         // fd, nickname
-        map<int, string>        _clients;
+        map<int, string>        _clients; // unuse
+        set<Channel>            _channels;
+        set<User>               _users;
 };
 
 #endif
