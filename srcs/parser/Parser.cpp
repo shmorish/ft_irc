@@ -55,10 +55,16 @@ Parser::Parser(string &message, int fd, const string &password) : _message(messa
 	check_command(command_token);
 	cout << "Command: " << command_token << endl;
 	while (iss >> command_token) {
-	    cout << "Token: " << command_token << endl;
+		args.push_back(command_token);
+	    // cout << "Token: " << command_token << endl;
 	}
 }
 
 Parser::~Parser()
 {
+}
+
+vector<string> Parser::get_args()
+{
+	return args;
 }

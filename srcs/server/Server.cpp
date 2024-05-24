@@ -10,9 +10,7 @@ Server::Server(long port, const string &password) : _port(port), _password(passw
     (void)_port;
 }
 
-Server::~Server()
-{
-}
+Server::~Server(){}
 
 void Server::setup(void)
 {
@@ -66,6 +64,10 @@ void Server::handle_new_client_connections(void)
     client_pollfd.revents = 0;
     _pollfd_vector.push_back(client_pollfd);
     // client fd and client user make pair
+
+    // add User with new client client_sockfd
+    User *new_user = new User(client_sockfd);
+    _users.insert(new_user);
 }
 
 string Server::recieve_command(int client_sockfd, size_t i)
@@ -93,7 +95,8 @@ int Server::make_polls()
 {
     // const int timeout = -1; // wait infinitely
     const int timeout = 0; // wait indefinitely for an event
-    int numReadyForIo = poll((pollfd *)_pollfd_vector.data(), (nfds_t)_pollfd_vector.size(), timeout);
+    // int numReadyForIo = poll((pollfd *)_pollfd_vector.data(), (nfds_t)_pollfd_vector.size(), timeout);
+    int numReadyForIo = poll(&_pollfd_vector[0], (nfds_t)_pollfd_vector.size(), timeout);
     if (numReadyForIo == -1) {
         close(_server_sockfd);
         throw runtime_error("ERROR: poll: " + string(strerror(errno)));
@@ -157,4 +160,8 @@ void Server::run()
     }
     close(_server_sockfd);
     cout << "Server stopped" << endl;
+}
+
+string Server::get_password() const{
+    return _password;
 }

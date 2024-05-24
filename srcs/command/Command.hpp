@@ -3,17 +3,19 @@
 
 #include "Server.hpp"
 #include "Parser.hpp"
+#include "User.hpp"
 #include "utils.hpp"
 
 class Server;
 class Parser;
+class User;
 
 class Command {
 public:
-	Command(Server &server, Parser &parser);
+	Command(Server &server, Parser &parser, User &user);
 	~Command();
 private:
-	void	pass(Server &server, Parser &parser);
+	void	pass(User &user , Parser &parser);
 	void	nick(Server &server, Parser &parser){cout << "nick" << endl; (void)server; (void)parser;};
 	void	user(Server &server, Parser &parser){cout << "user" << endl; (void)server; (void)parser;};
 	void	join(){};
@@ -25,6 +27,7 @@ private:
 
 	Server	&_server;
 	Parser	&_parser;
+	User	&_user;
 };
 
 #endif

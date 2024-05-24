@@ -1,9 +1,9 @@
 #include "Command.hpp"
 
-Command::Command(Server &server, Parser &parser):_server(server), _parser(parser){
+Command::Command(Server &server, Parser &parser , User &user) : _server(server), _parser(parser), _user(user) {
 	switch(_parser.get_command()) {
 		case PASS:
-			this->pass(this->_server, this->_parser);
+			this->pass(this->_user, this->_parser);
 			break;
 		case NICK:
 			this->nick(this->_server, this->_parser);

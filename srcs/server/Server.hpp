@@ -31,6 +31,7 @@ class Server
         int  make_polls();
         void check_all_polls();
         void recieve_and_execute_commands(size_t i);
+        string get_password() const;
     private:
         const long              _port;
         const string            _password;
@@ -41,7 +42,7 @@ class Server
         // fd, nickname
         map<int, string>        _clients; // unuse
         set<Channel>            _channels;
-        set<User>               _users;
+        set<User *>               _users;
 };
 
 #endif
