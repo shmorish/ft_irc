@@ -2,6 +2,7 @@
 #define COMMAND_HPP
 
 #include "Server.hpp"
+#include "Channel.hpp"
 #include "Parser.hpp"
 #include "User.hpp"
 #include "utils.hpp"
@@ -18,7 +19,7 @@ private:
 	void	pass();
 	void	nick();
 	void	user();
-	void	join(){};
+	void	join();
 	void	part(){};
 	void	privmsg(){};
 	void	quit(){};

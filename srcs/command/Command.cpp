@@ -1,6 +1,7 @@
 #include "Command.hpp"
 
-Command::Command(Server &server, Parser &parser , User &user_) : _server(server), _parser(parser), _user(user_) {
+Command::Command(Server &server, Parser &parser , User &user_class) : _server(server), _parser(parser), _user(user_class) {
+	cout << " -> " << _parser.get_command() << endl;
 	switch(_parser.get_command()) {
 		case PASS:
 			pass();
@@ -12,22 +13,22 @@ Command::Command(Server &server, Parser &parser , User &user_) : _server(server)
 			user();
 			break;
 		case JOIN:
-			this->join();
+			join();
 			break;
 		case PART:
-			this->part();
+			part();
 			break;
 		case PRIVMSG:
-			this->privmsg();
+			privmsg();
 			break;
 		case QUIT:
-			this->quit();
+			quit();
 			break;
 		case PING:
-			this->ping();
+			ping();
 			break;
 		case PONG:
-			this->pong();
+			pong();
 			break;
 		default:
 			throw runtime_error("Invalid command");

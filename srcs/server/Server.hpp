@@ -4,6 +4,7 @@
 # include "utils.hpp"
 # include "Channel.hpp"
 # include "User.hpp"
+# include "Command.hpp"
 
 using namespace std;
 
@@ -32,7 +33,11 @@ class Server
         void check_all_polls();
         void recieve_and_execute_commands(size_t i);
         string get_password() const;
+        set<User *> &get_users();
+        set<Channel> &get_channels();
+        void set_own_addr(void *addr);
     private:
+        void                    *own_addr;
         const long              _port;
         const string            _password;
         int                     _server_sockfd;
