@@ -44,6 +44,8 @@ int main(int argc, char **argv)
         cerr << "usage: " << argv[0] << " <port> <password>" << endl;
         return 1;
     }
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGTERM, SIG_IGN);
     signal(SIGINT, sigintHandler);
     try {
         Server IrcServer(checkPort(argv[1]), checkPassword(argv[2]));

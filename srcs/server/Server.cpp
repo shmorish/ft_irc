@@ -26,7 +26,12 @@ void Server::setup(void)
     _server_addr.sin_port = htons(_port);
     _server_addr.sin_addr.s_addr = INADDR_ANY;
 
-    setsockopt(_server_sockfd, SOL_SOCKET, SO_REUSEADDR, NULL, 0);
+    int enable_SO_REU = 1;
+    if (setsockopt(_server_sockfd, SOL_SOCKET, SO_REUSEADDR, &enable_SO_REU, sizeof(int)) == -1)
+    {
+        close(_server_sockfd);
+        throw runtime_error("ERROR: setsockopt: " + string(strerror(errno)));
+    }
     if (bind(_server_sockfd, (const struct sockaddr *)&_server_addr, (socklen_t)sizeof(_server_addr)) == -1) {
         close(_server_sockfd);
         throw runtime_error("ERROR: bind: " + string(strerror(errno)));
@@ -86,7 +91,8 @@ string Server::recieve_command(int client_sockfd, size_t i)
 
 int Server::make_polls()
 {
-    const int timeout = -1; // wait infinitely
+    // const int timeout = -1; // wait infinitely
+    const int timeout = 0; // wait indefinitely for an event
     int numReadyForIo = poll((pollfd *)_pollfd_vector.data(), (nfds_t)_pollfd_vector.size(), timeout);
     if (numReadyForIo == -1) {
         close(_server_sockfd);
