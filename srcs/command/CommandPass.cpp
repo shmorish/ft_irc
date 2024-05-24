@@ -1,26 +1,26 @@
 #include "Command.hpp"
 
-void	Command::pass(User &user, Parser &parser) {
+void	Command::pass() {
 	try{
-		if (user.get_is_password() == true) {
+		if (_user.get_is_password() == true) {
 			throw runtime_error("You are already registered");
 		}
-		if (parser.get_args().empty() == true) {
+		if (_parser.get_args().empty() == true) {
 			throw runtime_error("Password is empty");
 		}
-		if (parser.get_args().size() > 1) {
+		if (_parser.get_args().size() > 1) {
 			throw runtime_error("Too many arguments");
 		}
-		if (parser.get_args().at(0).size() > 4096) {
+		if (_parser.get_args().at(0).size() > 256) {
 			throw runtime_error("Password is too long");
 		}
-		if (parser.get_args().at(0).compare(this->_server.get_password()) == 0) {
-			user.set_is_password(true);
+		if (_parser.get_args().at(0).compare(_server.get_password()) == 0) {
+			_user.set_is_password(true);
 		} else {
 			throw runtime_error("Password is incorrect");
 		}
 	} catch (const exception &e) {
-		send(user.get_fd(), e.what(), strlen(e.what()), 0);
+		send(_user.get_fd(), e.what(), strlen(e.what()), 0);
 		// cerr << e.what() << endl;
 	}
 }

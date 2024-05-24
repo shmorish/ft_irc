@@ -26,6 +26,10 @@ void User::set_hostname(const string &hostname){
     _hostname = hostname;
 }
 
+void User::set_servername(const string &servername){
+    _servername = servername;
+}
+
 void User::set_is_password(bool is_password){
     _is_password = is_password;
 }
@@ -52,6 +56,10 @@ string User::get_realname() const{
 
 string User::get_hostname() const{
     return _hostname;
+}
+
+string User::get_servername() const{
+    return _servername;
 }
 
 bool User::get_is_password() const{

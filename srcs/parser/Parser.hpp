@@ -23,6 +23,7 @@ public:
     string get_password();
     string get_message();
     vector<string> get_args();
+    
 private:
     string _message;
     int _fd;
