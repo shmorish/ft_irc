@@ -7,7 +7,7 @@ Command::Command(Server &server, Parser &parser):_server(server), _parser(parser
 			break;
 		case NICK:
 			this->nick(this->_server, this->_parser);
-				break;
+			break;
 		case USER:
 			this->user(this->_server, this->_parser);
 			break;

@@ -1,9 +1,9 @@
 #ifndef COMMAND_HPP
 #define COMMAND_HPP
 
-#include "utils.hpp"
 #include "Server.hpp"
 #include "Parser.hpp"
+#include "utils.hpp"
 
 class Server;
 class Parser;
