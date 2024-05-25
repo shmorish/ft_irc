@@ -28,10 +28,10 @@ void Command::privmsg()
             if (_server.findChannelByName(_parser.get_args().at(0)) == NULL) {
                 throw runtime_error("Channel not found\n");
             }
-            // if (_server.findChannelByName(_parser.get_args().at(0))->findUserByFd(_user.get_fd()) == NULL) {
-            //     throw runtime_error("You are not in the channel\n");
-            // }
-
+            if (_server.findChannelByName(_parser.get_args().at(0))->get_clients().find(_user.get_fd()) == _server.findChannelByName(_parser.get_args().at(0))->get_clients().end()) {
+                throw runtime_error("You are not in the channel\n");
+            }
+            send(_user.get_fd(), "You are in the channel\n", 23, 0);
         } else {
             // privmsg <nickname> <message>
             title(_server, _parser, _user);
