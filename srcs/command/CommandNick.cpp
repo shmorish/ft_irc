@@ -36,7 +36,7 @@ void  Command::nick()
 		// nicknameに使える文字を選別
 		// 他のユーザーと重複していないか確認
 		if (has_duplicate_nickname(_server, _parser.get_args().at(0)) == true) {
-			throw runtime_error("nickname is already used");
+			throw runtime_error("nickname is already used\n");
 		}
 		// チャンネル名と重複していないか確認
 		// if (has_channel_with_name(_server, _parser.get_args().at(0)) == true) {
