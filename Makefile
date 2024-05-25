@@ -9,7 +9,7 @@ OBJS		:= $(subst $(SRCS_DIR), $(OBJS_DIR), $(SRCS:.cpp=.o))
 DEPS		:= $(subst $(SRCS_DIR), $(OBJS_DIR), $(SRCS:.cpp=.d))
 
 CXX			:= c++
-CXXFLAGS	:= -Wall -Wextra -Werror -std=c++98 $(INC) -MMD -MP
+CXXFLAGS	:= -Wall -Wextra -Werror -std=c++98 $(INC) -MMD -MP -g -fsanitize=address
 
 # Debug
 ifeq ($(MAKECMDGOALS), debug)

@@ -11,6 +11,7 @@ Command::Command(Server &server, Parser &parser , User &user_class) : _server(se
 	else if (cmd == QUIT) quit();
 	else if (cmd == PING) ping();
 	else if (cmd == PONG) pong();
+	else if (cmd == TIME) show_time();
 	else throw runtime_error("Invalid command");
 }
 

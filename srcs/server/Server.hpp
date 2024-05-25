@@ -39,6 +39,7 @@ class Server
         User* findUserByFd(int fd);
         User* findUserByNick(string nickname);
         Channel* findChannelByName(string name);
+        void removeUser(User *user);
     private:
         void                    *own_addr;
         const long              _port;

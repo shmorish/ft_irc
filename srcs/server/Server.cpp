@@ -208,3 +208,8 @@ Channel* Server::findChannelByName(string name) {
     }
     return NULL;
 }
+
+void Server::removeUser(User *user) {
+    _users.erase(user);
+    delete user;
+}
