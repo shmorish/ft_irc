@@ -25,6 +25,7 @@ private:
 	void	quit(){};
 	void	ping(){};
 	void	pong(){};
+	void	show_time();
 
 	Server	&_server;
 	Parser	&_parser;

@@ -13,6 +13,7 @@ typedef enum CommandType {
     QUIT,
     PING,
     PONG,
+    TIME,
 } CommandType;
 
 class Parser {
