@@ -68,6 +68,7 @@ void Server::handle_new_client_connections(void)
     // add User with new client client_sockfd
     User *new_user = new User(client_sockfd);
     _users.insert(new_user);
+    
 }
 
 string Server::recieve_command(int client_sockfd, size_t i)
