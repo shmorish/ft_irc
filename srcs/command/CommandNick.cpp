@@ -80,9 +80,11 @@ void Command::nick() {
     check_nickname_uniqueness(_server, nickname);
     // ニックネームと同じ名前のチャンネルを探す
     check_nickname_against_channel_names(_server, nickname);
-    cout << "nickname: " << nickname << endl;
+    // ニックネームを設定
     _user.set_nickname(nickname);
+    // フラグを更新
     _user.set_is_nickname(true);
+    // ニックネームを表示
     string response = "Nick set to: " + nickname + "\n";
     send(_user.get_fd(), response.c_str(), response.size(), 0);
   } catch (const exception &e) {
