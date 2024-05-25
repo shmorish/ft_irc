@@ -37,6 +37,7 @@ class Server
         set<Channel *> &get_channels();
         void set_own_addr(void *addr);
         User* findUserByFd(int fd);
+        User* findUserByNick(string nickname);
         Channel* findChannelByName(string name);
     private:
         void                    *own_addr;

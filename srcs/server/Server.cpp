@@ -191,6 +191,15 @@ User* Server::findUserByFd(int fd) {
     return NULL;
 }
 
+User* Server::findUserByNick(string nick) {
+    for (set<User*>::iterator it = _users.begin(); it != _users.end(); ++it) {
+        if ((*it)->get_nickname() == nick) {
+            return *it;
+        }
+    }
+    return NULL;
+}
+
 Channel* Server::findChannelByName(string name) {
     for (set<Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
         if ((*it)->get_channel_name() == name) {
