@@ -4,7 +4,7 @@
 # include "utils.hpp"
 # include "User.hpp"
 
-# define USER_ID size_t
+# define USER_ID int
 
 class User;
 
@@ -19,6 +19,7 @@ private:
 	// set<User>			_user_lists;
 public:
     Channel();
+	Channel(const string &channel_name);
     ~Channel();
 
 	bool operator<(const Channel& other) const {

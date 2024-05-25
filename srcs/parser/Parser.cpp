@@ -47,13 +47,13 @@ Parser::Parser(string &message, int fd, const string &password) : _message(messa
 	DEBUG_MSG("Password=", _password);
 	(void)_fd;
 
-	cout << "Message: " << _message;
+	// cout << "Message: " << _message;
 
 	istringstream iss(_message);
 	string command_token;
 	iss >> command_token;
 	check_command(command_token);
-	cout << "Command: " << command_token << endl;
+	// cout << "Command: " << command_token << endl;
 	while (iss >> command_token) {
 		args.push_back(command_token);
 	    // cout << "Token: " << command_token << endl;

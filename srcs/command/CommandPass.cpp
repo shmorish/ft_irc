@@ -15,6 +15,7 @@ void	Command::pass() {
 			throw runtime_error("Password is too long\n");
 		}
 		if (_parser.get_args().at(0).compare(_server.get_password()) == 0) {
+			send(_user.get_fd(), "Password is correct\n", 20, 0);
 			_user.set_is_password(true);
 		} else {
 			throw runtime_error("Password is incorrect\n");

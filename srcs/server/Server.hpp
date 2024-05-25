@@ -34,9 +34,10 @@ class Server
         void recieve_and_execute_commands(size_t i);
         string get_password() const;
         set<User *> &get_users();
-        set<Channel> &get_channels();
+        set<Channel *> &get_channels();
         void set_own_addr(void *addr);
         User* findUserByFd(int fd);
+        Channel* findChannelByName(string name);
     private:
         void                    *own_addr;
         const long              _port;
@@ -47,7 +48,7 @@ class Server
         
         // fd, nickname
         map<int, string>        _clients; // unuse
-        set<Channel>            _channels;
+        set<Channel *>            _channels;
         set<User *>               _users;
 };
 
