@@ -10,9 +10,7 @@ Server::Server(long port, const string &password) : _port(port), _password(passw
     (void)_port;
 }
 
-Server::~Server()
-{
-}
+Server::~Server(){}
 
 void Server::setup(void)
 {
@@ -26,7 +24,12 @@ void Server::setup(void)
     _server_addr.sin_port = htons(_port);
     _server_addr.sin_addr.s_addr = INADDR_ANY;
 
-    setsockopt(_server_sockfd, SOL_SOCKET, SO_REUSEADDR, NULL, 0);
+    int enable_SO_REU = 1;
+    if (setsockopt(_server_sockfd, SOL_SOCKET, SO_REUSEADDR, &enable_SO_REU, sizeof(int)) == -1)
+    {
+        close(_server_sockfd);
+        throw runtime_error("ERROR: setsockopt: " + string(strerror(errno)));
+    }
     if (bind(_server_sockfd, (const struct sockaddr *)&_server_addr, (socklen_t)sizeof(_server_addr)) == -1) {
         close(_server_sockfd);
         throw runtime_error("ERROR: bind: " + string(strerror(errno)));
@@ -61,6 +64,11 @@ void Server::handle_new_client_connections(void)
     client_pollfd.revents = 0;
     _pollfd_vector.push_back(client_pollfd);
     // client fd and client user make pair
+
+    // add User with new client client_sockfd
+    User *new_user = new User(client_sockfd);
+    _users.insert(new_user);
+    
 }
 
 string Server::recieve_command(int client_sockfd, size_t i)
@@ -86,8 +94,10 @@ string Server::recieve_command(int client_sockfd, size_t i)
 
 int Server::make_polls()
 {
-    const int timeout = -1; // wait infinitely
-    int numReadyForIo = poll((pollfd *)_pollfd_vector.data(), (nfds_t)_pollfd_vector.size(), timeout);
+    // const int timeout = -1; // wait infinitely
+    const int timeout = 0; // wait indefinitely for an event
+    // int numReadyForIo = poll((pollfd *)_pollfd_vector.data(), (nfds_t)_pollfd_vector.size(), timeout);
+    int numReadyForIo = poll(&_pollfd_vector[0], (nfds_t)_pollfd_vector.size(), timeout);
     if (numReadyForIo == -1) {
         close(_server_sockfd);
         throw runtime_error("ERROR: poll: " + string(strerror(errno)));
@@ -100,14 +110,18 @@ void    Server::recieve_and_execute_commands(size_t i)
     try
     {
         string msg = recieve_command(_pollfd_vector[i].fd, i);
-        if (msg.size() == 0)
-            return ;
-        // cout << "Client " << _pollfd_vector[i].fd << " says: " << msg << endl;
-        // Parser(msg, _pollfd_vector[i].fd, _password);
+        if (msg.size() == 0) return ;
+        while (msg[0] == ' ') msg.erase(0, 1);
+        if (msg.size() == 0 || msg == "\n") return ;
+        cout << "Client " << _pollfd_vector[i].fd << " says: " << msg;
+        Parser parser = Parser(msg, _pollfd_vector[i].fd, _password);
+        User* user = findUserByFd(_pollfd_vector[i].fd);
+        Command command(*this, parser, *user);
+        // Command command(*this, parser, *new User(_pollfd_vector[i].fd));
         // recieve commands from clients
         // handle poll events
 
-        // recieve command from client
+        // recieve command from client [PRIVMSG]
         // ↓
         long recived_fd = _pollfd_vector[i].fd;
         for (unsigned long i = 0; i < _pollfd_vector.size(); i++) {
@@ -150,4 +164,47 @@ void Server::run()
     }
     close(_server_sockfd);
     cout << "Server stopped" << endl;
+}
+
+string Server::get_password() const{
+    return _password;
+}
+
+set<User *> &Server::get_users(){
+    return _users;
+}
+
+set<Channel *> &Server::get_channels(){
+    return _channels;
+}
+
+void Server::set_own_addr(void *addr){
+    own_addr = addr;
+}
+
+User* Server::findUserByFd(int fd) {
+    for (set<User*>::iterator it = _users.begin(); it != _users.end(); ++it) {
+        if ((*it)->get_fd() == fd) {
+            return *it;
+        }
+    }
+    return NULL;
+}
+
+User* Server::findUserByNick(string nick) {
+    for (set<User*>::iterator it = _users.begin(); it != _users.end(); ++it) {
+        if ((*it)->get_nickname() == nick) {
+            return *it;
+        }
+    }
+    return NULL;
+}
+
+Channel* Server::findChannelByName(string name) {
+    for (set<Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+        if ((*it)->get_channel_name() == name) {
+            return *it;
+        }
+    }
+    return NULL;
 }

@@ -22,12 +22,15 @@ public:
     CommandType get_command();
     string get_password();
     string get_message();
+    vector<string> get_args();
+    
 private:
     string _message;
     int _fd;
     string _password;
     CommandType _command;
     void    check_command(string &command);
+    vector<string> args;
 };
 
 #endif

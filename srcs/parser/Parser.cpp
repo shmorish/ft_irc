@@ -33,8 +33,11 @@ void	Parser::check_command(string &command)
 		_command = PING;
 	else if (command == "PONG")
 		_command = PONG;
-	else
+	else {
+		string error = "Invalid command: " + command + "\n";
+		send(_fd, error.c_str(), error.size(), 0);
 		throw runtime_error("Invalid command: " + command);
+	}
 }
 
 Parser::Parser(string &message, int fd, const string &password) : _message(message), _fd(fd), _password(password)
@@ -44,18 +47,24 @@ Parser::Parser(string &message, int fd, const string &password) : _message(messa
 	DEBUG_MSG("Password=", _password);
 	(void)_fd;
 
-	cout << "Message: " << _message << endl;
+	// cout << "Message: " << _message;
 
-	// istringstream iss(_message);
-	// string command_token;
-	// iss >> command_token;
-	// check_command(command_token);
+	istringstream iss(_message);
+	string command_token;
+	iss >> command_token;
+	check_command(command_token);
 	// cout << "Command: " << command_token << endl;
-	// while (iss >> command_token) {
-	//     cout << "Token: " << command_token << endl;
-	// }
+	while (iss >> command_token) {
+		args.push_back(command_token);
+	    // cout << "Token: " << command_token << endl;
+	}
 }
 
 Parser::~Parser()
 {
+}
+
+vector<string> Parser::get_args()
+{
+	return args;
 }

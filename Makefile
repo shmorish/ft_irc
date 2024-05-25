@@ -9,11 +9,15 @@ OBJS		:= $(subst $(SRCS_DIR), $(OBJS_DIR), $(SRCS:.cpp=.o))
 DEPS		:= $(subst $(SRCS_DIR), $(OBJS_DIR), $(SRCS:.cpp=.d))
 
 CXX			:= c++
-CXXFLAGS	:= -Wall -Wextra -Werror -std=c++98 $(INC) -MMD -MP -g -fsanitize=address
+CXXFLAGS	:= -Wall -Wextra -Werror -std=c++98 $(INC) -MMD -MP
 
 # Debug
 ifeq ($(MAKECMDGOALS), debug)
 	CXXFLAGS += -DDEBUG
+endif
+
+ifeq ($(MAKECMDGOALS), address)
+	CXXFLAGS += -g -fsanitize=address
 endif
 
 all			: $(NAME)
@@ -35,6 +39,8 @@ re			: fclean all
 
 debug		: re
 
+address		: re
+
 run			: all
 	./$(NAME) $(PORT) $(PSWD)
 
@@ -50,6 +56,6 @@ help		: Makefile
 	@echo "  run		- run $(NAME) with $(PORT) and $(PSWD)"
 	@echo "  help		- show this help"
 
-.PHONY		: all clean fclean re debug help run
+.PHONY		: all clean fclean re address debug help run
 
 -include $(DEPS)
