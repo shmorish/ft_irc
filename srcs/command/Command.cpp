@@ -1,7 +1,6 @@
 #include "Command.hpp"
 
 Command::Command(Server &server, Parser &parser , User &user_class) : _server(server), _parser(parser), _user(user_class) {
-	cout << " -> " << _parser.get_command() << endl;
 	switch(_parser.get_command()) {
 		case PASS:
 			pass();

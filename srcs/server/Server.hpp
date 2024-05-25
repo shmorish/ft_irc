@@ -36,6 +36,7 @@ class Server
         set<User *> &get_users();
         set<Channel> &get_channels();
         void set_own_addr(void *addr);
+        User* findUserByFd(int fd);
     private:
         void                    *own_addr;
         const long              _port;

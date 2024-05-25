@@ -114,7 +114,9 @@ void    Server::recieve_and_execute_commands(size_t i)
         if (msg.size() == 0 || msg == "\n") return ;
         cout << "Client " << _pollfd_vector[i].fd << " says: " << msg;
         Parser parser = Parser(msg, _pollfd_vector[i].fd, _password);
-        Command command(*this, parser, *new User(_pollfd_vector[i].fd));
+        User* user = findUserByFd(_pollfd_vector[i].fd);
+        Command command(*this, parser, *user);
+        // Command command(*this, parser, *new User(_pollfd_vector[i].fd));
         // recieve commands from clients
         // handle poll events
 
@@ -177,4 +179,13 @@ set<Channel> &Server::get_channels(){
 
 void Server::set_own_addr(void *addr){
     own_addr = addr;
+}
+
+User* Server::findUserByFd(int fd) {
+    for (set<User*>::iterator it = _users.begin(); it != _users.end(); ++it) {
+        if ((*it)->get_fd() == fd) {
+            return *it;
+        }
+    }
+    return NULL;
 }
