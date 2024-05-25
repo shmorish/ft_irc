@@ -28,7 +28,7 @@ static bool is_special_Character(const char c) {
 
 // nicknameに使える文字を選別
 static void check_nickname_characters(const string nickname) {
-  for (unsigned long i = 0; i < nickname.size(); i++)
+  for (size_t i = 0; i < nickname.size(); i++)
     if (!(isalnum(nickname[i]) || is_special_Character(nickname[i]))) {
       string error_message = "Invalid character in nickname: ";
       error_message += nickname[i];
@@ -41,14 +41,12 @@ static void replaceSpecialCharacters(string& nickname) {
     const string fromChars = "{}|^";
     const string toChars = "[]\\~";
 
-    for (size_t i = 0; i < nickname.size(); ++i) {
+    for (size_t i = 0; i < nickname.size(); i++) {
         char c = nickname[i];
         size_t index = fromChars.find(c);
-        if (index != string::npos) {
+        if (index != string::npos)
             nickname[i] = toChars[index];
-        }
     }
-    cout << "nickname: " << nickname << endl;
 }
 
 // 同じニックネームの人物を探す
@@ -59,33 +57,33 @@ static void check_nickname_uniqueness(Server server, string nickname) {
 }
 
 // ニックネームと同じ名前のチャンネルを探す
-// static void check_nickname_against_channel_names(Server server, const string nickname) {
-//   for (std::set<Channel>::iterator it = server.get_channels().begin(); it != server.get_channels().end(); ++it)
-//       if (it->get_channel_name().compare(nickname) == 0)
-//         throw runtime_error("The nickname is already used as the name of the channel.\n");
-// }
+static void check_nickname_against_channel_names(Server server, const string nickname) {
+  for (std::set<Channel *>::iterator it = server.get_channels().begin(); it != server.get_channels().end(); ++it)
+      if ((*it)->get_channel_name().compare(nickname) == 0)
+        throw runtime_error("The nickname is already used as the name of the channel.\n");
+}
 
-void  Command::nick()
-{
+void Command::nick() {
   try {
     // ユーザーがすでに登録されているかどうかをチェック
     check_user_registration_status(_user);
     // 引数を処理
     process_title_arguments(_parser.get_args());
     // ニックネームが長すぎるかどうかをチェック
-    check_nickname_length(_parser.get_args().at(0));
+    string nickname = _parser.get_args().at(0);
+    check_nickname_length(nickname);
     // nicknameに使える文字を選別 (A-Z, a-z, 0-9, []\^_{|}` )
-    check_nickname_characters(_parser.get_args().at(0));
+    check_nickname_characters(nickname);
     // { -> [  | -> \  } -> ]  ~ -> _
-    replaceSpecialCharacters(_parser.get_args().at(0));
+    replaceSpecialCharacters(nickname);
     // 他のユーザーと重複していないか確認
-    check_nickname_uniqueness(_server, _parser.get_args().at(0));
+    check_nickname_uniqueness(_server, nickname);
     // ニックネームと同じ名前のチャンネルを探す
-    // check_nickname_against_channel_names(_server, _parser.get_args().at(0));
-    cout << "nickname: " << _parser.get_args().at(0) << endl;
-    _user.set_nickname(_parser.get_args().at(0));
+    check_nickname_against_channel_names(_server, nickname);
+    cout << "nickname: " << nickname << endl;
+    _user.set_nickname(nickname);
     _user.set_is_nickname(true);
-    string response = "Nick set to: " + _parser.get_args().at(0) + "\n";
+    string response = "Nick set to: " + nickname + "\n";
     send(_user.get_fd(), response.c_str(), response.size(), 0);
   } catch (const exception &e) {
     send(_user.get_fd(), e.what(), strlen(e.what()), 0);
