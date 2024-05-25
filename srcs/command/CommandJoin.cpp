@@ -39,8 +39,29 @@ void Command::join()
         if (_parser.get_args().at(0).find_first_of("@") != string::npos) {
             throw runtime_error("channel must not contain at signs\n");
         }
-        if (_parser.get_args().at(0).find_first_of("#") != string::npos) {
-            throw runtime_error("channel must not contain hash signs\n");
+        if (_parser.get_args().at(0).find_first_of("/") != string::npos) {
+            throw runtime_error("channel must not contain slashes\n");
+        }
+        if (_parser.get_args().at(0).find_first_of("\\") != string::npos) {
+            throw runtime_error("channel must not contain backslashes\n");
+        }
+        if (_parser.get_args().at(0).find_first_of("^") != string::npos) {
+            throw runtime_error("channel must not contain carets\n");
+        }
+        if (_parser.get_args().at(0).find_first_of("[") != string::npos) {
+            throw runtime_error("channel must not contain opening square brackets\n");
+        }
+        if (_parser.get_args().at(0).find_first_of("]") != string::npos) {
+            throw runtime_error("channel must not contain closing square brackets\n");
+        }
+        if (_parser.get_args().at(0).find_first_of("{") != string::npos) {
+            throw runtime_error("channel must not contain opening curly brackets\n");
+        }
+        if (_parser.get_args().at(0).find_first_of("}") != string::npos) {
+            throw runtime_error("channel must not contain closing curly brackets\n");
+        }
+        if (_parser.get_args().at(0).find_first_of("|") != string::npos) {
+            throw runtime_error("channel must not contain pipes\n");
         }
         if (_parser.get_args().at(0).find_first_of("$") != string::npos) {
             throw runtime_error("channel must not contain dollar signs\n");
@@ -63,9 +84,13 @@ void Command::join()
         if (_parser.get_args().at(0).find_first_of("+") != string::npos) {
             throw runtime_error("channel must not contain plus signs\n");
         }
+        if (_parser.get_args().at(0).find_first_of("#", 1) != string::npos) {
+            throw runtime_error("channel must contain only one #\n");
+        }
     } catch (const exception &e) {
         send(_user.get_fd(), e.what(), strlen(e.what()), 0);
         // cerr << e.what() << endl;
+        return ;
     }
 
     if (_server.findChannelByName(_parser.get_args().at(0)) == NULL) {
