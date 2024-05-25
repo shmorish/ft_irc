@@ -29,6 +29,7 @@ void Command::user()
         _user.set_realname(_parser.get_args().at(1));
         _user.set_hostname(_parser.get_args().at(2));
         _user.set_servername(_parser.get_args().at(3));
+        send(_user.get_fd(), "Username set\n", 12, 0);
         //channel参加の権限を初期値に設定
     } catch (const exception &e) {
         send(_user.get_fd(), e.what(), strlen(e.what()), 0);
