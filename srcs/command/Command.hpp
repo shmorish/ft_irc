@@ -21,7 +21,7 @@ private:
 	void	user();
 	void	join();
 	void	part(){};
-	void	privmsg(){};
+	void	privmsg();
 	void	quit(){};
 	void	ping(){};
 	void	pong(){};
