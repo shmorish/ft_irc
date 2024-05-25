@@ -22,7 +22,7 @@ private:
 	void	join();
 	void	part(){};
 	void	privmsg();
-	void	quit(){};
+	void	quit();
 	void	ping(){};
 	void	pong(){};
 	void	show_time();
