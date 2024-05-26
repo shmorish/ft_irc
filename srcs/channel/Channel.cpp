@@ -7,6 +7,7 @@ Channel::Channel()
     _operators = set<USER_ID>();
     _invited = set<USER_ID>();
     _banned = set<USER_ID>();
+    _users_limit = OPEN_MAX;
     // _user_lists = set<User>();
 }
 
@@ -27,6 +28,10 @@ Channel::~Channel()
 void Channel::set_channel_name(const string &channel_name)
 {
     _channel_name = channel_name;
+}
+
+void Channel::set_users_limit(const unsigned int limit){
+    _users_limit = limit;
 }
 
 void Channel::add_client(USER_ID client)
@@ -92,4 +97,14 @@ set<USER_ID> Channel::get_invited() const
 set<USER_ID> Channel::get_banned() const
 {
     return _banned;
+}
+
+unsigned int Channel::get_users_limit() const
+{
+    return _users_limit;
+}
+
+bool Channel::channel_is_full() const
+{
+    return _clients.size() >= _users_limit;
 }
