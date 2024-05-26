@@ -94,6 +94,7 @@ void Command::join()
     if (_server.findChannelByName(_parser.get_args().at(0)) == NULL) {
         _server.get_channels().insert(new Channel(_parser.get_args().at(0)));
         _server.findChannelByName(_parser.get_args().at(0))->add_client(_user.get_fd());
+        _server.findChannelByName(_parser.get_args().at(0))->add_operator(_user.get_fd());
         send(_user.get_fd(), "You have joined the channel\n", 28, 0);
     }
     else {

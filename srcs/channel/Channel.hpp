@@ -10,17 +10,6 @@ class User;
 
 class Channel
 {
-private:
-	string				_channel_name;
-	set<USER_ID>		_clients;
-	set<USER_ID>		_operators;
-	set<USER_ID>		_invited;
-	set<USER_ID>		_banned;
-	// set<User>			_user_lists;
-
-	unsigned int		_users_limit;
-	string				_topic;
-
 public:
 	enum ChannelMode{
 		None = 0,
@@ -30,6 +19,20 @@ public:
 		Key = 1 << 3,
 		Limit = 1 << 4,
 	};
+
+private:
+	string				_channel_name;
+	set<USER_ID>		_clients;
+	set<USER_ID>		_operators;
+	set<USER_ID>		_invited;
+	set<USER_ID>		_banned;
+	// set<User>			_user_lists;
+
+	enum ChannelMode	_mode;
+	unsigned int		_users_limit;
+	string				_topic;
+
+public:
 
     Channel();
 	Channel(const string &channel_name);
@@ -41,6 +44,8 @@ public:
 
 	void set_channel_name(const string &channel_name);
 	void set_users_limit(const unsigned int limit);
+	void set_topic(const string &topic);
+
 	void add_client(USER_ID client);
 	void remove_client(USER_ID client);
 	void add_operator(USER_ID client);
@@ -57,6 +62,8 @@ public:
 	set<USER_ID> get_banned() const;
 	unsigned int get_users_limit() const;
 	bool channel_is_full() const;
+
+
 };
 
 #endif
