@@ -63,6 +63,17 @@ static void check_nickname_against_channel_names(Server server, const string nic
         throw runtime_error("The nickname is already used as the name of the channel.\n");
 }
 
+// ニックネームを設定
+static void set_user_nickname(User &_user, const string nickname) {
+  // ユーザーにニックネームを設定
+  _user.set_nickname(nickname);
+  // フラグを更新
+  _user.set_is_nickname(true);
+  // ニックネームを表示
+  string response = "Nick set to: " + nickname + "\n";
+  send(_user.get_fd(), response.c_str(), response.size(), 0);
+}
+
 void Command::nick() {
   try {
     // ユーザーがすでに登録されているかどうかをチェック
@@ -81,14 +92,8 @@ void Command::nick() {
     // ニックネームと同じ名前のチャンネルを探す
     check_nickname_against_channel_names(_server, nickname);
     // ニックネームを設定
-    _user.set_nickname(nickname);
-    // フラグを更新
-    _user.set_is_nickname(true);
-    // ニックネームを表示
-    string response = "Nick set to: " + nickname + "\n";
-    send(_user.get_fd(), response.c_str(), response.size(), 0);
+    set_user_nickname(_user, nickname);
   } catch (const exception &e) {
     send(_user.get_fd(), e.what(), strlen(e.what()), 0);
-    // cerr << e.what() << endl;
   }
 }
