@@ -77,3 +77,7 @@ bool User::get_is_username() const{
 int User::get_fd() const{
     return _fd;
 }
+
+bool User::get_ready_to_connect() const{
+    return _is_password && _is_nickname && _is_username;
+}

@@ -28,6 +28,9 @@ void Command::privmsg()
             if (_server.findChannelByName(_parser.get_args().at(0)) == NULL) {
                 throw runtime_error("Channel not found\n");
             }
+            if (_user.get_ready_to_connect() == false) {
+                throw runtime_error("You are not connected\n");
+            }
             if (_server.findChannelByName(_parser.get_args().at(0))->get_clients().find(_user.get_fd()) == _server.findChannelByName(_parser.get_args().at(0))->get_clients().end()) {
                 throw runtime_error("You are not in the channel\n");
             }

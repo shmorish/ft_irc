@@ -26,9 +26,9 @@ private:
 	void	ping(){};
 	void	pong(){};
 	void	show_time();
-	void	kick();
+	void	kick(){};
 	void	mode();
-	void	topic();
+	void	topic(){};
 	void	invite();
 
 	Server	&_server;

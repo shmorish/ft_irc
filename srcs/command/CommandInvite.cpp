@@ -8,6 +8,8 @@ void    Command::invite()
             throw runtime_error("Too few arguments");
         if(_parser.get_args().size() > 2)
             throw runtime_error("Too many arguments");
+        if(_user.get_ready_to_connect() == false)
+            throw runtime_error("You are not connected");
         if(_parser.get_args().at(0).at(0) == '#'){
             if(_server.findChannelByName(_parser.get_args().at(0)) == NULL)
                 throw runtime_error("Channel not found");
@@ -19,12 +21,12 @@ void    Command::invite()
                 _server.findChannelByName(_parser.get_args().at(0))->get_clients().end())
             {
                 //ivite user to channel
-            }   
+            }
         }
     }catch(const exception &e){
         send(_user.get_fd(), e.what(), strlen(e.what()), 0);
     }
-        
+
     // Channel *channel = _server.get_channel(channel_name);
     // if (channel == NULL)
     //     throw runtime_error("Channel not found");

@@ -98,3 +98,13 @@ set<USER_ID> Channel::get_banned() const
 {
     return _banned;
 }
+
+unsigned int Channel::get_users_limit() const
+{
+    return _users_limit;
+}
+
+bool Channel::channel_is_full() const
+{
+    return _clients.size() >= _users_limit;
+}
