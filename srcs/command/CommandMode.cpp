@@ -1,40 +1,127 @@
 #include "Command.hpp"
 
-//mode #channel +o nickname      ＝＞    nickname　にチャンネルオペレータ権限を与えます
-//mode #channel -o nickname       ＝＞    nickname　からチャンネルオペレータ権限を奪います
-//mode #channel +l 100               ＝＞    #channel　の参加数を100に制限します
-//mode #channel -l                       ＝＞    #channel　の参加数制限を解除します
+/* ◦[+|-]o => オペレータ権限の授与[+]・剥奪[-] */
+/* /mode #channel +o nickname  ＝＞  nickname にチャンネルオペレータ権限を与えます */
+/* /mode #channel -o nickname  ＝＞  nickname からチャンネルオペレータ権限を奪います */
+
+/* ◦[+|-]l => チャンネル参加クライアント数の制限 */
+/* /mode #channel +l 100       ＝＞  #channel の参加数を100に制限します */
+/* /mode #channel -l           ＝＞  #channel の参加数制限を解除します */
+
+/* ◦[+|-]t => トピック変更権：オペレータのみ[+]・誰でも[-] */
+/* /mode #channel +t           ＝＞  オペレータのみ #channel のトピックを変更できるようにします */
+/* /mode #channel -t           ＝＞  誰でも #channel のトピックの変更ができるようにします */
+
+/* ◦[+|-]m => モデレートチャンネル属性の設定[+]・解除[-] */
+/* /mode #channel +m           ＝＞  オペレータのみ #channel で発言できるようにします */
+/* /mode #channel -m           ＝＞  誰でも #channel で発言できるようにします */
+
+/* ◦[+|-]v => モデレートチャンネル属性のチャンネルでの発言権の授与[+]・剥奪[-] */
+/* /mode #channel +v nickname  ＝＞  +m フラグの立っている #channel で nickname が発言できるようにしますを与えます */
+/* /mode #channel -v nickname  ＝＞  +m フラグの立っている #channel で 発言権のある nickname から発言権を奪います */
+
+/* ◦[+|-]k => チャンネルキー(パスワード)の設定[+]・解除[-] */
+/* /mode #channel +k password */
+/* /mode #channel -k password */
 
 static void is_correct_input(const vector<string> &args){
     if (args.size() < 2)
-        throw runtime_error("Too few arguments");
+        throw runtime_error("Too few arguments\n");
     if (args.size() > 3)
-        throw runtime_error("Too many arguments");
+        throw runtime_error("Too many arguments\n");
     if (args.at(0).at(0) != '#')
-        throw runtime_error("Channel name must start with #");
+        throw runtime_error("Channel name must start with #\n");
+}
+
+void    Command::mode_command_o(Channel *channel){
+    if (_parser.get_args().size() != 3)
+        throw runtime_error("Too few arguments\n");
+    if (_parser.get_args().at(2).at(0) == '+')
+        channel->add_operator(_server.findUserByNick(_parser.get_args().at(1))->get_fd());
+    else
+        channel->remove_operator(_server.findUserByNick(_parser.get_args().at(1))->get_fd());
+}
+
+void    Command::mode_command_l(Channel *channel){
+    if (_parser.get_args().at(1).at(0) == '+') {
+        if (_parser.get_args().size() != 3)
+            throw runtime_error("Too few arguments\n");
+        char *end;
+        long limit = strtol(_parser.get_args().at(2).c_str(), &end, 10);
+        if (*end != '\0')
+            throw runtime_error("Invalid limit\n");
+        channel->set_users_limit(limit);
+    } else {
+        if (_parser.get_args().size() != 2)
+            throw runtime_error("Too few arguments\n");
+        channel->set_users_limit(OPEN_MAX);
+    }
+}
+
+void    Command::mode_command_t(Channel *channel){
+    if (_parser.get_args().at(1).at(0) == '+') {
+        channel->set_mode(Channel::ChannelMode(channel->get_mode() | Channel::TopicOpOnly));
+    } else {
+        channel->set_mode(Channel::ChannelMode(channel->get_mode() & Channel::TopicOpOnly));
+    }
+}
+
+void    Command::mode_command_m(Channel *channel){
+    if (_parser.get_args().at(1).at(0) == '+') {
+        channel->set_mode(Channel::ChannelMode(channel->get_mode() | Channel::Moderated));
+    } else {
+        channel->set_mode(Channel::ChannelMode(channel->get_mode() & Channel::Moderated));
+    }
+}
+
+void    Command::mode_command_v(Channel *channel){
+    if (_parser.get_args().size() != 3)
+        throw runtime_error("Too few arguments\n");
+    if (_parser.get_args().at(1).at(0) == '+')
+        channel->add_can_talk_in_mod_channel(_server.findUserByNick(_parser.get_args().at(2))->get_fd());
+    else
+        channel->remove_can_talk_in_mod_channel(_server.findUserByNick(_parser.get_args().at(2))->get_fd());
+}
+
+void    Command::mode_command_k(Channel *channel){
+    if (_parser.get_args().size() != 3)
+        throw runtime_error("Too few arguments\n");
+    if (_parser.get_args().at(1).at(0) == '+') {
+        channel->set_mode(Channel::ChannelMode(channel->get_mode() | Channel::NeedPassword));
+        channel->set_password(_parser.get_args().at(2));
+    } else {
+        channel->set_mode(Channel::ChannelMode(channel->get_mode() & Channel::NeedPassword));
+        channel->set_password("");
+    }
 }
 
 void    Command::mode(){
     // MODE #channel_name <mode>
-    try{
-        if(_parser.get_args().size() < 2)
-            throw runtime_error("Too few arguments");
-        if(_parser.get_args().size() > 2)
-            throw runtime_error("Too many arguments");
-        if(_parser.get_args().at(0).at(0) == '#' && (_parser.get_args().at(1).at(0) == '+' || _parser.get_args().at(1).at(0) == '-')){
-            if(_server.findChannelByName(_parser.get_args().at(0)) == NULL)
-                throw runtime_error("Channel not found");
+    try
+    {
+        is_correct_input(_parser.get_args());
         Channel *channel = _server.findChannelByName(_parser.get_args().at(0));
+        if (channel == NULL)
+            throw runtime_error("Channel not found");
         if(channel->is_client(_user.get_fd()) == false)
             throw runtime_error("User not found in this channel");
         if(channel->is_operator(_user.get_fd()) == false)
             throw runtime_error("You are not operator");
-        // <mode>が有効なものかどうかを確認
-            if (_parser.get_args().at(1).at(0) == '+' && _parser.get_args().at(1).at(1) == 'l'){
-                _server.findChannelByName(_parser.get_args().at(0))->set_users_limit(atoi(_parser.get_args().at(1).substr(2).c_str()));
-                }
-        }
-    }catch(const exception &e){
+        if (_parser.get_args().at(1).at(0) != '+' && _parser.get_args().at(1).at(0) != '-')
+            throw runtime_error("Invalid mode");
+        if (_parser.get_args().at(1).size() != 2)
+            throw runtime_error("Invalid mode");
+        char mode = _parser.get_args().at(1).at(1);
+        if (mode != 'o' && mode != 'l' && mode != 't' && mode != 'm' && mode != 'v' && mode != 'k')
+            throw runtime_error("Invalid mode");
+        if (mode == 'o') mode_command_o(channel);
+        else if (mode == 'l') mode_command_l(channel);
+        else if (mode == 't') mode_command_t(channel);
+        else if (mode == 'm') mode_command_m(channel);
+        else if (mode == 'v') mode_command_v(channel);
+        else if (mode == 'k') mode_command_k(channel);
+
+    } catch(const exception &e) {
         send(_user.get_fd(), e.what(), strlen(e.what()), 0);
     }
 }

@@ -5,6 +5,7 @@ Channel::Channel()
     _channel_name = "";
     _clients = set<USER_ID>();
     _operators = set<USER_ID>();
+    _can_talk_in_mod_channel = set<USER_ID>();
     _invited = set<USER_ID>();
     _banned = set<USER_ID>();
     _users_limit = OPEN_MAX;
@@ -18,6 +19,7 @@ Channel::Channel(const string &channel_name)
     _channel_name = channel_name;
     _clients = set<USER_ID>();
     _operators = set<USER_ID>();
+    _can_talk_in_mod_channel = set<USER_ID>();
     _invited = set<USER_ID>();
     _banned = set<USER_ID>();
     _users_limit = OPEN_MAX;
@@ -59,6 +61,16 @@ void Channel::remove_operator(USER_ID client)
     _operators.erase(client);
 }
 
+void Channel::add_can_talk_in_mod_channel(USER_ID client)
+{
+    _can_talk_in_mod_channel.insert(client);
+}
+
+void Channel::remove_can_talk_in_mod_channel(USER_ID client)
+{
+    _can_talk_in_mod_channel.erase(client);
+}
+
 void Channel::add_invited(USER_ID client)
 {
     _invited.insert(client);
@@ -92,6 +104,11 @@ set<USER_ID> Channel::get_clients() const
 set<USER_ID> Channel::get_operators() const
 {
     return _operators;
+}
+
+set<USER_ID> Channel::get_can_talk_in_mod_channel() const
+{
+    return _can_talk_in_mod_channel;
 }
 
 set<USER_ID> Channel::get_invited() const
@@ -142,4 +159,24 @@ void Channel::set_topic(const string &topic)
 string Channel::get_topic() const
 {
     return _topic;
+}
+
+void Channel::set_mode(ChannelMode mode)
+{
+    _mode = mode;
+}
+
+void Channel::set_password(const string &password)
+{
+    _password = password;
+}
+
+Channel::ChannelMode Channel::get_mode() const
+{
+    return _mode;
+}
+
+string Channel::get_password() const
+{
+    return _password;
 }

@@ -11,19 +11,20 @@ class User;
 class Channel
 {
 public:
-	enum ChannelMode{
-		None = 0,
-		ChannelCreator = 1 << 0,
-		ChannelOperator = 1 << 1,
-		InviteOnly = 1 << 2,
-		Key = 1 << 3,
-		Limit = 1 << 4,
-	};
+  enum ChannelMode {
+    None = 0,
+    InviteOnly = 1 << 0,      // i
+    Moderated = 1 << 1,       // m
+    TopicOpOnly = 1 << 2,    // t
+	NeedPassword = 1 << 3,    // k
+  };
+  // i t k o l
 
 private:
 	string				_channel_name;
 	set<USER_ID>		_clients;
 	set<USER_ID>		_operators;
+	set<USER_ID>		_can_talk_in_mod_channel;
 	set<USER_ID>		_invited;
 	set<USER_ID>		_banned;
 	// set<User>			_user_lists;
@@ -31,6 +32,7 @@ private:
 	enum ChannelMode	_mode;
 	unsigned int		_users_limit;
 	string				_topic;
+	string				_password;
 
 public:
 
@@ -45,11 +47,15 @@ public:
 	void set_channel_name(const string &channel_name);
 	void set_users_limit(const unsigned int limit);
 	void set_topic(const string &topic);
+	void set_mode(enum ChannelMode mode);
+	void set_password(const string &password);
 
 	void add_client(USER_ID client);
 	void remove_client(USER_ID client);
 	void add_operator(USER_ID client);
 	void remove_operator(USER_ID client);
+	void add_can_talk_in_mod_channel(USER_ID client);
+	void remove_can_talk_in_mod_channel(USER_ID client);
 	void add_invited(USER_ID client);
 	void remove_invited(USER_ID client);
 	void add_banned(USER_ID client);
@@ -58,10 +64,13 @@ public:
 	string get_channel_name() const;
 	set<USER_ID> get_clients() const;
 	set<USER_ID> get_operators() const;
+	set<USER_ID> get_can_talk_in_mod_channel() const;
 	set<USER_ID> get_invited() const;
 	set<USER_ID> get_banned() const;
 	unsigned int get_users_limit() const;
 	string get_topic() const;
+	enum ChannelMode get_mode() const;
+	string get_password() const;
 
 	bool channel_is_full() const;
 

@@ -34,6 +34,13 @@ private:
 	Server	&_server;
 	Parser	&_parser;
 	User	&_user;
+
+	void mode_command_o(Channel *channel);
+	void mode_command_l(Channel *channel);
+	void mode_command_t(Channel *channel);
+	void mode_command_m(Channel *channel);
+	void mode_command_v(Channel *channel);
+	void mode_command_k(Channel *channel);
 };
 
 #endif
