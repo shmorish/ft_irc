@@ -13,11 +13,11 @@ void Command::part()
         if (channel == NULL) {
             throw runtime_error("Channel not found\n");
         }
-        // if (channel->findClient(_user.get_fd()) == false) {
-        //     throw runtime_error("You are not in this channel\n");
-        // }
-        // channel->removeClient(_user.get_fd());
-        // send(_user.get_fd(), "You have left the channel\n", 26, 0);
+        if (channel->is_client(_user.get_fd()) == false) {
+            throw runtime_error("You are not in this channel\n");
+        }
+        channel->remove_client(_user.get_fd());
+        send(_user.get_fd(), "You have left the channel\n", 26, 0);
     }
     catch (const exception &e) {
         send(_user.get_fd(), e.what(), strlen(e.what()), 0);
