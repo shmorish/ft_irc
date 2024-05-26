@@ -108,3 +108,23 @@ bool Channel::channel_is_full() const
 {
     return _clients.size() >= _users_limit;
 }
+
+bool Channel::is_client(USER_ID client) const
+{
+    return _clients.find(client) != _clients.end();
+}
+
+bool Channel::is_operator(USER_ID client) const
+{
+    return _operators.find(client) != _operators.end();
+}
+
+bool Channel::is_invited(USER_ID client) const
+{
+    return _invited.find(client) != _invited.end();
+}
+
+bool Channel::is_banned(USER_ID client) const
+{
+    return _banned.find(client) != _banned.end();
+}

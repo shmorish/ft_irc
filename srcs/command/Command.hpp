@@ -20,7 +20,7 @@ private:
 	void	nick();
 	void	user();
 	void	join();
-	void	part(){};
+	void	part();
 	void	privmsg();
 	void	quit();
 	void	ping(){};

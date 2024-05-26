@@ -57,6 +57,11 @@ public:
 	set<USER_ID> get_banned() const;
 	unsigned int get_users_limit() const;
 	bool channel_is_full() const;
+
+	bool is_client(USER_ID client) const;
+	bool is_operator(USER_ID client) const;
+	bool is_invited(USER_ID client) const;
+	bool is_banned(USER_ID client) const;
 };
 
 #endif
