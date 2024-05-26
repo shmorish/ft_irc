@@ -13,6 +13,7 @@ void    Command::invite()
                 throw runtime_error("Channel not found");
             // 自分自身がこのチャンネルに参加しているかどうかを確認
             // 自分自身がこのチャンネルのオペレーターかどうかを確認
+            // channelの_users_limitがfullではないかどうかを確認
             if (_server.findChannelByName(\
                 _parser.get_args().at(0))->get_clients().find(_user.get_fd()) == \
                 _server.findChannelByName(_parser.get_args().at(0))->get_clients().end())

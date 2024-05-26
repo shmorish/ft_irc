@@ -17,6 +17,10 @@ private:
 	set<USER_ID>		_invited;
 	set<USER_ID>		_banned;
 	// set<User>			_user_lists;
+
+	unsigned int		_users_limit;
+	string				_topic;
+
 public:
 	enum ChannelMode{
 		None = 0,
@@ -36,6 +40,7 @@ public:
   }
 
 	void set_channel_name(const string &channel_name);
+	void set_users_limit(const unsigned int limit);
 	void add_client(USER_ID client);
 	void remove_client(USER_ID client);
 	void add_operator(USER_ID client);
@@ -50,6 +55,7 @@ public:
 	set<USER_ID> get_operators() const;
 	set<USER_ID> get_invited() const;
 	set<USER_ID> get_banned() const;
+	unsigned int get_users_limit() const;
 };
 
 #endif
