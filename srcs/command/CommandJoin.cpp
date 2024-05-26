@@ -94,15 +94,14 @@ void Command::join()
     if (_server.findChannelByName(_parser.get_args().at(0)) == NULL) {
         _server.get_channels().insert(new Channel(_parser.get_args().at(0)));
         _server.findChannelByName(_parser.get_args().at(0))->add_client(_user.get_fd());
+        send(_user.get_fd(), "You have joined the channel\n", 28, 0);
     }
     else {
         try {
-            if (_server.findChannelByName(_parser.get_args().at(0))->channel_is_full() == true) {
-                throw runtime_error("channel is full\n");
-            }
-            else if (_server.findChannelByName(_parser.get_args().at(0))->get_clients().find(_user.get_fd()) != _server.findChannelByName(_parser.get_args().at(0))->get_clients().end()) {
-                throw runtime_error("You are already in this channel\n");
-            }
+            set<int> channels = _server.findChannelByName(_parser.get_args().at(0))->get_clients();
+            for (set<int>::iterator it = channels.begin(); it != channels.end(); it++)
+                if (*it == _user.get_fd())
+                    throw runtime_error("You are already in this channel\n");
             _server.findChannelByName(_parser.get_args().at(0))->add_client(_user.get_fd());
             send(_user.get_fd(), "You have joined the channel\n", 28, 0);
         } catch (const exception &e) {
