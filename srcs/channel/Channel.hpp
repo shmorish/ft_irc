@@ -61,6 +61,8 @@ public:
 	set<USER_ID> get_invited() const;
 	set<USER_ID> get_banned() const;
 	unsigned int get_users_limit() const;
+	string get_topic() const;
+
 	bool channel_is_full() const;
 
 	bool is_client(USER_ID client) const;

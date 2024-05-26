@@ -19,11 +19,11 @@ void	Command::kick(){
 				throw runtime_error("Channel not found");
 			if(_server.findUserByNick(_parser.get_args().at(1)) == NULL)
 				throw runtime_error("User not found");
-			if(_server.findChannelByName(_parser.get_args().at(0))->findClientByNick(_parser.get_args().at(1)) == NULL)
-				throw runtime_error("User not in channel");
-			if(_server.findChannelByName(_parser.get_args().at(0))->findOperatorByNick(_user.get_nickname()) == NULL)
-				throw runtime_error("You are not operator");
-			_server.findChannelByName(_parser.get_args().at(0))->removeClient(_server.findUserByNick(_parser.get_args().at(1))->get_fd());
+			// if(_server.findChannelByName(_parser.get_args().at(0))->findClientByNick(_parser.get_args().at(1)) == NULL)
+			// 	throw runtime_error("User not in channel");
+			// if(_server.findChannelByName(_parser.get_args().at(0))->findOperatorByNick(_user.get_nickname()) == NULL)
+			// 	throw runtime_error("You are not operator");
+			_server.findChannelByName(_parser.get_args().at(0))->remove_client(_server.findUserByNick(_parser.get_args().at(1))->get_fd());
 		}
 	}catch(const exception &e){
 		send(_user.get_fd(), e.what(), strlen(e.what()), 0);

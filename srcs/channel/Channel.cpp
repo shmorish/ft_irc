@@ -138,3 +138,8 @@ void Channel::set_topic(const string &topic)
 {
     _topic = topic;
 }
+
+string Channel::get_topic() const
+{
+    return _topic;
+}
