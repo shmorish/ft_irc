@@ -12,6 +12,10 @@ Command::Command(Server &server, Parser &parser , User &user_class) : _server(se
 	else if (cmd == PING) ping();
 	else if (cmd == PONG) pong();
 	else if (cmd == TIME) show_time();
+	else if (cmd == KICK) kick();
+	else if (cmd == MODE) mode();
+	else if (cmd == TOPIC) topic();
+	else if (cmd == INVITE) invite();
 	else throw runtime_error("Invalid command");
 }
 

@@ -14,6 +14,10 @@ typedef enum CommandType {
     PING,
     PONG,
     TIME,
+    KICK,
+    MODE,
+    TOPIC,
+    INVITE,
 } CommandType;
 
 class Parser {

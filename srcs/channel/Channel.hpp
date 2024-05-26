@@ -18,6 +18,15 @@ private:
 	set<USER_ID>		_banned;
 	// set<User>			_user_lists;
 public:
+	enum ChannelMode{
+		None = 0,
+		ChannelCreator = 1 << 0,
+		ChannelOperator = 1 << 1,
+		InviteOnly = 1 << 2,
+		Key = 1 << 3,
+		Limit = 1 << 4,
+	};
+
     Channel();
 	Channel(const string &channel_name);
     ~Channel();

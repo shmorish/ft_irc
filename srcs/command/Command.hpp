@@ -26,6 +26,10 @@ private:
 	void	ping(){};
 	void	pong(){};
 	void	show_time();
+	void	kick();
+	void	mode();
+	void	topic();
+	void	invite();
 
 	Server	&_server;
 	Parser	&_parser;
