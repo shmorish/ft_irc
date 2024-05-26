@@ -8,6 +8,8 @@ Channel::Channel()
     _invited = set<USER_ID>();
     _banned = set<USER_ID>();
     _users_limit = OPEN_MAX;
+    _mode = None;
+    _topic = "";
     // _user_lists = set<User>();
 }
 
@@ -18,6 +20,9 @@ Channel::Channel(const string &channel_name)
     _operators = set<USER_ID>();
     _invited = set<USER_ID>();
     _banned = set<USER_ID>();
+    _users_limit = OPEN_MAX;
+    _mode = None;
+    _topic = "";
     // _user_lists = set<User>();
 }
 
@@ -127,4 +132,9 @@ bool Channel::is_invited(USER_ID client) const
 bool Channel::is_banned(USER_ID client) const
 {
     return _banned.find(client) != _banned.end();
+}
+
+void Channel::set_topic(const string &topic)
+{
+    _topic = topic;
 }
