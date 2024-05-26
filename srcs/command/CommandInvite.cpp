@@ -3,22 +3,25 @@
 void    Command::invite()
 {
     // INVETE #channel_name nickname
-    if(_parser.get_args().size() < 2)
-        throw runtime_error("Too few arguments");
-    if(_parser.get_args().size() > 2)
-        throw runtime_error("Too many arguments");
-    if(_parser.get_args().at(0).at(0) == '#'){
-        if(_server.findChannelByName(_parser.get_args().at(0)) == NULL)
-            throw runtime_error("Channel not found");
-        // 自分自身がこのチャンネルに参加しているかどうかを確認
-        // 自分自身がこのチャンネルのオペレーターかどうかを確認
-        if (_server.findChannelByName(\
-            _parser.get_args().at(0))->get_clients().find(_user.get_fd()) == \
-            _server.findChannelByName(_parser.get_args().at(0))->get_clients().end())
-        {
-            //ivite user to channel
+    try{
+        if(_parser.get_args().size() < 2)
+            throw runtime_error("Too few arguments");
+        if(_parser.get_args().size() > 2)
+            throw runtime_error("Too many arguments");
+        if(_parser.get_args().at(0).at(0) == '#'){
+            if(_server.findChannelByName(_parser.get_args().at(0)) == NULL)
+                throw runtime_error("Channel not found");
+            // 自分自身がこのチャンネルに参加しているかどうかを確認
+            // 自分自身がこのチャンネルのオペレーターかどうかを確認
+            if (_server.findChannelByName(\
+                _parser.get_args().at(0))->get_clients().find(_user.get_fd()) == \
+                _server.findChannelByName(_parser.get_args().at(0))->get_clients().end())
+            {
+                //ivite user to channel
+            }   
         }
-        
+    }catch(const exception &e){
+        send(_user.get_fd(), e.what(), strlen(e.what()), 0);
     }
         
     // Channel *channel = _server.get_channel(channel_name);
