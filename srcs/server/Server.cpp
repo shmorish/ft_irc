@@ -66,6 +66,7 @@ void Server::handle_new_client_connections(void)
     // client fd and client user make pair
 
     // add User with new client client_sockfd
+    #undef RPL_WELCOME
     #define RPL_WELCOME(fd) ":irc.localhost 001 " + to_string(fd) + " :Welcome to the Internet Relay Network " + to_string(fd) + "!" + "irc@localhost\n"
     string msg = RPL_WELCOME(client_sockfd);
     send(client_sockfd, msg.c_str(), msg.size(), 0);

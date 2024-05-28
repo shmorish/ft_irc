@@ -23,7 +23,7 @@ static void check_nickname_length(const string nickname) {
 // // 使用できる特殊文字かどうかを判定
 static bool is_special_Character(const char c) {
   const string special = "[]\\`_^{|}";
-  return special.find(c) != std::string::npos;
+  return special.find(c) != string::npos;
 }
 
 // nicknameに使える文字を選別
@@ -51,14 +51,14 @@ static void replaceSpecialCharacters(string& nickname) {
 
 // 同じニックネームの人物を探す
 static void check_nickname_uniqueness(Server server, string nickname) {
-  for (std::set<User*>::iterator it = server.get_users().begin(); it != server.get_users().end(); it++)
+  for (set<User*>::iterator it = server.get_users().begin(); it != server.get_users().end(); it++)
     if ((*it)->get_nickname().compare(nickname) == 0)
       throw runtime_error("nickname is already used\n");
 }
 
 // ニックネームと同じ名前のチャンネルを探す
 static void check_nickname_against_channel_names(Server server, const string nickname) {
-  for (std::set<Channel *>::iterator it = server.get_channels().begin(); it != server.get_channels().end(); ++it)
+  for (set<Channel *>::iterator it = server.get_channels().begin(); it != server.get_channels().end(); ++it)
       if ((*it)->get_channel_name().compare(nickname) == 0)
         throw runtime_error("The nickname is already used as the name of the channel.\n");
 }

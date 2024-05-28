@@ -17,6 +17,7 @@
 # include <sys/types.h>
 # include <unistd.h>
 # include <vector>
+# include "response.hpp"
 
 using namespace std;
 

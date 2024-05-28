@@ -14,7 +14,7 @@ long checkPort(const char *port)
     return port_num;
 }
 
-std::string checkPassword(const char *password)
+string checkPassword(const char *password)
 {
     if (!password || *password == '\0')
         throw invalid_argument("Invalid password");

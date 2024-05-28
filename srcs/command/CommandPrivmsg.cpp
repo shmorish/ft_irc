@@ -22,7 +22,7 @@ static void send_message_to_channel(Server &_server, Parser &_parser, User &_use
 		throw runtime_error("You are not in this channel\n");
 
 	set<int> clients = channel->get_clients();
-	for (std::set<int>::iterator it = clients.begin(); it != clients.end(); ++it) {
+	for (set<int>::iterator it = clients.begin(); it != clients.end(); ++it) {
 		string message = _user.get_nickname() + " says: ";
 		for (size_t i = 0; i < _parser.get_args().size(); i++) {
 			message += _parser.get_args().at(i);
