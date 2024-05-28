@@ -16,9 +16,10 @@ static void send_message_to_user(Server &_server, Parser &_parser, User &_user) 
 
 static void send_message_to_channel(Server &_server, Parser &_parser, User &_user) {
   Channel* channel = _server.findChannelByName(_parser.get_args().at(0));
-
   if (channel == NULL)
     throw runtime_error("Channel not found\n");
+  if (channel->is_client(_user.get_fd()) == false)
+    throw runtime_error("You are not in this channel\n");
 
   std::set<int> clients = channel->get_clients();
   for (std::set<int>::iterator it = clients.begin(); it != clients.end(); ++it) {

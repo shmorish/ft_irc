@@ -17,6 +17,8 @@ void Command::part()
             throw runtime_error("You are not in this channel\n");
         }
         channel->remove_client(_user.get_fd());
+        channel->remove_invited(_user.get_fd());
+        channel->remove_operator(_user.get_fd());
         send(_user.get_fd(), "You have left the channel\n", 26, 0);
     }
     catch (const exception &e) {
