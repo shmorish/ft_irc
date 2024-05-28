@@ -114,10 +114,12 @@ string Server::recieve_command(int client_sockfd, size_t i)
         throw runtime_error("ERROR: recv: " + string(strerror(errno)));
     }
     if (bytes_read == 0) {
-        close(client_sockfd);
-        _pollfd_vector.erase(_pollfd_vector.begin() + i);
-        string msg = "client -> fd [" + to_string(client_sockfd) + "] client disconnected";
-        throw runtime_error(msg);
+        string msg = "QUIT\n";
+        Parser parser = Parser(msg, _pollfd_vector[i].fd, _password);
+        User* user = findUserByFd(_pollfd_vector[i].fd);
+        Command command(*this, parser, *user);
+        string server_msg = "client -> fd [" + to_string(client_sockfd) + "] client disconnected";
+        throw runtime_error(server_msg);
     }
     if (bytes_read > BUFSIZ)
         throw runtime_error("ERROR: message too long");
