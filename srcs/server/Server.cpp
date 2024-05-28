@@ -64,8 +64,8 @@ static void send_host_info_002(int client_sockfd, const string &servername, stri
 
 static void send_server_created_003(int client_sockfd, string nickname, string username)
 {
-    string date = USER_IDENTIFIER(nickname, username);
-    string msg = SERVER_NAME;
+    string date = SERVER_DATE;
+    string msg = USER_IDENTIFIER(nickname, username);
     msg += RPL_CREATED(date);
     send(client_sockfd, msg.c_str(), msg.size(), 0);
 }
