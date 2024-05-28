@@ -10,7 +10,18 @@ Server::Server(long port, const string &password) : _port(port), _password(passw
     (void)_port;
 }
 
-Server::~Server(){}
+Server::~Server()
+{
+    for (set<User *>::iterator it = _users.begin(); it != _users.end(); ++it) {
+        delete *it;
+    }
+    for (set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+        delete *it;
+    }
+    _users.clear();
+    _channels.clear();
+    close(_server_sockfd);
+}
 
 void Server::setup(void)
 {

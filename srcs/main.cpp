@@ -49,7 +49,6 @@ int main(int argc, char **argv)
     signal(SIGINT, sigintHandler);
     try {
         Server IrcServer(checkPort(argv[1]), checkPassword(argv[2]));
-        IrcServer.set_own_addr(&IrcServer);
         IrcServer.setup();
         IrcServer.run();
     } catch (const exception &e) {
