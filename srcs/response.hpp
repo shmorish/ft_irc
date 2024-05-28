@@ -1,11 +1,16 @@
 #ifndef RESPONSE_HPP
 #define RESPONSE_HPP
 
-#define RPL_WELCOME(nick, network, user, host) 					"001 " + nick + " :Welcome to the " + network + " Network, " + nick + "!" + user + "@" + host
-#define RPL_YOURHOST(nick, server_name)							"002 " + nick + " :Your host is " + server_name
-#define RPL_CREATED(nick, date)									"003 " + nick + " :This server was created " + date
+#define VERSION "1.0.0"
+#define SERVER_NAME "irc.localhost"
+#define SERVER_DATE "2021/09/01"
+
+#define RPL_WELCOME(fd)											" 001 :Welcome to the Internet Relay Network fd[" + to_string(fd) + "] !" + SERVER_NAME + "\r\n"
+#define RPL_YOURHOST(server_name)								" 002 :Your host is " + servername + ", running version " + VERSION + "\r\n"
+#define RPL_CREATED(date)										" 003 :This server was created " + date + "\r\n"
+#define RPL_MYINFO(nick)										" 004 :" + nick + " " + SERVER_NAME + " " + VERSION + " itkolmt it" + "\r\n"
 #define RPL_ALREADYONCHANNEL(NickName,invNickName,Chanel)		"112 " + NickName + " " + invNickName + " " + Chanel + " :is already on channel"
-#define ERR_CANNOTKICKOP(NickName,channel)						"113"  + NickName + " " + channel + " :You can't KICK the operator"
+#define ERR_CANNOTKICKOP(NickName,channel)						"113 " + NickName + " " + channel + " :You can't KICK the operator"
 
 #define RPL_UMODEIS(nick, mode)									"221 " + nick + " " + mode
 

@@ -48,6 +48,35 @@ void Server::setup(void)
     _pollfd_vector.push_back(server_pollfd);
 }   
 
+static void send_welcome_message(int fd)
+{
+    string msg = SERVER_NAME;
+    msg += RPL_WELCOME(fd);
+    send(fd, msg.c_str(), msg.size(), 0);
+}
+
+static void send_host_info(int client_sockfd, const string &servername)
+{
+    string msg = SERVER_NAME;
+    msg += RPL_YOURHOST(servername);
+    send(client_sockfd, msg.c_str(), msg.size(), 0);
+}
+
+static void send_server_created(int client_sockfd)
+{
+    string date = SERVER_DATE;
+    string msg = SERVER_NAME;
+    msg += RPL_CREATED(date);
+    send(client_sockfd, msg.c_str(), msg.size(), 0);
+}
+
+static void send_modes(int client_sockfd, const string &nick)
+{
+    string msg = SERVER_NAME;
+    msg += RPL_MYINFO(nick);
+    send(client_sockfd, msg.c_str(), msg.size(), 0);
+}
+
 void Server::handle_new_client_connections(void)
 {
     struct sockaddr_in client_addr;
@@ -66,13 +95,12 @@ void Server::handle_new_client_connections(void)
     // client fd and client user make pair
 
     // add User with new client client_sockfd
-    #undef RPL_WELCOME
-    #define RPL_WELCOME(fd) ":irc.localhost 001 " + to_string(fd) + " :Welcome to the Internet Relay Network " + to_string(fd) + "!" + "irc@localhost\n"
-    string msg = RPL_WELCOME(client_sockfd);
-    send(client_sockfd, msg.c_str(), msg.size(), 0);
     User *new_user = new User(client_sockfd);
     _users.insert(new_user);
-    
+    send_welcome_message(client_sockfd);
+    send_host_info(client_sockfd, "XServer");
+    send_server_created(client_sockfd);
+    send_modes(client_sockfd, new_user->get_nickname());
 }
 
 string Server::recieve_command(int client_sockfd, size_t i)
