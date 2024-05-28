@@ -2,15 +2,16 @@
 
 void Command::ping(void)
 {
-    if (_parser.get_args().size() != 1)
-    {
-        string error_message = "PING :Not enough parameters\r\n";
-        send(_user.get_fd(), error_message.c_str(), error_message.size(), 0);
-        return ;
-    }
+    // if (_parser.get_args().size() != 1)
+    // {
+    //     string error_message = "PING :Not enough parameters\r\n";
+    //     send(_user.get_fd(), error_message.c_str(), error_message.size(), 0);
+    //     return ;
+    // }
     string response;
+    response += USER_IDENTIFIER(_user.get_nickname(), _user.get_username());
     response += "PONG ";
-    response += _parser.get_args().at(0);
+    response += SERVER_NAME;
     response += "\r\n";
     send(_user.get_fd(), response.c_str(), response.size(), 0);
 }
