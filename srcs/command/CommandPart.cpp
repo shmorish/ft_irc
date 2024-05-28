@@ -18,6 +18,7 @@ void Command::part()
         }
         channel->remove_client(_user.get_fd());
         channel->remove_invited(_user.get_fd());
+        channel->remove_can_talk_in_mod_channel(_user.get_fd());
         channel->remove_operator(_user.get_fd());
         send(_user.get_fd(), "You have left the channel\n", 26, 0);
     }
