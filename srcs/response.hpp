@@ -5,6 +5,8 @@
 #define SERVER_NAME "irc.localhost"
 #define SERVER_DATE "2021/09/01"
 
+#define USER_IDENTIFIER(nickname, username) (std::string(":") + nickname + "!" + username + "@" + SERVER_NAME)
+
 #define RPL_WELCOME(fd)											" 001 :Welcome to the Internet Relay Network fd[" + to_string(fd) + "] !" + SERVER_NAME + "\r\n"
 #define RPL_YOURHOST(server_name)								" 002 :Your host is " + servername + ", running version " + VERSION + "\r\n"
 #define RPL_CREATED(date)										" 003 :This server was created " + date + "\r\n"

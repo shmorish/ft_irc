@@ -46,33 +46,33 @@ void Server::setup(void)
     server_pollfd.events = POLLIN;
     server_pollfd.revents = 0;
     _pollfd_vector.push_back(server_pollfd);
-}   
+}
 
-static void send_welcome_message_001(int fd)
+static void send_welcome_message_001(int fd, string nickname, string username)
 {
-    string msg = SERVER_NAME;
+    string msg = USER_IDENTIFIER(nickname, username);
     msg += RPL_WELCOME(fd);
     send(fd, msg.c_str(), msg.size(), 0);
 }
 
-static void send_host_info_002(int client_sockfd, const string &servername)
+static void send_host_info_002(int client_sockfd, const string &servername, string nickname, string username)
 {
-    string msg = SERVER_NAME;
+    string msg = USER_IDENTIFIER(nickname, username);
     msg += RPL_YOURHOST(servername);
     send(client_sockfd, msg.c_str(), msg.size(), 0);
 }
 
-static void send_server_created_003(int client_sockfd)
+static void send_server_created_003(int client_sockfd, string nickname, string username)
 {
-    string date = SERVER_DATE;
+    string date = USER_IDENTIFIER(nickname, username);
     string msg = SERVER_NAME;
     msg += RPL_CREATED(date);
     send(client_sockfd, msg.c_str(), msg.size(), 0);
 }
 
-static void send_modes_004(int client_sockfd, const string &nick)
+static void send_modes_004(int client_sockfd, const string &nick, string nickname, string username)
 {
-    string msg = SERVER_NAME;
+    string msg = USER_IDENTIFIER(nickname, username);
     msg += RPL_MYINFO(nick);
     send(client_sockfd, msg.c_str(), msg.size(), 0);
 }
@@ -97,10 +97,10 @@ void Server::handle_new_client_connections(void)
     // add User with new client client_sockfd
     User *new_user = new User(client_sockfd);
     _users.insert(new_user);
-    send_welcome_message_001(client_sockfd);
-    send_host_info_002(client_sockfd, "XServer");
-    send_server_created_003(client_sockfd);
-    send_modes_004(client_sockfd, new_user->get_nickname());
+    send_welcome_message_001(client_sockfd, new_user->get_nickname(), new_user->get_username());
+    send_host_info_002(client_sockfd, "XServer", new_user->get_nickname(), new_user->get_username());
+    send_server_created_003(client_sockfd, new_user->get_nickname(), new_user->get_username());
+    send_modes_004(client_sockfd, new_user->get_nickname(), new_user->get_nickname(), new_user->get_username());
 }
 
 string Server::recieve_command(int client_sockfd, size_t i)
