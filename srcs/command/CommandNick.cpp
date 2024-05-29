@@ -70,8 +70,8 @@ static void set_user_nickname(User &_user, const string nickname) {
   // フラグを更新
   _user.set_is_nickname(true);
   // ニックネームを表示
-  string response = "Nick set to: " + nickname + "\n";
-  send(_user.get_fd(), response.c_str(), response.size(), 0);
+  // string response = "Nick set to: " + nickname + "\n";
+  // send(_user.get_fd(), response.c_str(), response.size(), 0);
 }
 
 void Command::nick() {
@@ -93,6 +93,10 @@ void Command::nick() {
     check_nickname_against_channel_names(_server, nickname);
     // ニックネームを設定
     set_user_nickname(_user, nickname);
+    string mess = ": You are now nicked as ";
+    mess += nickname;
+    mess += "\r\n";
+    send(_user.get_fd(), mess.c_str(), mess.size(), 0);
   } catch (const exception &e) {
     send(_user.get_fd(), e.what(), strlen(e.what()), 0);
   }

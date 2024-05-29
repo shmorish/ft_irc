@@ -62,7 +62,7 @@ static void send_welcome_message_001(int fd, string nickname, string username)
 static void send_host_info_002(int client_sockfd, const string &servername, string nickname, string username)
 {
     string msg = USER_IDENTIFIER(nickname, username);
-    msg += RPL_YOURHOST(servername);
+    msg += RPL_YOURHOST(servername, nickname);
     send(client_sockfd, msg.c_str(), msg.size(), 0);
 }
 
@@ -70,7 +70,7 @@ static void send_server_created_003(int client_sockfd, string nickname, string u
 {
     string date = SERVER_DATE;
     string msg = USER_IDENTIFIER(nickname, username);
-    msg += RPL_CREATED(date);
+    msg += RPL_CREATED(date, nickname);
     send(client_sockfd, msg.c_str(), msg.size(), 0);
 }
 
