@@ -168,11 +168,14 @@ void    Server::recieve_and_execute_commands(size_t i)
             Parser parser = Parser(msg, _pollfd_vector[i].fd, _password);
             User* user = findUserByFd(_pollfd_vector[i].fd);
             Command command(*this, parser, *user);
-            if (user->get_is_password() == true && user->get_is_nickname() == true && user->get_is_username() == true) {
-                send_welcome_message_001(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
-                send_host_info_002(_pollfd_vector[i].fd, "XServer", user->get_nickname(), user->get_username());
-                send_server_created_003(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
-                send_modes_004(_pollfd_vector[i].fd, user->get_nickname(), user->get_nickname(), user->get_username());
+            if (user->get_has_sent_welcome_message() == false) {
+                if (user->get_is_password() == true && user->get_is_nickname() == true && user->get_is_username() == true) {
+                    send_welcome_message_001(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
+                    send_host_info_002(_pollfd_vector[i].fd, "XServer", user->get_nickname(), user->get_username());
+                    send_server_created_003(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
+                    send_modes_004(_pollfd_vector[i].fd, user->get_nickname(), user->get_nickname(), user->get_username());
+                }
+                user->set_has_sent_welcome_message(true);
             }
             // Command command(*this, parser, *new User(_pollfd_vector[i].fd));
             // recieve commands from clients
@@ -180,13 +183,13 @@ void    Server::recieve_and_execute_commands(size_t i)
 
             // recieve command from client [PRIVMSG]
             // ↓
-            long recived_fd = _pollfd_vector[i].fd;
-            for (unsigned long i = 0; i < _pollfd_vector.size(); i++) {
-                if (_pollfd_vector[i].fd != recived_fd) {
-                    string client_msg = "Client [" + to_string(recived_fd) + "] says: " + msg;
-                    send(_pollfd_vector[i].fd, client_msg.c_str(), client_msg.size(), 0);
-                }
-            }
+            // long recived_fd = _pollfd_vector[i].fd;
+            // for (unsigned long i = 0; i < _pollfd_vector.size(); i++) {
+            //     if (_pollfd_vector[i].fd != recived_fd) {
+            //         string client_msg = "Client [" + to_string(recived_fd) + "] says: " + msg;
+            //         send(_pollfd_vector[i].fd, client_msg.c_str(), client_msg.size(), 0);
+            //     }
+            // }
         }
         // ↑
     }

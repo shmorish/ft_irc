@@ -14,6 +14,7 @@ private:
     bool _is_password;
     bool _is_nickname;
     bool _is_username;
+    bool _has_sent_welcome_message;
     int _fd;
 
 public:
@@ -28,6 +29,7 @@ public:
     void set_is_password(bool is_password);
     void set_is_nickname(bool is_nickname);
     void set_is_username(bool is_username);
+    void set_has_sent_welcome_message(bool has_sent_welcome_message);
 
     string get_nickname() const;
     string get_username() const;
@@ -37,6 +39,7 @@ public:
     bool get_is_password() const;
     bool get_is_nickname() const;
     bool get_is_username() const;
+    bool get_has_sent_welcome_message() const;
     int get_fd() const;
     bool get_ready_to_connect() const;
 };

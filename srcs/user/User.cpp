@@ -42,6 +42,10 @@ void User::set_is_username(bool is_username){
     _is_username = is_username;
 }
 
+void User::set_has_sent_welcome_message(bool has_sent_welcome_message){
+    _has_sent_welcome_message = has_sent_welcome_message;
+}
+
 string User::get_nickname() const{
     return _nickname;
 }
@@ -72,6 +76,10 @@ bool User::get_is_nickname() const{
 
 bool User::get_is_username() const{
     return _is_username;
+}
+
+bool User::get_has_sent_welcome_message() const{
+    return _has_sent_welcome_message;
 }
 
 int User::get_fd() const{
