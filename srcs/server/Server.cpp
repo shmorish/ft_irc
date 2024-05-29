@@ -12,15 +12,6 @@ Server::Server(long port, const string &password) : _port(port), _password(passw
 
 Server::~Server()
 {
-    // for (set<User *>::iterator it = _users.begin(); it != _users.end(); ++it) {
-    //     delete *it;
-    // }
-    // for (set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
-    //     delete *it;
-    // }
-    // _users.clear();
-    // _channels.clear();
-    // close(_server_sockfd);
     cout << "Server destroyed" << endl;
 }
 
@@ -205,6 +196,19 @@ void    Server::check_all_polls()
     }
 }
 
+void Server::close_server()
+{
+    for (set<User *>::iterator it = _users.begin(); it != _users.end(); ++it) {
+        delete *it;
+    }
+    for (set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+        delete *it;
+    }
+    _users.clear();
+    _channels.clear();
+    close(_server_sockfd);
+}
+
 void Server::run()
 {
     while (server_running)
@@ -212,7 +216,7 @@ void Server::run()
         make_polls();
         check_all_polls();
     }
-    close(_server_sockfd);
+    close_server();
     cout << "Server stopped" << endl;
 }
 
