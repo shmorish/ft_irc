@@ -15,6 +15,7 @@ string Parser::get_message(){
 void	Parser::check_command(string &command)
 {
 	transform(command.begin(), command.end(), command.begin(), ::toupper);
+  cout << "Command: " << command << endl;
 	if (command == "PASS") _command = PASS;
 	else if (command == "NICK") _command = NICK;
 	else if (command == "USER") _command = USER;
@@ -29,10 +30,11 @@ void	Parser::check_command(string &command)
 	else if (command == "MODE") _command = MODE;
 	else if (command == "TOPIC") _command = TOPIC;
 	else if (command == "INVITE") _command = INVITE;
+  else if (command == "CAP") _command = CAP;
 	else {
-		string error = "Invalid command: " + command + "\n";
+		string error = "Invalid command1: " + command + "\n";
 		send(_fd, error.c_str(), error.size(), 0);
-		throw runtime_error("Invalid command: " + command);
+		throw runtime_error("Invalid command1: " + command);
 	}
 }
 

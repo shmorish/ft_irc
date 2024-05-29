@@ -86,6 +86,7 @@ void Command::join()
 			throw runtime_error("You are not connected\n");
 		}
 	} catch (const exception &e) {
+    
 		send(_user.get_fd(), e.what(), strlen(e.what()), 0);
 		// cerr << e.what() << endl;
 		return ;
@@ -112,6 +113,7 @@ void Command::join()
 			send(_user.get_fd(), "You have joined the channel\n", 28, 0);
 		} catch (const exception &e) {
 			send(_user.get_fd(), e.what(), strlen(e.what()), 0);
+      // cerr << e.what() << endl;
 		}
 	}
 }

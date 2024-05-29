@@ -24,6 +24,9 @@ static void authenticate_user(const Server _server, User &_user, const string pa
 }
 
 void Command::pass() {
+  // for (size_t i = 0; i < _parser.get_args().size(); i++)
+  //   cout << i << " : " << _parser.get_args().at(i) << endl;
+
   try{
     // すでに入力してあるかどうかをチェック
     check_user_registration_status(_user);

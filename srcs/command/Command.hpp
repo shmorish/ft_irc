@@ -30,6 +30,7 @@ private:
 	void	mode();
 	void	topic();
 	void	invite();
+  void  cap();
 
 	Server	&_server;
 	Parser	&_parser;

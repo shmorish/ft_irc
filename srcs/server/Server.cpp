@@ -64,6 +64,8 @@ static void send_welcome_message_001(int fd, string nickname, string username)
 {
     string msg = USER_IDENTIFIER(nickname, username);
     msg += RPL_WELCOME(fd, nickname);
+    cout << "Sending welcome message to client [" << fd << "]" << endl;
+    cout << msg << endl;
     send(fd, msg.c_str(), msg.size(), 0);
 }
 
@@ -109,10 +111,6 @@ void Server::handle_new_client_connections(void)
     // add User with new client client_sockfd
     User *new_user = new User(client_sockfd);
     _users.insert(new_user);
-    send_welcome_message_001(client_sockfd, new_user->get_nickname(), new_user->get_username());
-    send_host_info_002(client_sockfd, "XServer", new_user->get_nickname(), new_user->get_username());
-    send_server_created_003(client_sockfd, new_user->get_nickname(), new_user->get_username());
-    send_modes_004(client_sockfd, new_user->get_nickname(), new_user->get_nickname(), new_user->get_username());
 }
 
 string Server::recieve_command(int client_sockfd, size_t i)
@@ -163,6 +161,12 @@ void    Server::recieve_and_execute_commands(size_t i)
         Parser parser = Parser(msg, _pollfd_vector[i].fd, _password);
         User* user = findUserByFd(_pollfd_vector[i].fd);
         Command command(*this, parser, *user);
+        if (user->get_is_password() == true && user->get_is_nickname() == true && user->get_is_username() == true) {
+              send_welcome_message_001(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
+              send_host_info_002(_pollfd_vector[i].fd, "XServer", user->get_nickname(), user->get_username());
+              send_server_created_003(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
+              send_modes_004(_pollfd_vector[i].fd, user->get_nickname(), user->get_nickname(), user->get_username());
+        }
         // Command command(*this, parser, *new User(_pollfd_vector[i].fd));
         // recieve commands from clients
         // handle poll events
