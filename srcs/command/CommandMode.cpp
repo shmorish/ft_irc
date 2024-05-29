@@ -27,8 +27,11 @@
 static void is_correct_input(const vector<string> &args){
     if (args.size() < 2)
         throw runtime_error("Too few arguments\n");
-    if (args.size() > 3)
-        throw runtime_error("Too many arguments\n");
+    // cout << "args.size() = " << args.size() << endl;
+    // for (size_t i = 0; i < args.size(); i++)
+    //     cout << "args.at(" << i << ") = " << args.at(i) << endl;
+    // if (args.size() > 4)
+    //     throw runtime_error("Too many arguments\n");
     if (args.at(0).at(0) != '#')
         throw runtime_error("Channel name must start with #\n");
 }

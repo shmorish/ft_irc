@@ -8,10 +8,14 @@ void Command::ping(void)
     //     send(_user.get_fd(), error_message.c_str(), error_message.size(), 0);
     //     return ;
     // }
-    string response;
-    response += USER_IDENTIFIER(_user.get_nickname(), _user.get_username());
-    response += "PONG ";
-    response += SERVER_NAME;
+    string response = "whatyouwant!ishikawatsubasa@localhost PONG :whatyouwant";
+    // response += USER_IDENTIFIER(_user.get_nickname(), _user.get_username());
+    // response += "PONG ";
+    // response += _user.get_nickname();
+    // // response += SERVER_NAME;
     response += "\r\n";
+
+    cout << "Response: " << response << endl;
+
     send(_user.get_fd(), response.c_str(), response.size(), 0);
 }

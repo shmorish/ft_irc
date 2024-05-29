@@ -4,13 +4,14 @@
 static void send_message_to_user(Server &_server, Parser &_parser, User &_user) {
 	if (_server.findUserByNick(_parser.get_args().at(0)) == NULL)
 	throw runtime_error("User not found\n");
-	string message = _user.get_nickname() + " says: ";
+	string message = USER_IDENTIFIER(_user.get_nickname(), _user.get_username());
+	message += _user.get_nickname() + " says: ";
 	for (size_t i = 1; i < _parser.get_args().size(); i++) {
 		message += _parser.get_args().at(i);
 	if (i != _parser.get_args().size() - 1)
 		message += " ";
 	}
-	message += "\n";
+	message += "\r\n";
 	send(_server.findUserByNick(_parser.get_args().at(0))->get_fd(), message.c_str(), message.size(), 0);
 }
 
@@ -23,13 +24,14 @@ static void send_message_to_channel(Server &_server, Parser &_parser, User &_use
 
 	set<int> clients = channel->get_clients();
 	for (set<int>::iterator it = clients.begin(); it != clients.end(); ++it) {
-		string message = _user.get_nickname() + " says: ";
+			string message = USER_IDENTIFIER(_user.get_nickname(), _user.get_username());
+	    message += _user.get_nickname() + " says: ";
 		for (size_t i = 0; i < _parser.get_args().size(); i++) {
 			message += _parser.get_args().at(i);
 		if (i != _parser.get_args().size() - 1)
 			message += " ";
 		}
-		message += "\n";
+		message += "\r\n";
 		send(*it, message.c_str(), message.size(), 0);
 	}
 }

@@ -12,15 +12,16 @@ Server::Server(long port, const string &password) : _port(port), _password(passw
 
 Server::~Server()
 {
-    for (set<User *>::iterator it = _users.begin(); it != _users.end(); ++it) {
-        delete *it;
-    }
-    for (set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
-        delete *it;
-    }
-    _users.clear();
-    _channels.clear();
-    close(_server_sockfd);
+    // for (set<User *>::iterator it = _users.begin(); it != _users.end(); ++it) {
+    //     delete *it;
+    // }
+    // for (set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+    //     delete *it;
+    // }
+    // _users.clear();
+    // _channels.clear();
+    // close(_server_sockfd);
+    cout << "Server destroyed" << endl;
 }
 
 void Server::setup(void)
@@ -62,7 +63,7 @@ void Server::setup(void)
 static void send_welcome_message_001(int fd, string nickname, string username)
 {
     string msg = USER_IDENTIFIER(nickname, username);
-    msg += RPL_WELCOME(fd);
+    msg += RPL_WELCOME(fd, nickname);
     send(fd, msg.c_str(), msg.size(), 0);
 }
 
