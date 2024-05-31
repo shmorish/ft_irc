@@ -169,7 +169,7 @@ void    Server::recieve_and_execute_commands(size_t i)
             User* user = findUserByFd(_pollfd_vector[i].fd);
             Command command(*this, parser, *user);
             if (user->get_has_sent_welcome_message() == false) {
-                if (user->get_is_password() == true && user->get_is_nickname() == true && user->get_is_username() == true) {
+                if (user->get_ready_to_connect() == true) {
                     send_welcome_message_001(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
                     send_host_info_002(_pollfd_vector[i].fd, "XServer", user->get_nickname(), user->get_username());
                     send_server_created_003(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
