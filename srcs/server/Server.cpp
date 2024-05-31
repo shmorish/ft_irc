@@ -225,6 +225,18 @@ void Server::close_server()
     close(_server_sockfd);
 }
 
+void Server::sendMsgToChannel(string channel_name, string msg)
+{
+    Channel* channel = findChannelByName(channel_name);
+    if (channel == NULL) {
+        return ;
+    }
+    set<int> clients = channel->get_clients();
+    for (set<int>::iterator it = clients.begin(); it != clients.end(); ++it) {
+        send(*it, msg.c_str(), msg.size(), 0);
+    }
+}
+
 void Server::run()
 {
     while (server_running)

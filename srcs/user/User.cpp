@@ -6,6 +6,10 @@ User::User(int fd) : _is_password(false), _is_nickname(false), _is_username(fals
     _username = "";
     _realname = "";
     _hostname = "";
+    set_is_nickname(false);
+    set_is_username(false);
+    set_is_password(false);
+    set_has_sent_welcome_message(false);
 }
 
 User::~User(){}
