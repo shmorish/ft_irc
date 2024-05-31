@@ -32,9 +32,9 @@ void	Parser::check_command(string &command)
 	else if (command == "INVITE") _command = INVITE;
   else if (command == "CAP") _command = CAP;
 	else {
-		string error = "Invalid command1: " + command + "\n";
+		string error = "Invalid command: " + command + "\n";
 		send(_fd, error.c_str(), error.size(), 0);
-		throw runtime_error("Invalid command1: " + command);
+		throw runtime_error("Invalid command: " + command);
 	}
 }
 

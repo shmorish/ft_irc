@@ -164,7 +164,6 @@ void    Server::recieve_and_execute_commands(size_t i)
             if (msg.size() == 0) continue ;
             while (msg[0] == ' ') msg.erase(0, 1);
             if (msg.size() == 0 || msg == "\n") continue ;
-            cout << "Client " << _pollfd_vector[i].fd << " says: " << msg;
             Parser parser = Parser(msg, _pollfd_vector[i].fd, _password);
             User* user = findUserByFd(_pollfd_vector[i].fd);
             Command command(*this, parser, *user);
@@ -174,8 +173,8 @@ void    Server::recieve_and_execute_commands(size_t i)
                     send_host_info_002(_pollfd_vector[i].fd, "XServer", user->get_nickname(), user->get_username());
                     send_server_created_003(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
                     send_modes_004(_pollfd_vector[i].fd, user->get_nickname(), user->get_nickname(), user->get_username());
+                    user->set_has_sent_welcome_message(true);
                 }
-                user->set_has_sent_welcome_message(true);
             }
             // Command command(*this, parser, *new User(_pollfd_vector[i].fd));
             // recieve commands from clients
