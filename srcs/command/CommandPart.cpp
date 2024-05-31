@@ -5,16 +5,6 @@
 // ERR_NOTONCHANNEL (442): ユーザーが指定したチャンネルに実際には参加していない場合にこのエラーが返されます。
 // ERR_NEEDMOREPARAMS (461): コマンドに必要なパラメータが不足している場合に送られます。例えば、PARTコマンドを使用する際にチャンネル名を指定しなかった場合などです。
 
-string part_success(User user, string channel_name)
-{
-    string res;
-    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
-    res += " PART ";
-    res += channel_name;
-    res += "\r\n";
-    return res;
-}
-
 void Command::part()
 {
     try {
@@ -28,7 +18,7 @@ void Command::part()
             throw runtime_error(err_403(_user, channel_name));
         if (channel->is_client(_user.get_fd()) == false)
             throw runtime_error(err_442(_user, channel_name));
-        string res = part_success(_user, channel_name);
+        string res = command_success(_user, "PART", channel_name);
         _server.sendMsgToChannel(channel_name, res);
         channel->remove_client(_user.get_fd());
         channel->remove_invited(_user.get_fd());

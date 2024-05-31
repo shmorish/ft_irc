@@ -24,29 +24,38 @@
 /* /mode #channel +k password */
 /* /mode #channel -k password */
 
-static void is_correct_input(const vector<string> &args){
+static void is_correct_input(const vector<string> &args, Server &_server, User &_user, Parser &_parser) {
     if (args.size() < 2)
         throw runtime_error("Too few arguments\n");
-    // cout << "args.size() = " << args.size() << endl;
-    // for (size_t i = 0; i < args.size(); i++)
-    //     cout << "args.at(" << i << ") = " << args.at(i) << endl;
-    // if (args.size() > 4)
-    //     throw runtime_error("Too many arguments\n");
     if (args.at(0).at(0) != '#')
         throw runtime_error("Channel name must start with #\n");
+    Channel *channel = _server.findChannelByName(_parser.get_args().at(0));
+    if (channel == NULL)
+        throw runtime_error("Channel not found");
+    if(channel->is_client(_user.get_fd()) == false)
+        throw runtime_error("User not found in this channel");
+    if(channel->is_operator(_user.get_fd()) == false)
+        throw runtime_error("You are not operator");
+    string flag = _parser.get_args().at(1);
+    if (flag.size() != 2 || (flag.at(0) != '+' && flag.at(0) != '-'))
+        throw runtime_error("Invalid mode");
 }
 
-void    Command::mode_command_o(Channel *channel){
+void    Command::mode_command_o(Channel *channel) {
     if (_parser.get_args().size() != 3)
         throw runtime_error("Too few arguments\n");
-    if (_parser.get_args().at(2).at(0) == '+')
-        channel->add_operator(_server.findUserByNick(_parser.get_args().at(1))->get_fd());
+    string flag = _parser.get_args().at(1);
+    string nickname = _parser.get_args().at(2);
+    User *user = _server.findUserByNick(nickname);
+    if (flag.at(0) == '+')
+        channel->add_operator(user->get_fd());
     else
-        channel->remove_operator(_server.findUserByNick(_parser.get_args().at(1))->get_fd());
+        channel->remove_operator(user->get_fd());
 }
 
-void    Command::mode_command_l(Channel *channel){
-    if (_parser.get_args().at(1).at(0) == '+') {
+void    Command::mode_command_l(Channel *channel) {
+    string flag = _parser.get_args().at(1);
+    if (flag.at(0) == '+') {
         if (_parser.get_args().size() != 3)
             throw runtime_error("Too few arguments\n");
         char *end;
@@ -61,39 +70,54 @@ void    Command::mode_command_l(Channel *channel){
     }
 }
 
-void    Command::mode_command_t(Channel *channel){
-    if (_parser.get_args().at(1).at(0) == '+') {
-        channel->set_mode(Channel::ChannelMode(channel->get_mode() | Channel::TopicOpOnly));
+void    Command::mode_command_t(Channel *channel) {
+    string flag = _parser.get_args().at(1);
+    Channel::ChannelMode mode = channel->get_mode();
+    if (flag.at(0) == '+') {
+        mode = Channel::ChannelMode(mode | Channel::TopicOpOnly);
+        channel->set_mode(mode);
     } else {
-        channel->set_mode(Channel::ChannelMode(channel->get_mode() & Channel::TopicOpOnly));
+        mode = Channel::ChannelMode(mode & Channel::TopicOpOnly);
+        channel->set_mode(mode);
     }
 }
 
-void    Command::mode_command_m(Channel *channel){
-    if (_parser.get_args().at(1).at(0) == '+') {
-        channel->set_mode(Channel::ChannelMode(channel->get_mode() | Channel::Moderated));
+void    Command::mode_command_m(Channel *channel) {
+    string flag = _parser.get_args().at(1);
+    Channel::ChannelMode mode = channel->get_mode();
+    if (flag.at(0) == '+') {
+        mode = Channel::ChannelMode(mode | Channel::Moderated);
+        channel->set_mode(mode);
     } else {
-        channel->set_mode(Channel::ChannelMode(channel->get_mode() & Channel::Moderated));
+        mode = Channel::ChannelMode(mode & Channel::Moderated);
+        channel->set_mode(mode);
     }
 }
 
-void    Command::mode_command_v(Channel *channel){
+void    Command::mode_command_v(Channel *channel) {
+    string flag = _parser.get_args().at(1);
+    string nickname = _parser.get_args().at(2);
     if (_parser.get_args().size() != 3)
         throw runtime_error("Too few arguments\n");
-    if (_parser.get_args().at(1).at(0) == '+')
-        channel->add_can_talk_in_mod_channel(_server.findUserByNick(_parser.get_args().at(2))->get_fd());
+    User *user = _server.findUserByNick(nickname);
+    if (flag.at(0) == '+')
+        channel->add_can_talk_in_mod_channel(user->get_fd());
     else
-        channel->remove_can_talk_in_mod_channel(_server.findUserByNick(_parser.get_args().at(2))->get_fd());
+        channel->remove_can_talk_in_mod_channel(user->get_fd());
 }
 
-void    Command::mode_command_k(Channel *channel){
+void    Command::mode_command_k(Channel *channel) {
+    string flag = _parser.get_args().at(1);
     if (_parser.get_args().size() != 3)
         throw runtime_error("Too few arguments\n");
-    if (_parser.get_args().at(1).at(0) == '+') {
-        channel->set_mode(Channel::ChannelMode(channel->get_mode() | Channel::NeedPassword));
+    Channel::ChannelMode mode = channel->get_mode();
+    if (flag.at(0) == '+') {
+        mode = Channel::ChannelMode(mode | Channel::NeedPassword);
+        channel->set_mode(mode);
         channel->set_password(_parser.get_args().at(2));
     } else {
-        channel->set_mode(Channel::ChannelMode(channel->get_mode() & Channel::NeedPassword));
+        mode = Channel::ChannelMode(mode & Channel::NeedPassword);
+        channel->set_mode(mode);
         channel->set_password("");
     }
 }
@@ -102,21 +126,11 @@ void    Command::mode(){
     // MODE #channel_name <mode>
     try
     {
-        is_correct_input(_parser.get_args());
-        Channel *channel = _server.findChannelByName(_parser.get_args().at(0));
-        if (channel == NULL)
-            throw runtime_error("Channel not found");
-        if(channel->is_client(_user.get_fd()) == false)
-            throw runtime_error("User not found in this channel");
-        if(channel->is_operator(_user.get_fd()) == false)
-            throw runtime_error("You are not operator");
-        if (_parser.get_args().at(1).at(0) != '+' && _parser.get_args().at(1).at(0) != '-')
-            throw runtime_error("Invalid mode");
-        if (_parser.get_args().at(1).size() != 2)
-            throw runtime_error("Invalid mode");
+        is_correct_input(_parser.get_args(), _server, _user, _parser);
         char mode = _parser.get_args().at(1).at(1);
         if (mode != 'o' && mode != 'l' && mode != 't' && mode != 'm' && mode != 'v' && mode != 'k')
             throw runtime_error("Invalid mode");
+        Channel *channel = _server.findChannelByName(_parser.get_args().at(0));
         if (mode == 'o') mode_command_o(channel);
         else if (mode == 'l') mode_command_l(channel);
         else if (mode == 't') mode_command_t(channel);

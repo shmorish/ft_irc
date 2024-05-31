@@ -80,4 +80,6 @@ string err_461(User user, string command);
 string err_471(User user, string channel_name);
 string err_476(User user);
 
+string command_success(User user, string command, string arg);
+
 #endif

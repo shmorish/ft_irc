@@ -25,7 +25,7 @@ static bool invalid_char(string str) {
 static void check_valid_channel_name(const vector<string> &args, User _user, Server &_server) {
 	if(_user.get_ready_to_connect() == false)
 		throw runtime_error(err_451(_user));
-	if (args.empty() == true || args.size() > 1)
+	if (args.size() != 1)
 		throw runtime_error(err_461(_user, "JOIN"));
 	string channel_name = args.at(0);
 	if (channel_name.size() > MAX_CHANNEL_NAME_LEN ||
@@ -52,10 +52,11 @@ void Command::join()
 	if (channel == NULL) {
 		try {
 			_server.get_channels().insert(new Channel(channel_name));
+			channel = _server.findChannelByName(channel_name);
 			channel->add_client(_user.get_fd());
 			channel->add_operator(_user.get_fd());
-			string message = "You have created and joined the channel\n";
-			send(_user.get_fd(), "You have joined the channel\n", 28, 0);
+			string res = command_success(_user, "JOIN", channel_name);
+			send(_user.get_fd(), res.c_str(), res.size(), 0);
 		} catch (const exception &e) {
 			send(_user.get_fd(), e.what(), strlen(e.what()), 0);
 		}
@@ -63,11 +64,16 @@ void Command::join()
 	else {
 		try {
 			set<int> client_fds = channel->get_clients();
-			for (set<int>::iterator it = client_fds.begin(); it != client_fds.end(); it++)
-				if (*it == _user.get_fd())
-					throw runtime_error("You are already in this channel\n");
+			for (set<int>::iterator it = client_fds.begin(); it != client_fds.end(); it++) {
+				if (*it == _user.get_fd()) {
+					return ;
+					// このエラーは実際にない？
+					// throw runtime_error("You are already in this channel\n");
+				}
+			}
 			channel->add_client(_user.get_fd());
-			send(_user.get_fd(), "You have joined the channel\n", 28, 0);
+			string res = command_success(_user, "JOIN", channel_name);
+			send(_user.get_fd(), res.c_str(), res.size(), 0);
 		} catch (const exception &e) {
 			send(_user.get_fd(), e.what(), strlen(e.what()), 0);
 		}

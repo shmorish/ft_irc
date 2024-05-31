@@ -167,7 +167,7 @@ void    Server::recieve_and_execute_commands(size_t i)
             Parser parser = Parser(msg, _pollfd_vector[i].fd, _password);
             User* user = findUserByFd(_pollfd_vector[i].fd);
             Command command(*this, parser, *user);
-            if (_users.size() > 0) {
+            if (findUserByFd(_pollfd_vector[i].fd) != NULL) {
                 if (user->get_has_sent_welcome_message() == false) {
                     if (user->get_ready_to_connect() == true) {
                         send_welcome_message_001(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
