@@ -72,12 +72,12 @@ void Command::part()
         if (channel->is_client(_user.get_fd()) == false) {
             throw runtime_error(err_442(_user, channel_name));
         }
+        string res = part_success(_user, channel_name);
+        _server.sendMsgToChannel(channel_name, res);
         channel->remove_client(_user.get_fd());
         channel->remove_invited(_user.get_fd());
         channel->remove_can_talk_in_mod_channel(_user.get_fd());
         channel->remove_operator(_user.get_fd());
-        string res = part_success(_user, channel_name);
-        _server.sendMsgToChannel(channel_name, res);
     }
     catch (const exception &e) {
         send(_user.get_fd(), e.what(), strlen(e.what()), 0);
