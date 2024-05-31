@@ -49,7 +49,7 @@ class Server
         int                     _server_sockfd;
         struct sockaddr_in      _server_addr;
         vector<struct pollfd>   _pollfd_vector;
-        
+
         // fd, nickname
         map<int, string>        _clients; // unuse
         set<Channel *>            _channels;
