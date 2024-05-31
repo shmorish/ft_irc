@@ -6,10 +6,11 @@ User::User(int fd) : _is_password(false), _is_nickname(false), _is_username(fals
     _username = "";
     _realname = "";
     _hostname = "";
-    set_is_nickname(false);
-    set_is_username(false);
-    set_is_password(false);
-    set_has_sent_welcome_message(false);
+    _is_nickname = false;
+    _is_username = false;
+    _is_password = false;
+    _has_sent_welcome_message = false;
+    _joining_channel_count = 0;
 }
 
 User::~User(){}
@@ -48,6 +49,14 @@ void User::set_is_username(bool is_username){
 
 void User::set_has_sent_welcome_message(bool has_sent_welcome_message){
     _has_sent_welcome_message = has_sent_welcome_message;
+}
+
+void User::increment_joining_channel_count(){
+    _joining_channel_count++;
+}
+
+void User::decrement_joining_channel_count(){
+    _joining_channel_count--;
 }
 
 string User::get_nickname() const{
@@ -92,4 +101,8 @@ int User::get_fd() const{
 
 bool User::get_ready_to_connect() const{
     return _is_password && _is_nickname && _is_username;
+}
+
+size_t User::get_joining_channel_count() const{
+    return _joining_channel_count;
 }

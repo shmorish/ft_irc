@@ -73,7 +73,11 @@
 
 class User;
 string err_403(User user, string channel_name);
+string err_405(User user);
 string err_442(User user, string channel_name);
+string err_451(User user);
 string err_461(User user, string command);
+string err_471(User user, string channel_name);
+string err_476(User user);
 
 #endif

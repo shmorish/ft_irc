@@ -1,5 +1,10 @@
 #include "Command.hpp"
 
+// 想定されるエラー
+// ERR_NOSUCHCHANNEL (403): 存在しない、または参加していないチャンネルから退出しようとした場合に返されます。
+// ERR_NOTONCHANNEL (442): ユーザーが指定したチャンネルに実際には参加していない場合にこのエラーが返されます。
+// ERR_NEEDMOREPARAMS (461): コマンドに必要なパラメータが不足している場合に送られます。例えば、PARTコマンドを使用する際にチャンネル名を指定しなかった場合などです。
+
 string part_success(User user, string channel_name)
 {
     string res;

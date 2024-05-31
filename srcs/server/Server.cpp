@@ -54,8 +54,8 @@ static void send_welcome_message_001(int fd, string nickname, string username)
 {
     string msg = USER_IDENTIFIER(nickname, username);
     msg += RPL_WELCOME(fd, nickname);
-    cout << "Sending welcome message to client [" << fd << "]" << endl;
-    cout << msg << endl;
+    // cout << "Sending welcome message to client [" << fd << "]" << endl;
+    // cout << msg << endl;
     send(fd, msg.c_str(), msg.size(), 0);
 }
 
