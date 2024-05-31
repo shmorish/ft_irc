@@ -1,6 +1,7 @@
 #ifndef RESPONSE_HPP
 #define RESPONSE_HPP
 
+#include "utils.hpp"
 #define VERSION "1.0.0"
 #define SERVER_NAME "irc.localhost"
 #define SERVER_DATE "2021/09/01"
@@ -70,5 +71,9 @@
 #define RPL_CORRECTPASS(Client)									"4003 " + Client + " :Your password is correct ✅"
 #define ERR_MISSPASS(Client)									"4004 " + Client + " :Please enter the password to connect to the server first. 🚫"
 
+class User;
+string err_403(User user, string channel_name);
+string err_442(User user, string channel_name);
+string err_461(User user, string command);
 
 #endif
