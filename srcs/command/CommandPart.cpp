@@ -58,20 +58,16 @@ string part_success(User user, string channel_name)
 void Command::part()
 {
     try {
-        if (_parser.get_args().size() != 2) {
+        if (_parser.get_args().size() != 2)
             throw runtime_error(err_461(_user, "PART"));
-        }
         string channel_name = _parser.get_args().at(0);
-        if (channel_name[0] != '#') {
+        if (channel_name[0] != '#')
             throw runtime_error(err_403(_user, _parser.get_args().at(0)));
-        }
         Channel* channel = _server.findChannelByName(channel_name);
-        if (channel == NULL) {
+        if (channel == NULL)
             throw runtime_error(err_403(_user, channel_name));
-        }
-        if (channel->is_client(_user.get_fd()) == false) {
+        if (channel->is_client(_user.get_fd()) == false)
             throw runtime_error(err_442(_user, channel_name));
-        }
         string res = part_success(_user, channel_name);
         _server.sendMsgToChannel(channel_name, res);
         channel->remove_client(_user.get_fd());
