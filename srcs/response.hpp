@@ -3,15 +3,15 @@
 
 #include "utils.hpp"
 #define VERSION "1.0.0"
-#define SERVER_NAME "irc.localhost"
+#define SERVER_NAME "localhost"
 #define SERVER_DATE __DATE__
 
 #define USER_IDENTIFIER(nickname, username) (std::string(":") + nickname + "!" + username + "@" + SERVER_NAME)
 
-#define RPL_WELCOME(fd, nickname)								" 001 " + nickname + ":Welcome to the Internet Relay Network fd[" + to_string(fd) + "] !" + SERVER_NAME + "\r\n"
-#define RPL_YOURHOST(server_name, nickname)						" 002 " + nickname + ":Your host is " + servername + ", running version " + VERSION + "\r\n"
-#define RPL_CREATED(date, nickname)								" 003 " + nickname + ":This server was created " + date + "\r\n"
-#define RPL_MYINFO(nick)										" 004 " + nick + ":" + SERVER_NAME + " " + VERSION + " itkolmt it" + "\r\n"
+#define RPL_WELCOME(fd, nickname)								" 001 " + nickname + " :Welcome to the Internet Relay Network fd[" + to_string(fd) + "] !" + SERVER_NAME + "\r\n"
+#define RPL_YOURHOST(server_name, nickname)						" 002 " + nickname + " :Your host is " + servername + ", running version " + VERSION + "\r\n"
+#define RPL_CREATED(date, nickname)								" 003 " + nickname + " :This server was created " + date + "\r\n"
+#define RPL_MYINFO(nick)										" 004 " + nick + " :" + SERVER_NAME + " " + VERSION + " itkolmt it" + "\r\n"
 #define RPL_ALREADYONCHANNEL(NickName,invNickName,Chanel)		"112 " + NickName + " " + invNickName + " " + Chanel + " :is already on channel"
 #define ERR_CANNOTKICKOP(NickName,channel)						"113 " + NickName + " " + channel + " :You can't KICK the operator"
 

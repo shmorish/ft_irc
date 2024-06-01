@@ -182,7 +182,7 @@ string success_response(User user, string command, string arg)
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " ";
     res += command;
-    res += " :";
+    res += " ";
     res += arg;
     res += "\r\n";
     return res;
