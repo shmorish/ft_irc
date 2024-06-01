@@ -93,6 +93,20 @@ string err_476(User user)
     return res;
 }
 
+// operator権限がない場合
+string err_482(User user, string channel_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 482 ";
+    res += user.get_nickname();
+    res += " ";
+    res += channel_name;
+    res += " :You're not channel operator";
+    res += "\r\n";
+    return res;
+}
+
 string success_response(User user, string command, string arg)
 {
     string res;
