@@ -15,7 +15,7 @@ string Parser::get_message(){
 void	Parser::check_command(string &command)
 {
 	transform(command.begin(), command.end(), command.begin(), ::toupper);
-  cout << "Command: " << command << endl;
+	// cout << "Command: " << command << endl;
 	if (command == "PASS") _command = PASS;
 	else if (command == "NICK") _command = NICK;
 	else if (command == "USER") _command = USER;

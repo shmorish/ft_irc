@@ -167,7 +167,7 @@ void    Server::recieve_and_execute_commands(size_t i)
             Parser parser = Parser(msg, _pollfd_vector[i].fd, _password);
             User* user = findUserByFd(_pollfd_vector[i].fd);
             Command command(*this, parser, *user);
-            print_log();
+            print_log(_pollfd_vector[i].fd, msg);
             if (findUserByFd(_pollfd_vector[i].fd) != NULL) {
                 if (user->get_has_sent_welcome_message() == false) {
                     if (user->get_ready_to_connect() == true) {
@@ -298,19 +298,22 @@ void Server::removeUser(User *user) {
     delete user;
 }
 
-void Server::print_log() {
+void Server::print_log(int fd, string msg) {
     cout << "----- Server Log -----" << endl;
+    cout << "Current Command: " << endl;
+    cout << "  [fd " << fd << "]: " << msg << endl;
     cout << "Users: " << endl;
     for (set<User*>::iterator it = _users.begin(); it != _users.end(); ++it) {
-        cout << "    [fd] " << (*it)->get_fd() << ":" << (*it)->get_nickname() << endl;
+        cout << "  [fd " << (*it)->get_fd() << "]: " << (*it)->get_nickname() << endl;
     }
     cout << "Channels: " << endl;
     for (set<Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
-        cout << "    [name] " << (*it)->get_channel_name() << endl;
+        cout << "  [name] " << (*it)->get_channel_name() << endl;
         set<int> clients = (*it)->get_clients();
         for (set<int>::iterator it2 = clients.begin(); it2 != clients.end(); ++it2) {
-            cout << "        [fd] " << *it2 << ":" << findUserByFd(*it2)->get_nickname() << endl;
+            cout << "    [fd] " << *it2 << ":" << findUserByFd(*it2)->get_nickname() << endl;
         }
     }
+    cout << "----------------------" << endl;
     cout << endl;
 }
