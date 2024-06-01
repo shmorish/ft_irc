@@ -41,6 +41,34 @@ string err_405(User user)
     return res;
 }
 
+// ERR_ERRONEUSNICKNAME (432): ニックネームが無効な形式である場合に返されます。
+string err_432(User user, string nickname)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 432 ";
+    res += user.get_nickname();
+    res += " ";
+    res += nickname;
+    res += " :Erroneous nickname";
+    res += "\r\n";
+    return res;
+}
+
+// ERR_NICKNAMEINUSE (433): ユーザーが指定したニックネームを既に他のユーザーが使用している場合に返されます。
+string err_433(User user, string nickname)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 433 ";
+    res += user.get_nickname();
+    res += " ";
+    res += nickname;
+    res += " :Nickname is already in use";
+    res += "\r\n";
+    return res;
+}
+
 // ERR_NOTONCHANNEL (442): ユーザーが指定したチャンネルに実際には参加していない場合にこのエラーが返されます。
 string err_442(User user, string channel_name)
 {
@@ -92,6 +120,18 @@ string err_461(User user, string command)
     res + command;
     res += " ";
     res += ":Not enough parameters";
+    res += "\r\n";
+    return res;
+}
+
+// ERR_ALREADYREGISTERED (462): ユーザーが既に登録されている場合に返されます。
+string err_462(User user)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 462 ";
+    res += user.get_nickname();
+    res += " :You may not reregister";
     res += "\r\n";
     return res;
 }

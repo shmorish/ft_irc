@@ -85,11 +85,8 @@ void Command::join()
 			}
 			set<int> client_fds = channel->get_clients();
 			for (set<int>::iterator it = client_fds.begin(); it != client_fds.end(); it++) {
-				if (*it == _user.get_fd()) {
-					return ;
-					// このエラーは実際にない？
-					// throw runtime_error("You are already in this channel\n");
-				}
+				if (*it == _user.get_fd())
+					throw runtime_error(err_443(_user, channel_name));
 			}
 			channel->add_client_nickname(_user.get_fd(), _user.get_nickname());
 			channel->add_client(_user.get_fd());

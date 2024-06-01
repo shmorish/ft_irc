@@ -41,18 +41,3 @@ void    Command::invite()
         send(_user.get_fd(), e.what(), strlen(e.what()), 0);
     }
 }
-    // Channel *channel = _server.get_channel(channel_name);
-    // if (channel == NULL)
-    //     throw runtime_error("Channel not found");
-    // if (channel->is_operator(_user.get_nickname()) == false)
-    //     throw runtime_error("You are not channel operator");
-    // User *user = _server.get_user(nickname);
-    // if (user == NULL)
-    //     throw runtime_error("User not found");
-    // if (channel->is_invited(user->get_nickname()) == true)
-    //     throw runtime_error("User is already invited");
-    // channel->add_invited(user->get_nickname());
-    // user->add_invited_channel(channel->get_channel_name());
-    // _server.send_reply(_user.get_fd(), RPL_INVITING, user->get_nickname());
-    // _server.send_reply(user->get_fd(), RPL_INVITED, channel->get_channel_name());
-
