@@ -128,13 +128,25 @@ void    Command::mode_command_k(Channel *channel) {
     }
 }
 
+void    Command::mode_command_i(Channel *channel) {
+    string flag = _parser.get_args().at(1);
+    Channel::ChannelMode mode = channel->get_mode();
+    if (flag.at(0) == '+') {
+        mode = Channel::ChannelMode(mode | Channel::InviteOnly);
+        channel->set_mode(mode);
+    } else {
+        mode = Channel::ChannelMode(mode & Channel::InviteOnly);
+        channel->set_mode(mode);
+    }
+}
+
 void    Command::mode(){
     // MODE #channel_name <mode>
     try
     {
         is_correct_input(_parser.get_args(), _server, _user, _parser);
         char mode = _parser.get_args().at(1).at(1);
-        if (mode != 'o' && mode != 'l' && mode != 't' && mode != 'm' && mode != 'v' && mode != 'k')
+        if (mode != 'o' && mode != 'l' && mode != 't' && mode != 'm' && mode != 'v' && mode != 'k' && mode != 'i')
             throw runtime_error("Invalid mode");
         Channel *channel = _server.findChannelByName(_parser.get_args().at(0));
         if (mode == 'o') mode_command_o(channel);
@@ -143,7 +155,7 @@ void    Command::mode(){
         else if (mode == 'm') mode_command_m(channel);
         else if (mode == 'v') mode_command_v(channel);
         else if (mode == 'k') mode_command_k(channel);
-
+        else if (mode == 'i') mode_command_i(channel);
     } catch(const exception &e) {
         send(_user.get_fd(), e.what(), strlen(e.what()), 0);
     }

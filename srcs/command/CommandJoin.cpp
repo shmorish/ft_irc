@@ -79,6 +79,10 @@ void Command::join()
 	}
 	else {
 		try {
+			if (channel->get_mode() & Channel::InviteOnly) {
+				send(_user.get_fd(), err_473(_user, channel_name).c_str(), err_473(_user, channel_name).size(), 0);
+				return ;
+			}
 			set<int> client_fds = channel->get_clients();
 			for (set<int>::iterator it = client_fds.begin(); it != client_fds.end(); it++) {
 				if (*it == _user.get_fd()) {

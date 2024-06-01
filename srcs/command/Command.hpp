@@ -42,6 +42,7 @@ private:
 	void mode_command_m(Channel *channel);
 	void mode_command_v(Channel *channel);
 	void mode_command_k(Channel *channel);
+	void mode_command_i(Channel *channel);
 };
 
 #endif

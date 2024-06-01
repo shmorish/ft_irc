@@ -81,6 +81,19 @@ string err_471(User user, string channel_name)
     return res;
 }
 
+string err_473(User user, string channel_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 473 ";
+    res += user.get_nickname();
+    res += " ";
+    res += channel_name;
+    res += " :Cannot join channel (+i)";
+    res += "\r\n";
+    return res;
+}
+
 // ERR_BADCHANMASK (476): 指定されたチャンネル名が無効な形式である場合に返されます。
 string err_476(User user)
 {
