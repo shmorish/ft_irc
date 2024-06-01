@@ -3,7 +3,7 @@
 
 #include "utils.hpp"
 #define VERSION "1.0.0"
-#define SERVER_NAME "localhost"
+#define SERVER_NAME "irc.localhost"
 #define SERVER_DATE __DATE__
 
 #define USER_IDENTIFIER(nickname, username) (std::string(":") + nickname + "!" + username + "@" + SERVER_NAME)
@@ -72,15 +72,19 @@
 #define ERR_MISSPASS(Client)									"4004 " + Client + " :Please enter the password to connect to the server first. 🚫"
 
 class User;
+string err_401(User user, string nickname);
 string err_403(User user, string channel_name);
 string err_405(User user);
 string err_442(User user, string channel_name);
+string err_443(User user, string channel_name);
 string err_451(User user);
 string err_461(User user, string command);
 string err_471(User user, string channel_name);
+string err_472(User user);
 string err_473(User user, string channel_name);
 string err_476(User user);
 string err_482(User user, string channel_name);
+string err_696(User user);
 
 //  332, 353, 366, 324
 
@@ -88,6 +92,7 @@ string response332(User user, string channel_name, string topic);
 string response353(User user, string channel_name, string members);
 string response366(User user, string channel_name);
 string response324(User user, string channel_name, string mode);
+string response341(User user, string channel_name, string nickname);
 
 string success_response(User user, string command, string arg);
 

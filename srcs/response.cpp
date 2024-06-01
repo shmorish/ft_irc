@@ -1,6 +1,20 @@
 #include "response.hpp"
 #include "User.hpp"
 
+// ERR_NOSUCHNICK (401): 指定されたニックネームが存在しない場合に返されます。
+string err_401(User user, string nickname)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 401 ";
+    res += user.get_nickname();
+    res += " ";
+    res += nickname;
+    res += " :No such nick/channel";
+    res += "\r\n";
+    return res;
+}
+
 // ERR_NOSUCHCHANNEL (403): 存在しない、または参加していないチャンネルから退出しようとした場合に返されます。
 string err_403(User user, string channel_name)
 {
@@ -37,6 +51,20 @@ string err_442(User user, string channel_name)
     res += " ";
     res += channel_name;
     res += ":You're not on that channel";
+    res += "\r\n";
+    return res;
+}
+
+// ERR_USERONCHANNEL (443): ユーザーが既に指定したチャンネルに参加している場合に返されます。
+string err_443(User user, string channel_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 443 ";
+    res += user.get_nickname();
+    res += " ";
+    res += channel_name;
+    res += ":is already on channel";
     res += "\r\n";
     return res;
 }
@@ -81,6 +109,17 @@ string err_471(User user, string channel_name)
     return res;
 }
 
+string err_472(User user)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 472 ";
+    res += user.get_nickname();
+    res += " :is unknown mode char to me";
+    res += "\r\n";
+    return res;
+}
+
 string err_473(User user, string channel_name)
 {
     string res;
@@ -102,6 +141,20 @@ string err_476(User user)
     res += " 476 ";
     res += user.get_nickname();
     res += " :Invalid channel name";
+    res += "\r\n";
+    return res;
+}
+
+// ERR_CHANOPRIVSNEEDED (482): ユーザーがチャンネルのオペレータ権限を持っていない場合に返されます。
+string err_482(User user, string channel_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 482 ";
+    res += user.get_nickname();
+    res += " ";
+    res += channel_name;
+    res += " :You're not channel operator";
     res += "\r\n";
     return res;
 }
@@ -176,6 +229,18 @@ string err_482(User user, string channel_name)
     return res;
 }
 
+// ERR_INVALIDMODEPARAM (696) : チャンネルモードのパラメータが無効な場合に返されます。
+string err_696(User user)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 696 ";
+    res += user.get_nickname();
+    res += " :Invalid mode parameter";
+    res += "\r\n";
+    return res;
+}
+
 string success_response(User user, string command, string arg)
 {
     string res;
@@ -188,3 +253,17 @@ string success_response(User user, string command, string arg)
     return res;
 }
 
+// RPL_INVITING (341) : ユーザーが指定したチャンネルに招待を送信した場合に返されます。
+string response341(User user, string channel_name, string nickname)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 341 ";
+    res += user.get_nickname();
+    res += " :Inviting ";
+    res += nickname;
+    res += " to the channel ";
+    res += channel_name;
+    res += "\r\n";
+    return res;
+}

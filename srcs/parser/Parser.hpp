@@ -19,6 +19,7 @@ typedef enum CommandType {
     TOPIC,
     INVITE,
     CAP,
+    DCC,
 } CommandType;
 
 class Parser {

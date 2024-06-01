@@ -12,7 +12,7 @@ void Command::part()
             throw runtime_error(err_461(_user, "PART"));
         string channel_name = _parser.get_args().at(0);
         if (channel_name.at(0) != '#')
-            throw runtime_error(err_403(_user, _parser.get_args().at(0)));
+            throw runtime_error(err_403(_user, channel_name));
         Channel* channel = _server.findChannelByName(channel_name);
         if (channel == NULL)
             throw runtime_error(err_403(_user, channel_name));

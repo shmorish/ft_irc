@@ -31,6 +31,7 @@ private:
 	void	topic();
 	void	invite();
 	void	cap();
+	void	dcc();
 
 	Server	&_server;
 	Parser	&_parser;
