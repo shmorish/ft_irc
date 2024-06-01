@@ -18,7 +18,7 @@ void Command::part()
             throw runtime_error(err_403(_user, channel_name));
         if (channel->is_client(_user.get_fd()) == false)
             throw runtime_error(err_442(_user, channel_name));
-        string res = command_success(_user, "PART", channel_name);
+        string res = success_response(_user, "PART", channel_name);
         _server.sendMsgToChannel(channel_name, res);
         channel->remove_client(_user.get_fd());
         channel->remove_invited(_user.get_fd());

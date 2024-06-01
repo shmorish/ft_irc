@@ -55,7 +55,7 @@ void Command::join()
 			channel = _server.findChannelByName(channel_name);
 			channel->add_client(_user.get_fd());
 			channel->add_operator(_user.get_fd());
-			string res = command_success(_user, "JOIN", channel_name);
+			string res = success_response(_user, "JOIN", channel_name);
 			send(_user.get_fd(), res.c_str(), res.size(), 0);
 		} catch (const exception &e) {
 			send(_user.get_fd(), e.what(), strlen(e.what()), 0);
@@ -72,7 +72,7 @@ void Command::join()
 				}
 			}
 			channel->add_client(_user.get_fd());
-			string res = command_success(_user, "JOIN", channel_name);
+			string res = success_response(_user, "JOIN", channel_name);
 			send(_user.get_fd(), res.c_str(), res.size(), 0);
 		} catch (const exception &e) {
 			send(_user.get_fd(), e.what(), strlen(e.what()), 0);

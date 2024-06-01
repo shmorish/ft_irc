@@ -42,6 +42,7 @@ class Server
         void removeUser(User *user);
         void close_server();
         void sendMsgToChannel(string channel_name, string msg);
+        void print_log();
     private:
         void                    *own_addr;
         const long              _port;

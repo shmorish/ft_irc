@@ -93,7 +93,7 @@ string err_476(User user)
     return res;
 }
 
-string command_success(User user, string command, string arg)
+string success_response(User user, string command, string arg)
 {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
