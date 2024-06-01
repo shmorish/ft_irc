@@ -11,6 +11,10 @@ void Command::quit()
 		(*it)->remove_can_talk_in_mod_channel(_user.get_fd());
 		(*it)->remove_operator(_user.get_fd());
 		(*it)->remove_banned(_user.get_fd());
+		if ((*it)->get_clients().size() == 0){
+			delete *it;
+			_server.get_channels().erase(*it);
+		}
 	}
 	close(_user.get_fd());
 	_server.removeUser(&_user);
