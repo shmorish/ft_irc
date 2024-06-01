@@ -21,13 +21,14 @@ public:
   // i t k o l
 
 private:
-	string				_channel_name;
-	set<USER_ID>		_clients;
-	set<USER_ID>		_operators;
-	set<USER_ID>		_can_talk_in_mod_channel;
-	set<USER_ID>		_invited;
-	set<USER_ID>		_banned;
-	// set<User>			_user_lists;
+	string						_channel_name;
+	set<pair<USER_ID, string> >	_clients_nicks;
+	set<USER_ID>				_clients;
+	set<USER_ID>				_operators;
+	set<USER_ID>				_can_talk_in_mod_channel;
+	set<USER_ID>				_invited;
+	set<USER_ID>				_banned;
+	// set<User>				_user_lists;
 
 	enum ChannelMode	_mode;
 	unsigned int		_users_limit;
@@ -50,6 +51,7 @@ public:
 	void set_mode(enum ChannelMode mode);
 	void set_password(const string &password);
 
+	void add_client_nickname(USER_ID client, string nickname);
 	void add_client(USER_ID client);
 	void remove_client(USER_ID client);
 	void add_operator(USER_ID client);
@@ -62,6 +64,7 @@ public:
 	void remove_banned(USER_ID client);
 
 	string get_channel_name() const;
+	set<pair<USER_ID, string> > get_clients_nicks() const;
 	set<USER_ID> get_clients() const;
 	set<USER_ID> get_operators() const;
 	set<USER_ID> get_can_talk_in_mod_channel() const;
@@ -78,6 +81,8 @@ public:
 	bool is_operator(USER_ID client) const;
 	bool is_invited(USER_ID client) const;
 	bool is_banned(USER_ID client) const;
+
+	string get_nickname_list() const;
 };
 
 #endif

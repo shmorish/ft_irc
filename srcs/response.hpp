@@ -80,6 +80,13 @@ string err_461(User user, string command);
 string err_471(User user, string channel_name);
 string err_476(User user);
 
+//  332, 353, 366, 324
+
+string response332(User user, string channel_name, string topic);
+string response353(User user, string channel_name, string members);
+string response366(User user, string channel_name);
+string response324(User user, string channel_name, string mode);
+
 string success_response(User user, string command, string arg);
 
 #endif

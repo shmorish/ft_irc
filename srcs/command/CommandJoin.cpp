@@ -39,6 +39,20 @@ static void check_valid_channel_name(const vector<string> &args, User _user, Ser
 		throw runtime_error(err_471(_user, channel_name));
 }
 
+void send_success_response(User _user, string channel_name, string members) {
+	string res = success_response(_user, "JOIN", channel_name);
+	send(_user.get_fd(), res.c_str(), res.size(), 0);
+
+	res = response353(_user, channel_name, members);
+	send(_user.get_fd(), res.c_str(), res.size(), 0);
+
+	res = response366(_user, channel_name);
+	send(_user.get_fd(), res.c_str(), res.size(), 0);
+
+	res = response324(_user, channel_name, "i");
+	send(_user.get_fd(), res.c_str(), res.size(), 0);
+}
+
 void Command::join()
 {
 	try {
@@ -53,10 +67,12 @@ void Command::join()
 		try {
 			_server.get_channels().insert(new Channel(channel_name));
 			channel = _server.findChannelByName(channel_name);
+			channel->add_client_nickname(_user.get_fd(), _user.get_nickname());
 			channel->add_client(_user.get_fd());
 			channel->add_operator(_user.get_fd());
-			string res = success_response(_user, "JOIN", channel_name);
-			send(_user.get_fd(), res.c_str(), res.size(), 0);
+			// string res = success_response(_user, "JOIN", channel_name);
+			// send(_user.get_fd(), res.c_str(), res.size(), 0);
+			send_success_response(_user, channel_name, channel->get_nickname_list());
 		} catch (const exception &e) {
 			send(_user.get_fd(), e.what(), strlen(e.what()), 0);
 		}
@@ -71,9 +87,11 @@ void Command::join()
 					// throw runtime_error("You are already in this channel\n");
 				}
 			}
+			channel->add_client_nickname(_user.get_fd(), _user.get_nickname());
 			channel->add_client(_user.get_fd());
-			string res = success_response(_user, "JOIN", channel_name);
-			send(_user.get_fd(), res.c_str(), res.size(), 0);
+			// string res = success_response(_user, "JOIN", channel_name);
+			// send(_user.get_fd(), res.c_str(), res.size(), 0);
+			send_success_response(_user, channel_name, channel->get_nickname_list());
 		} catch (const exception &e) {
 			send(_user.get_fd(), e.what(), strlen(e.what()), 0);
 		}

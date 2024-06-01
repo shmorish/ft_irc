@@ -93,14 +93,75 @@ string err_476(User user)
     return res;
 }
 
+
+// 332, 353, 366, 324
+// join
+string response332(User user, string channel_name, string topic)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 332 ";
+    res += user.get_nickname();
+    res += " ";
+    res += channel_name;
+    res += " :";
+    res += topic;
+    res += "\r\n";
+    return res;
+}
+
+string response353(User user, string channel_name, string members)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 353 ";
+    res += user.get_nickname();
+    res += " = ";
+    res += channel_name;
+    res += " :";
+    res += members;
+    res += "\r\n";
+    return res;
+}
+
+string response366(User user, string channel_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 366 ";
+    res += user.get_nickname();
+    res += " ";
+    res += channel_name;
+    res += " :End of /NAMES list";
+    res += "\r\n";
+    return res;
+}
+
+string response324(User user, string channel_name, string mode)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 324 ";
+    res += user.get_nickname();
+    res += " ";
+    res += channel_name;
+    res += " ";
+    res += mode;
+    res += "\r\n";
+    return res;
+}
+
 string success_response(User user, string command, string arg)
 {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " ";
     res += command;
-    res += " ";
+    res += " :";
     res += arg;
     res += "\r\n";
     return res;
 }
+
+
+

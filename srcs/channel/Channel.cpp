@@ -41,6 +41,11 @@ void Channel::set_users_limit(const unsigned int limit){
     _users_limit = limit;
 }
 
+void Channel::add_client_nickname(USER_ID client, string nickname)
+{
+    _clients_nicks.insert(make_pair(client, nickname));
+}
+
 void Channel::add_client(USER_ID client)
 {
     _clients.insert(client);
@@ -94,6 +99,11 @@ void Channel::remove_banned(USER_ID client)
 string Channel::get_channel_name() const
 {
     return _channel_name;
+}
+
+set<pair<USER_ID, string> > Channel::get_clients_nicks() const
+{
+    return _clients_nicks;
 }
 
 set<USER_ID> Channel::get_clients() const
@@ -179,4 +189,17 @@ Channel::ChannelMode Channel::get_mode() const
 string Channel::get_password() const
 {
     return _password;
+}
+
+
+string Channel::get_nickname_list() const
+{
+    string res = "";
+    for (set<pair<USER_ID, string> >::iterator it = _clients_nicks.begin(); it != _clients_nicks.end(); it++) {
+        if (is_operator(it->first))
+            res += "@" + it->second + " ";
+        else
+            res += it->second + " ";
+    }
+    return res;
 }
