@@ -173,6 +173,20 @@ string err_473(User user, string channel_name)
     return res;
 }
 
+// ERR_BADCHANNELKEY (475): チャンネルに入るためのキー（パスワード）が間違っている、または提供されていない場合に返されます。
+string err_475(User user, string channel_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 475 ";
+    res += user.get_nickname();
+    res += " ";
+    res += channel_name;
+    res += " :Cannot join channel (+k)";
+    res += "\r\n";
+    return res;
+}
+
 // ERR_BADCHANMASK (476): 指定されたチャンネル名が無効な形式である場合に返されます。
 string err_476(User user)
 {
@@ -250,21 +264,8 @@ string response324(User user, string channel_name, string mode)
     res += user.get_nickname();
     res += " ";
     res += channel_name;
-    res += " ";
+    res += " +";
     res += mode;
-    res += "\r\n";
-    return res;
-}
-// operator権限がない場合
-string err_482(User user, string channel_name)
-{
-    string res;
-    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
-    res += " 482 ";
-    res += user.get_nickname();
-    res += " ";
-    res += channel_name;
-    res += " :You're not channel operator";
     res += "\r\n";
     return res;
 }

@@ -49,6 +49,8 @@ public:
 	void set_users_limit(const unsigned int limit);
 	void set_topic(const string &topic);
 	void set_mode(enum ChannelMode mode);
+	void add_mode(enum ChannelMode mode);
+	void remove_mode(enum ChannelMode mode);
 	void set_password(const string &password);
 
 	void add_client_nickname(USER_ID client, string nickname);

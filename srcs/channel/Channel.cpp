@@ -176,6 +176,16 @@ void Channel::set_mode(ChannelMode mode)
     _mode = mode;
 }
 
+void Channel::add_mode(ChannelMode mode)
+{
+    _mode = Channel::ChannelMode(_mode | mode);
+}
+
+void Channel::remove_mode(ChannelMode mode)
+{
+    _mode = Channel::ChannelMode(_mode & ~mode);
+}
+
 void Channel::set_password(const string &password)
 {
     _password = password;
