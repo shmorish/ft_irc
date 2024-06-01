@@ -79,6 +79,7 @@ string err_451(User user);
 string err_461(User user, string command);
 string err_471(User user, string channel_name);
 string err_476(User user);
+string err_482(User user, string channel_name);
 
 //  332, 353, 366, 324
 

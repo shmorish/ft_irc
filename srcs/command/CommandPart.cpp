@@ -27,8 +27,7 @@ void Command::part()
         if (channel->get_clients().size() == 0) {
             delete channel;
             _server.get_channels().erase(channel);
-}
-
+        }
     }
     catch (const exception &e) {
         send(_user.get_fd(), e.what(), strlen(e.what()), 0);

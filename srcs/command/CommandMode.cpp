@@ -62,6 +62,12 @@ void    Command::mode_command_l(Channel *channel) {
         long limit = strtol(_parser.get_args().at(2).c_str(), &end, 10);
         if (*end != '\0')
             throw runtime_error("Invalid limit\n");
+        if (limit < 0)
+            throw runtime_error("Invalid limit\n");
+        if (limit > OPEN_MAX)
+            throw runtime_error("Limit is too high\n");
+        if ((size_t)limit < channel->get_clients().size())
+            throw runtime_error("Limit is too low\n");
         channel->set_users_limit(limit);
     } else {
         if (_parser.get_args().size() != 2)
