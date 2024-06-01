@@ -4,7 +4,7 @@
 #include "utils.hpp"
 #define VERSION "1.0.0"
 #define SERVER_NAME "irc.localhost"
-#define SERVER_DATE "2021/09/01"
+#define SERVER_DATE __DATE__
 
 #define USER_IDENTIFIER(nickname, username) (std::string(":") + nickname + "!" + username + "@" + SERVER_NAME)
 

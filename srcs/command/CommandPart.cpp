@@ -8,7 +8,7 @@
 void Command::part()
 {
     try {
-        if (_parser.get_args().size() != 2)
+        if (_parser.get_args().size() != 1)
             throw runtime_error(err_461(_user, "PART"));
         string channel_name = _parser.get_args().at(0);
         if (channel_name.at(0) != '#')
