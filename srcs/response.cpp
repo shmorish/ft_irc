@@ -136,6 +136,17 @@ string err_462(User user)
     return res;
 }
 
+string err_464(User user)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 464 ";
+    res += user.get_nickname();
+    res += " :Incorrect password";
+    res += "\r\n";
+    return res;
+}
+
 string err_471(User user, string channel_name)
 {
     string res;
