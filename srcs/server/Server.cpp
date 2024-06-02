@@ -144,11 +144,11 @@ int Server::make_polls()
 {
     // const int timeout = -1; // wait infinitely
     const int timeout = 0; // wait indefinitely for an event
-    // int numReadyForIo = poll((pollfd *)_pollfd_vector.data(), (nfds_t)_pollfd_vector.size(), timeout);
     int numReadyForIo = poll(&_pollfd_vector[0], (nfds_t)_pollfd_vector.size(), timeout);
     if (numReadyForIo == -1) {
         close(_server_sockfd);
-        throw runtime_error("ERROR: poll: " + string(strerror(errno)));
+        throw runtime_error("Server Stopped");
+        // throw runtime_error("ERROR: poll: " + string(strerror(errno)));
     }
     return numReadyForIo;
 }

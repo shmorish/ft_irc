@@ -11,7 +11,7 @@ void Command::ping(void)
     // string response = "whatyouwant!ishikawatsubasa@localhost PONG :whatyouwant";
     string response;
     response += USER_IDENTIFIER(_user.get_nickname(), _user.get_username());
-    response += "PONG ";
+    response += " PONG ";
     response += _user.get_nickname();
     response += "\r\n";
 

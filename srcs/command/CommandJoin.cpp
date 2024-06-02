@@ -40,8 +40,6 @@ static void check_valid_channel_name(const vector<string> &args, User _user, Ser
 			throw runtime_error(err_443(_user, channel_name));
 		if (channel->channel_is_full() == true)
 			throw runtime_error(err_471(_user, channel_name));
-		// if (channel->get_mode() & Channel::InviteOnly)
-		// 	throw runtime_error(err_473(_user, channel_name));
 	}
 }
 

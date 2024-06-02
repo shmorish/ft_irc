@@ -182,6 +182,7 @@ string err_472(User user)
     return res;
 }
 
+// ERR_INVITEONLYCHAN (473): チャンネルが招待制で、ユーザーが招待されていない場合に返されます。
 string err_473(User user, string channel_name)
 {
     string res;
