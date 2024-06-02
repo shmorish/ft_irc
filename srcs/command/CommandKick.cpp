@@ -1,7 +1,7 @@
 #include "Command.hpp"
 
 static void	is_correct_input(const vector<string> &args, User _user) {
-	if (args.size() != 2)
+	if (args.size() != 3)
 		throw runtime_error(err_461(_user, "KICK"));
 	else if (args.at(0).at(0) != '#')
 		throw runtime_error(err_461(_user, "KICK"));
@@ -23,7 +23,11 @@ void	Command::kick() {
 			throw runtime_error(err_401(_user, client_name));
 		if (channel->is_operator(_user.get_fd()) == false)
 			throw runtime_error(err_482(_user, channel_name));
-		string res = success_response(_user, "KICK", channel_name);
+		// 第一引数Userがkickする人の方
+		string res = success_response(_user, "PART", channel_name);
+		_server.sendMsgToChannel(channel_name, res);
+		res = success_response(_user, "KICK", channel_name);
+		_server.sendMsgToChannel(channel_name, res);
 		_server.sendMsgToChannel(channel_name, res);
 		channel->remove_client(client_fd);
 		channel->remove_can_talk_in_mod_channel(client_fd);
