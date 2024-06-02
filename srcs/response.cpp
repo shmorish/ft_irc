@@ -52,6 +52,18 @@ string err_411(User user)
     return res;
 }
 
+// ERR_NONICKNAMEGIVEN (431): ニックネームが指定されていない場合に返されます。
+string err_431(User user)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 431 ";
+    res += user.get_nickname();
+    res += " :No nickname given";
+    res += "\r\n";
+    return res;
+}
+
 // ERR_ERRONEUSNICKNAME (432): ニックネームが無効な形式である場合に返されます。
 string err_432(User user, string nickname)
 {

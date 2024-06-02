@@ -76,6 +76,7 @@ string err_401(User user, string nickname);
 string err_403(User user, string channel_name);
 string err_405(User user);
 string err_411(User user);
+string err_431(User user);
 string err_432(User user, string nickname);
 string err_433(User user, string nickname);
 string err_442(User user, string channel_name);
