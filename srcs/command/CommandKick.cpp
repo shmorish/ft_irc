@@ -24,10 +24,10 @@ void	Command::kick() {
 		if (channel->is_operator(_user.get_fd()) == false)
 			throw runtime_error(err_482(_user, channel_name));
 		// 第一引数Userがkickする人の方
-		string res = success_response(_user, "PART", channel_name);
+		User *kick_user = _server.findUserByNick(client_name);
+		string res = success_response(*kick_user, "PART", channel_name);
 		_server.sendMsgToChannel(channel_name, res);
 		res = success_response(_user, "KICK", channel_name);
-		_server.sendMsgToChannel(channel_name, res);
 		_server.sendMsgToChannel(channel_name, res);
 		channel->remove_client(client_fd);
 		channel->remove_can_talk_in_mod_channel(client_fd);
