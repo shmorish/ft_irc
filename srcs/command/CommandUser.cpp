@@ -3,27 +3,20 @@
 // すでに入力してあるかどうかをチェック
 static void check_user_registration_status(User user) {
   if (user.get_is_username() == true)
-    throw runtime_error("You are already registered\n");
+    throw runtime_error(err_462(user));
 }
 
 // 引数の数をチェック
-static void process_title_arguments(vector<string> args) {
-  if (args.size() < 4)
-    throw runtime_error("Too few arguments\n");
-  if (args.size() > 4)
-    throw runtime_error("Too many arguments\n");
+static void process_title_arguments(User user, vector<string> args) {
+    if (args.size() != 4)
+      throw runtime_error(err_461(user, "User"));
 }
 
 // 引数の長さをチェック
-static void check_parser_args_length(Parser &_parser) {
-  if (_parser.get_args().at(0).size() > 256)
-    throw runtime_error("Username is too long\n");
-  if (_parser.get_args().at(1).size() > 256)
-    throw runtime_error("Realname is too long\n");
-  if (_parser.get_args().at(2).size() > 256)
-    throw runtime_error("Hostname is too long\n");
-  if (_parser.get_args().at(3).size() > 256)
-    throw runtime_error("Servername is too long\n");
+static void check_parser_args_length(User user, Parser &_parser) {
+  for (size_t i = 0; i < _parser.get_args().size(); i++)
+    if (_parser.get_args().at(i).size() > 256)
+      throw runtime_error(err_696(user));
 }
 
 // ユーザーの詳細を設定
@@ -42,9 +35,9 @@ void Command::user()
     // すでに入力してあるかどうかをチェック
     check_user_registration_status(_user);
     // 引数の数をチェック
-    process_title_arguments(_parser.get_args());
+    process_title_arguments(_user, _parser.get_args());
     // 引数の長さをチェック
-    check_parser_args_length(_parser);
+    check_parser_args_length(_user, _parser);
     // ユーザーの詳細を設定
     set_user_details(_user, _parser.get_args());
     //channel参加の権限を初期値に設定
