@@ -20,6 +20,8 @@ typedef enum CommandType {
     INVITE,
     CAP,
     DCC,
+    SENDFILE,
+    GETFILE,
 } CommandType;
 
 class Parser {

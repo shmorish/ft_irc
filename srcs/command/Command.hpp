@@ -32,6 +32,8 @@ private:
 	void	invite();
 	void	cap();
 	void	dcc();
+	void	sendfile();
+	void	getfile();
 
 	Server	&_server;
 	Parser	&_parser;
