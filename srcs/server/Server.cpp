@@ -10,7 +10,9 @@ Server::Server(long port, const string &password) : _port(port), _password(passw
     (void)_port;
 }
 
-Server::~Server(){}
+Server::~Server()
+{
+}
 
 void Server::setup(void)
 {
@@ -48,6 +50,37 @@ void Server::setup(void)
     _pollfd_vector.push_back(server_pollfd);
 }
 
+static void send_welcome_message_001(int fd, string nickname, string username)
+{
+    string msg = USER_IDENTIFIER(nickname, username);
+    msg += RPL_WELCOME(fd, nickname);
+    // cout << "Sending welcome message to client [" << fd << "]" << endl;
+    // cout << msg << endl;
+    send(fd, msg.c_str(), msg.size(), 0);
+}
+
+static void send_host_info_002(int client_sockfd, const string &servername, string nickname, string username)
+{
+    string msg = USER_IDENTIFIER(nickname, username);
+    msg += RPL_YOURHOST(servername, nickname);
+    send(client_sockfd, msg.c_str(), msg.size(), 0);
+}
+
+static void send_server_created_003(int client_sockfd, string nickname, string username)
+{
+    string date = SERVER_DATE;
+    string msg = USER_IDENTIFIER(nickname, username);
+    msg += RPL_CREATED(date, nickname);
+    send(client_sockfd, msg.c_str(), msg.size(), 0);
+}
+
+static void send_modes_004(int client_sockfd, const string &nick, string nickname, string username)
+{
+    string msg = USER_IDENTIFIER(nickname, username);
+    msg += RPL_MYINFO(nick);
+    send(client_sockfd, msg.c_str(), msg.size(), 0);
+}
+
 void Server::handle_new_client_connections(void)
 {
     struct sockaddr_in client_addr;
@@ -68,39 +101,54 @@ void Server::handle_new_client_connections(void)
     // add User with new client client_sockfd
     User *new_user = new User(client_sockfd);
     _users.insert(new_user);
-    
 }
 
-string Server::recieve_command(int client_sockfd, size_t i)
+static vector<string> split(const string &str, char delim)
+{
+    vector<string> result;
+    stringstream ss(str);
+    string item;
+    while (getline(ss, item, delim))
+    {
+        result.push_back(item);
+    }
+    return result;
+}
+
+vector<string> Server::recieve_command(int client_sockfd, size_t i)
 {
     char buffer[BUFSIZ + 1] = {0};
     ssize_t bytes_read = recv(client_sockfd, buffer, sizeof(buffer), 0);
     if (bytes_read == EOF) {
-        if (errno == EAGAIN || errno == EWOULDBLOCK) {return ("");}
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {return (vector<string>());}
         close(client_sockfd);
         close(_server_sockfd);
         throw runtime_error("ERROR: recv: " + string(strerror(errno)));
     }
     if (bytes_read == 0) {
-        close(client_sockfd);
-        _pollfd_vector.erase(_pollfd_vector.begin() + i);
-        string msg = "client -> fd [" + to_string(client_sockfd) + "] client disconnected";
-        throw runtime_error(msg);
+        string msg = "QUIT\n";
+        Parser parser = Parser(msg, _pollfd_vector[i].fd, _password);
+        User* user = findUserByFd(_pollfd_vector[i].fd);
+        Command command(*this, parser, *user);
+        string server_msg = "client -> fd [" + to_string(client_sockfd) + "] client disconnected";
+        throw runtime_error(server_msg);
     }
     if (bytes_read > BUFSIZ)
         throw runtime_error("ERROR: message too long");
-    return string(buffer);
+    buffer[bytes_read] = '\0';
+    vector<string> commands = split(buffer, '\n');
+    return commands;
 }
 
 int Server::make_polls()
 {
     // const int timeout = -1; // wait infinitely
     const int timeout = 0; // wait indefinitely for an event
-    // int numReadyForIo = poll((pollfd *)_pollfd_vector.data(), (nfds_t)_pollfd_vector.size(), timeout);
     int numReadyForIo = poll(&_pollfd_vector[0], (nfds_t)_pollfd_vector.size(), timeout);
     if (numReadyForIo == -1) {
         close(_server_sockfd);
-        throw runtime_error("ERROR: poll: " + string(strerror(errno)));
+        throw runtime_error("Server Stopped");
+        // throw runtime_error("ERROR: poll: " + string(strerror(errno)));
     }
     return numReadyForIo;
 }
@@ -109,26 +157,41 @@ void    Server::recieve_and_execute_commands(size_t i)
 {
     try
     {
-        string msg = recieve_command(_pollfd_vector[i].fd, i);
-        if (msg.size() == 0) return ;
-        while (msg[0] == ' ') msg.erase(0, 1);
-        if (msg.size() == 0 || msg == "\n") return ;
-        cout << "Client " << _pollfd_vector[i].fd << " says: " << msg;
-        Parser parser = Parser(msg, _pollfd_vector[i].fd, _password);
-        User* user = findUserByFd(_pollfd_vector[i].fd);
-        Command command(*this, parser, *user);
-        // Command command(*this, parser, *new User(_pollfd_vector[i].fd));
-        // recieve commands from clients
-        // handle poll events
-
-        // recieve command from client [PRIVMSG]
-        // ↓
-        long recived_fd = _pollfd_vector[i].fd;
-        for (unsigned long i = 0; i < _pollfd_vector.size(); i++) {
-            if (_pollfd_vector[i].fd != recived_fd) {
-                string client_msg = "Client [" + to_string(recived_fd) + "] says: " + msg;
-                send(_pollfd_vector[i].fd, client_msg.c_str(), client_msg.size(), 0);
+        // string msg = recieve_command(_pollfd_vector[i].fd, i);
+        vector<string> commands = recieve_command(_pollfd_vector[i].fd, i);
+        for (size_t j = 0; j < commands.size(); j++) {
+            string msg = commands[j];
+            if (msg.size() == 0) continue ;
+            while (msg[0] == ' ') msg.erase(0, 1);
+            if (msg.size() == 0 || msg == "\n") continue ;
+            Parser parser = Parser(msg, _pollfd_vector[i].fd, _password);
+            User* user = findUserByFd(_pollfd_vector[i].fd);
+            Command command(*this, parser, *user);
+            print_log(_pollfd_vector[i].fd, msg);
+            if (findUserByFd(_pollfd_vector[i].fd) != NULL) {
+                if (user->get_has_sent_welcome_message() == false) {
+                    if (user->get_ready_to_connect() == true) {
+                        send_welcome_message_001(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
+                        send_host_info_002(_pollfd_vector[i].fd, "XServer", user->get_nickname(), user->get_username());
+                        send_server_created_003(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
+                        send_modes_004(_pollfd_vector[i].fd, user->get_nickname(), user->get_nickname(), user->get_username());
+                        user->set_has_sent_welcome_message(true);
+                    }
+                }
             }
+            // Command command(*this, parser, *new User(_pollfd_vector[i].fd));
+            // recieve commands from clients
+            // handle poll events
+
+            // recieve command from client [PRIVMSG]
+            // ↓
+            // long recived_fd = _pollfd_vector[i].fd;
+            // for (unsigned long i = 0; i < _pollfd_vector.size(); i++) {
+            //     if (_pollfd_vector[i].fd != recived_fd) {
+            //         string client_msg = "Client [" + to_string(recived_fd) + "] says: " + msg;
+            //         send(_pollfd_vector[i].fd, client_msg.c_str(), client_msg.size(), 0);
+            //     }
+            // }
         }
         // ↑
     }
@@ -148,10 +211,31 @@ void    Server::check_all_polls()
             else
                 recieve_and_execute_commands(i);
         }
-        // else if (_pollfd_vector[i].revents & POLLHUP) {
-        //     close(_pollfd_vector[i].fd);
-        //     _pollfd_vector.erase(_pollfd_vector.begin() + i);
-        // }
+    }
+}
+
+void Server::close_server()
+{
+    for (set<User *>::iterator it = _users.begin(); it != _users.end(); ++it) {
+        delete *it;
+    }
+    for (set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+        delete *it;
+    }
+    _users.clear();
+    _channels.clear();
+    close(_server_sockfd);
+}
+
+void Server::sendMsgToChannel(string channel_name, string msg)
+{
+    Channel* channel = findChannelByName(channel_name);
+    if (channel == NULL) {
+        return ;
+    }
+    set<int> clients = channel->get_clients();
+    for (set<int>::iterator it = clients.begin(); it != clients.end(); ++it) {
+        send(*it, msg.c_str(), msg.size(), 0);
     }
 }
 
@@ -162,7 +246,7 @@ void Server::run()
         make_polls();
         check_all_polls();
     }
-    close(_server_sockfd);
+    close_server();
     cout << "Server stopped" << endl;
 }
 
@@ -207,4 +291,29 @@ Channel* Server::findChannelByName(string name) {
         }
     }
     return NULL;
+}
+
+void Server::removeUser(User *user) {
+    _users.erase(user);
+    delete user;
+}
+
+void Server::print_log(int fd, string msg) {
+    cout << "----- Server Log -----" << endl;
+    cout << "Current Command: " << endl;
+    cout << "  [fd " << fd << "]: " << msg << endl;
+    cout << "Users: " << endl;
+    for (set<User*>::iterator it = _users.begin(); it != _users.end(); ++it) {
+        cout << "  [fd " << (*it)->get_fd() << "]: " << (*it)->get_nickname() << endl;
+    }
+    cout << "Channels: " << endl;
+    for (set<Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+        cout << "  [name] " << (*it)->get_channel_name() << endl;
+        set<int> clients = (*it)->get_clients();
+        for (set<int>::iterator it2 = clients.begin(); it2 != clients.end(); ++it2) {
+            cout << "    [fd] " << *it2 << ":" << findUserByFd(*it2)->get_nickname() << endl;
+        }
+    }
+    cout << "----------------------" << endl;
+    cout << endl;
 }

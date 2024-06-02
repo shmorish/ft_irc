@@ -15,24 +15,22 @@ string Parser::get_message(){
 void	Parser::check_command(string &command)
 {
 	transform(command.begin(), command.end(), command.begin(), ::toupper);
-	if (command == "PASS")
-		_command = PASS;
-	else if (command == "NICK")
-		_command = NICK;
-	else if (command == "USER")
-		_command = USER;
-	else if (command == "JOIN")
-		_command = JOIN;
-	else if (command == "PART")
-		_command = PART;
-	else if (command == "PRIVMSG")
-		_command = PRIVMSG;
-	else if (command == "QUIT")
-		_command = QUIT;
-	else if (command == "PING")
-		_command = PING;
-	else if (command == "PONG")
-		_command = PONG;
+	if (command == "PASS") _command = PASS;
+	else if (command == "NICK") _command = NICK;
+	else if (command == "USER") _command = USER;
+	else if (command == "JOIN") _command = JOIN;
+	else if (command == "PART") _command = PART;
+	else if (command == "PRIVMSG") _command = PRIVMSG;
+	else if (command == "QUIT") _command = QUIT;
+	else if (command == "PING") _command = PING;
+	// else if (command == "PONG") _command = PONG;
+	else if (command == "TIME") _command = TIME;
+	else if (command == "KICK") _command = KICK;
+	else if (command == "MODE") _command = MODE;
+	else if (command == "TOPIC") _command = TOPIC;
+	else if (command == "INVITE") _command = INVITE;
+	else if (command == "CAP") _command = CAP;
+	// else if (command == "DCC") _command = DCC;
 	else {
 		string error = "Invalid command: " + command + "\n";
 		send(_fd, error.c_str(), error.size(), 0);

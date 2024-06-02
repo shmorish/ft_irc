@@ -13,6 +13,15 @@ typedef enum CommandType {
     QUIT,
     PING,
     PONG,
+    TIME,
+    KICK,
+    MODE,
+    TOPIC,
+    INVITE,
+    CAP,
+    DCC,
+    SENDFILE,
+    GETFILE,
 } CommandType;
 
 class Parser {
@@ -23,7 +32,7 @@ public:
     string get_password();
     string get_message();
     vector<string> get_args();
-    
+
 private:
     string _message;
     int _fd;

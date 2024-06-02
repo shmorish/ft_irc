@@ -20,15 +20,32 @@ private:
 	void	nick();
 	void	user();
 	void	join();
-	void	part(){};
+	void	part();
 	void	privmsg();
-	void	quit(){};
-	void	ping(){};
+	void	quit();
+	void	ping();
 	void	pong(){};
+	void	show_time();
+	void	kick();
+	void	mode();
+	void	topic();
+	void	invite();
+	void	cap();
+	void	dcc();
+	void	sendfile();
+	void	getfile();
 
 	Server	&_server;
 	Parser	&_parser;
 	User	&_user;
+
+	void mode_command_o(Channel *channel);
+	void mode_command_l(Channel *channel);
+	void mode_command_t(Channel *channel);
+	void mode_command_m(Channel *channel);
+	void mode_command_v(Channel *channel);
+	void mode_command_k(Channel *channel);
+	void mode_command_i(Channel *channel);
 };
 
 #endif

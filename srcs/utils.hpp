@@ -9,6 +9,8 @@
 # include <iostream>
 # include <map>
 # include <poll.h>
+# include <cstring>
+# include <algorithm>
 # include <set>
 # include <signal.h>
 # include <string>
@@ -20,6 +22,8 @@
 
 using namespace std;
 
+# include "response.hpp"
+
 # define BLUE "\033[0;34m"
 # define RESET "\033[0m"
 #ifdef DEBUG
@@ -27,5 +31,16 @@ using namespace std;
 #else
     #define DEBUG_MSG(x, ...)
 #endif
+
+#ifndef OPEN_MAX
+# define OPEN_MAX 10240
+#endif
+
+template <typename T>
+std::string to_string(const T& value) {
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
 
 #endif

@@ -14,7 +14,7 @@ long checkPort(const char *port)
     return port_num;
 }
 
-std::string checkPassword(const char *password)
+string checkPassword(const char *password)
 {
     if (!password || *password == '\0')
         throw invalid_argument("Invalid password");
@@ -49,7 +49,6 @@ int main(int argc, char **argv)
     signal(SIGINT, sigintHandler);
     try {
         Server IrcServer(checkPort(argv[1]), checkPassword(argv[2]));
-        IrcServer.set_own_addr(&IrcServer);
         IrcServer.setup();
         IrcServer.run();
     } catch (const exception &e) {
