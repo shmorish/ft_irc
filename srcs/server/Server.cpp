@@ -18,7 +18,7 @@ void Server::setup(void)
 {
     _server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_server_sockfd == -1) {
-		throw runtime_error("ERROR: socket: " + string(strerror(errno)));
+		throw runtime_error("ERROR: socket: ");
 	}
     DEBUG_MSG("Server socket created fd -> ", _server_sockfd);
 
@@ -30,16 +30,16 @@ void Server::setup(void)
     if (setsockopt(_server_sockfd, SOL_SOCKET, SO_REUSEADDR, &enable_SO_REU, sizeof(int)) == -1)
     {
         close(_server_sockfd);
-        throw runtime_error("ERROR: setsockopt: " + string(strerror(errno)));
+        throw runtime_error("ERROR: setsockopt: ");
     }
     if (bind(_server_sockfd, (const struct sockaddr *)&_server_addr, (socklen_t)sizeof(_server_addr)) == -1) {
         close(_server_sockfd);
-        throw runtime_error("ERROR: bind: " + string(strerror(errno)));
+        throw runtime_error("ERROR: bind: ");
     }
     DEBUG_MSG("Server socket binded to port -> ", _port);
     if (listen(_server_sockfd, SOMAXCONN) == -1) {
         close(_server_sockfd);
-        throw runtime_error("ERROR: listen: " + string(strerror(errno)));
+        throw runtime_error("ERROR: listen: ");
     }
     DEBUG_MSG("Server socket listening on port -> ", _port);
 
@@ -88,7 +88,7 @@ void Server::handle_new_client_connections(void)
     int client_sockfd = accept(_server_sockfd, (struct sockaddr *)&client_addr, &client_addr_len);
     if (client_sockfd == -1) {
         close(_server_sockfd);
-        throw runtime_error("ERROR: accept: " + string(strerror(errno)));
+        throw runtime_error("ERROR: accept");
     }
     cout << "New client connected with fd [" << client_sockfd << "]" << endl;
     struct pollfd client_pollfd;
@@ -120,10 +120,9 @@ vector<string> Server::recieve_command(int client_sockfd, size_t i)
     char buffer[BUFSIZ + 1] = {0};
     ssize_t bytes_read = recv(client_sockfd, buffer, sizeof(buffer), 0);
     if (bytes_read == EOF) {
-        if (errno == EAGAIN || errno == EWOULDBLOCK) {return (vector<string>());}
         close(client_sockfd);
         close(_server_sockfd);
-        throw runtime_error("ERROR: recv: " + string(strerror(errno)));
+        throw runtime_error("ERROR: recv");
     }
     if (bytes_read == 0) {
         string msg = "QUIT\n";
@@ -148,7 +147,6 @@ int Server::make_polls()
     if (numReadyForIo == -1) {
         close(_server_sockfd);
         throw runtime_error("Server Stopped");
-        // throw runtime_error("ERROR: poll: " + string(strerror(errno)));
     }
     return numReadyForIo;
 }
