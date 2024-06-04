@@ -81,6 +81,19 @@ static void join_channel_list(Server &_server, Parser &_parser, User &_user) {
 	}
 }
 
+static void invite_channel_list(Server &_server, Parser &_parser, User &_user) {
+	string userID = USER_IDENTIFIER("bot", "bot");
+	string message = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " ";
+	set<Channel *> channels = _server.get_channels();
+	for (set<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it) {
+		string channel_message = message;
+		channel_message += (*it)->get_channel_name();
+		channel_message += "\r\n";
+		if ((*it)->is_invited(_user.get_fd()) == true)
+			send(_user.get_fd(), channel_message.c_str(), channel_message.size(), 0);
+	}
+}
+
 static void channel(Server &_server, Parser &_parser, User &_user) {
 	if (_parser.get_args().size() != 3)
 		throw runtime_error(err_461(_user, "bot"));
@@ -88,8 +101,23 @@ static void channel(Server &_server, Parser &_parser, User &_user) {
 		channel_list(_server, _parser, _user);
 	else if (_parser.get_args().at(2) == "join")
 		join_channel_list(_server, _parser, _user);
+	else if (_parser.get_args().at(2) == "invite")
+		invite_channel_list(_server, _parser, _user);
 	else
 		throw runtime_error(err_696(_user));
+}
+
+static void help(Parser &_parser, User &_user) {
+	if (_parser.get_args().size() != 2)
+		throw runtime_error(err_461(_user, "bot"));
+
+	string userID = USER_IDENTIFIER("bot", "bot");
+
+	string announce_msg = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " announce <message>\r\n";
+	send(_user.get_fd(), announce_msg.c_str(), announce_msg.size(), 0);
+
+	string channel_msg = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " channel list | channel join | channel invite \r\n";
+	send(_user.get_fd(), channel_msg.c_str(), channel_msg.size(), 0);
 }
 
 static void send_bot(Server &_server, Parser &_parser, User &_user) {
@@ -97,8 +125,8 @@ static void send_bot(Server &_server, Parser &_parser, User &_user) {
 		announce(_server, _parser, _user);
 	else if (_parser.get_args().at(1) == "channel" || _parser.get_args().at(1) == ":channel")
 		channel(_server, _parser, _user);
-	else if (_parser.get_args().at(1) == "help" || _parser.get_args().at(1) == ":help") ;
-		// send(_user.get_fd(), "bot PRIVMSG " + _user.get_nickname() + " :announce <message> | channel | help\r\n", 0);
+	else if (_parser.get_args().at(1) == "help" || _parser.get_args().at(1) == ":help")
+		help(_parser, _user);
 	else
 		throw runtime_error(err_696(_user));
 }
