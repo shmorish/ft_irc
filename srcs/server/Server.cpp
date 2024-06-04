@@ -299,17 +299,45 @@ void Server::removeUser(User *user) {
 void Server::print_log(int fd, string msg) {
     cout << "----- Server Log -----" << endl;
     cout << "Current Command: " << endl;
-    cout << "  [fd " << fd << "]: " << msg << endl;
+    cout << "  [fd]: " << fd << " " << msg << endl;
     cout << "Users: " << endl;
     for (set<User*>::iterator it = _users.begin(); it != _users.end(); ++it) {
-        cout << "  [fd " << (*it)->get_fd() << "]: " << (*it)->get_nickname() << endl;
+        cout << "  [fd]: " << (*it)->get_fd() << " " << (*it)->get_nickname() << endl;
     }
     cout << "Channels: " << endl;
     for (set<Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
-        cout << "  [name] " << (*it)->get_channel_name() << endl;
-        set<int> clients = (*it)->get_clients();
+        Channel *channel = *it;
+        cout << "  [name]: " << channel->get_channel_name() << endl;
+        enum Channel::ChannelMode mode = channel->get_mode();
+        cout << "    [Channel Mode]: ";
+        if (mode == (0))
+            cout << "NONE ";
+        if (mode & (1 << 0))
+            cout << "INVITE_ONLY ";
+        if (mode & (1 << 1))
+            cout << "MODERATED ";
+        if (mode & (1 << 2))
+            cout << "TOPIC_OP_ONLY ";
+        if (mode & (1 << 3))
+            cout << "NEED_PASSWORD ";
+        cout << endl;
+        set<int> clients = channel->get_clients();
         for (set<int>::iterator it2 = clients.begin(); it2 != clients.end(); ++it2) {
-            cout << "    [fd] " << *it2 << ":" << findUserByFd(*it2)->get_nickname() << endl;
+            string nickname = findUserByFd(*it2)->get_nickname();
+            if (channel->is_operator(*it2))
+                cout << "    [Operat] " << *it2 << ":" << nickname << endl;
+            else
+                cout << "    [Client] " << *it2 << ":" << nickname << endl;
+        }
+        set<int> invited = channel->get_invited();
+        for (set<int>::iterator it2 = invited.begin(); it2 != invited.end(); ++it2) {
+            string nickname = findUserByFd(*it2)->get_nickname();
+            cout << "    [Invite] " << *it2 << ":" << nickname << endl;
+        }
+        set<int> banned = channel->get_banned();
+        for (set<int>::iterator it2 = banned.begin(); it2 != banned.end(); ++it2) {
+            string nickname = findUserByFd(*it2)->get_nickname();
+            cout << "    [Banned] " << *it2 << ":" << nickname << endl;
         }
     }
     cout << "----------------------" << endl;
