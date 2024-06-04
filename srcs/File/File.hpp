@@ -1,3 +1,6 @@
+#ifndef FILE_HPP
+#define FILE_HPP
+
 #include "utils.hpp"
 
 class File {
@@ -20,3 +23,5 @@ public:
     int get_sender_fd();
     int get_accepter_fd();
 };
+
+#endif
