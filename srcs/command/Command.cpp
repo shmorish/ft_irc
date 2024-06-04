@@ -21,6 +21,7 @@ Command::Command(Server &server, Parser &parser , User &user_class) : _server(se
 	else if (cmd == SENDFILE) sendfile();
 	else if (cmd == GETFILE) getfile();
 	else if (cmd == HELP) help();
+	else if (cmd == VERSION) version();
 	else throw runtime_error("Invalid command");
 }
 

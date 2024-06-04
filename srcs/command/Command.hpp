@@ -35,6 +35,7 @@ private:
 	void	sendfile();
 	void	getfile();
 	void	help();
+	void	version();
 
 	Server	&_server;
 	Parser	&_parser;

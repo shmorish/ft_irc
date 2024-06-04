@@ -23,6 +23,7 @@ typedef enum CommandType {
     SENDFILE,
     GETFILE,
     HELP,
+    VERSION,
 } CommandType;
 
 class Parser {
