@@ -50,7 +50,20 @@ void Command::privmsg()
 		}
 		if (_parser.get_args().at(0).at(0) == '#') {
 			send_message_to_channel(_server, _parser, _user);
-		} else {
+		// } else if (_parser.get_args().at(0) == "announce") {
+		// 	string message = USER_IDENTIFIER("announce", "announce");
+		// 	message += "announce PRIVMSG " + _parser.get_args().at(0) + " ";
+		// 	for (size_t i = 1; i < _parser.get_args().size(); i++) {
+		// 		message += _parser.get_args().at(i);
+		// 	if (i != _parser.get_args().size() - 1)
+		// 		message += " ";
+		// 	}
+		// 	message += "\r\n";
+		// 	set<User *> users = _server.get_users();
+		// 	for (set<User *>::iterator it = users.begin(); it != users.end(); ++it)
+		// 			send((*it)->get_fd(), message.c_str(), message.size(), 0);
+		}
+		else {
 			send_message_to_user(_server, _parser, _user);
 		}
 
