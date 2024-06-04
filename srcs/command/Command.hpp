@@ -5,11 +5,13 @@
 #include "Channel.hpp"
 #include "Parser.hpp"
 #include "User.hpp"
+#include "File.hpp"
 #include "utils.hpp"
 
 class Server;
 class Parser;
 class User;
+class File;
 
 class Command {
 public:

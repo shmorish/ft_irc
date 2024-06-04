@@ -260,6 +260,10 @@ set<Channel *> &Server::get_channels(){
     return _channels;
 }
 
+set<File *> &Server::get_files(){
+    return _files;
+}
+
 void Server::set_own_addr(void *addr){
     own_addr = addr;
 }
@@ -285,6 +289,15 @@ User* Server::findUserByNick(string nick) {
 Channel* Server::findChannelByName(string name) {
     for (set<Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
         if ((*it)->get_channel_name() == name) {
+            return *it;
+        }
+    }
+    return NULL;
+}
+
+File* Server::findFileByFilename(string filename) {
+    for (set<File*>::iterator it = _files.begin(); it != _files.end(); ++it) {
+        if ((*it)->get_filename() == filename) {
             return *it;
         }
     }

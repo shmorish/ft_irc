@@ -1,8 +1,10 @@
 #include "Command.hpp"
-#include <fcntl.h>
+
+// GETFILE filename ファイルを置きたい場所の絶対path
 
 void Command::getfile() {
     // try {
+
     //     if (_user.get_ready_to_connect() == false)
     //         throw runtime_error(err_451(_user));
     //     string filename = _parser.get_args().at(0);
@@ -11,6 +13,7 @@ void Command::getfile() {
     //     string get_path = _parser.get_args().at(1);
     //     if (get_path.empty())
     //         throw runtime_error(err_461(_user, "GETFILE"));
+    //     // ファイル名が存在するものか確認
     //     int fd = open(get_path.c_str(), O_DIRECTORY);
     //     if (fd == -1)
     //         throw runtime_error("GETFILE: " + get_path + ": Not a directory");
@@ -18,6 +21,7 @@ void Command::getfile() {
     //     if (get_path.back() == '/')
     //         get_path.pop_back();
     //     string path = get_path + "/" + filename;
+    //     // fileのクラスを消す
     // } catch (exception &e) {
     //     send(_user.get_fd(), e.what(), strlen(e.what()), 0);
     // }
