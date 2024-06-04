@@ -24,6 +24,7 @@ typedef enum CommandType {
     GETFILE,
     HELP,
     VERSION,
+    BAN,
 } CommandType;
 
 class Parser {

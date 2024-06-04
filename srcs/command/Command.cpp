@@ -22,6 +22,7 @@ Command::Command(Server &server, Parser &parser , User &user_class) : _server(se
 	else if (cmd == GETFILE) getfile();
 	else if (cmd == HELP) help();
 	else if (cmd == VERSION) version();
+	else if (cmd == BAN) ban();
 	else throw runtime_error("Invalid command");
 }
 

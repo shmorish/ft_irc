@@ -36,6 +36,7 @@ private:
 	void	getfile();
 	void	help();
 	void	version();
+	void	ban();
 
 	Server	&_server;
 	Parser	&_parser;
