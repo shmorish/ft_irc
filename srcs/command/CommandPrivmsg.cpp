@@ -40,6 +40,28 @@ static void send_message_to_channel(Server &_server, Parser &_parser, User &_use
 	}
 }
 
+static void announce(Server &_server, Parser &_parser, User &_user) {
+	if (_parser.get_args().size() < 2)
+		throw runtime_error(err_411(_user));
+	string userID = USER_IDENTIFIER("bot", "bot");
+	string message = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " ";
+	for (size_t i = 2; i < _parser.get_args().size(); i++) {
+		message += _parser.get_args().at(i);
+		if (i != _parser.get_args().size() - 1)
+			message += " ";
+	}
+	message += "\r\n";
+	set<User *> users = _server.get_users();
+	for (set<User *>::iterator it = users.begin(); it != users.end(); ++it)
+		send((*it)->get_fd(), message.c_str(), message.size(), 0);
+}
+
+static void send_bot(Server &_server, Parser &_parser, User &_user) {
+	if (_parser.get_args().at(1) == "announce") {
+		announce(_server, _parser, _user);
+	}
+}
+
 
 void Command::privmsg()
 {
@@ -50,18 +72,8 @@ void Command::privmsg()
 		}
 		if (_parser.get_args().at(0).at(0) == '#') {
 			send_message_to_channel(_server, _parser, _user);
-		// } else if (_parser.get_args().at(0) == "announce") {
-		// 	string message = USER_IDENTIFIER("announce", "announce");
-		// 	message += "announce PRIVMSG " + _parser.get_args().at(0) + " ";
-		// 	for (size_t i = 1; i < _parser.get_args().size(); i++) {
-		// 		message += _parser.get_args().at(i);
-		// 	if (i != _parser.get_args().size() - 1)
-		// 		message += " ";
-		// 	}
-		// 	message += "\r\n";
-		// 	set<User *> users = _server.get_users();
-		// 	for (set<User *>::iterator it = users.begin(); it != users.end(); ++it)
-		// 			send((*it)->get_fd(), message.c_str(), message.size(), 0);
+		} else if (_parser.get_args().at(0) == "bot") {
+			send_bot(_server, _parser, _user);
 		}
 		else {
 			send_message_to_user(_server, _parser, _user);
