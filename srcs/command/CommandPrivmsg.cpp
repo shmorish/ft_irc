@@ -56,9 +56,7 @@ static void announce(Server &_server, Parser &_parser, User &_user) {
 		send((*it)->get_fd(), message.c_str(), message.size(), 0);
 }
 
-static void channel(Server &_server, Parser &_parser, User &_user) {
-	if (_parser.get_args().size() != 2)
-		throw runtime_error(err_411(_user));
+static void channel_list(Server &_server, Parser &_parser, User &_user) {
 	string userID = USER_IDENTIFIER("bot", "bot");
 	string message = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " ";
 	set<Channel *> channels = _server.get_channels();
@@ -70,13 +68,39 @@ static void channel(Server &_server, Parser &_parser, User &_user) {
 	}
 }
 
+static void join_channel_list(Server &_server, Parser &_parser, User &_user) {
+	string userID = USER_IDENTIFIER("bot", "bot");
+	string message = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " ";
+	set<Channel *> channels = _server.get_channels();
+	for (set<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it) {
+		string channel_message = message;
+		channel_message += (*it)->get_channel_name();
+		channel_message += "\r\n";
+		if ((*it)->is_client(_user.get_fd()) == true || (*it)->is_operator(_user.get_fd()) == true)
+			send(_user.get_fd(), channel_message.c_str(), channel_message.size(), 0);
+	}
+}
+
+static void channel(Server &_server, Parser &_parser, User &_user) {
+	if (_parser.get_args().size() != 3)
+		throw runtime_error(err_461(_user, "bot"));
+	if (_parser.get_args().at(2) == "list")
+		channel_list(_server, _parser, _user);
+	else if (_parser.get_args().at(2) == "join")
+		join_channel_list(_server, _parser, _user);
+	else
+		throw runtime_error(err_696(_user));
+}
+
 static void send_bot(Server &_server, Parser &_parser, User &_user) {
 	if (_parser.get_args().at(1) == "announce" || _parser.get_args().at(1) == ":announce")
 		announce(_server, _parser, _user);
 	else if (_parser.get_args().at(1) == "channel" || _parser.get_args().at(1) == ":channel")
 		channel(_server, _parser, _user);
+	else if (_parser.get_args().at(1) == "help" || _parser.get_args().at(1) == ":help") ;
+		// send(_user.get_fd(), "bot PRIVMSG " + _user.get_nickname() + " :announce <message> | channel | help\r\n", 0);
 	else
-		throw runtime_error(err_411(_user));
+		throw runtime_error(err_696(_user));
 }
 
 
@@ -84,18 +108,14 @@ void Command::privmsg()
 {
 	// check if the user in the channel
 	try {
-		if (_parser.get_args().size() < 2) {
+		if (_parser.get_args().size() < 2)
 			throw runtime_error(err_411(_user));
-		}
-		if (_parser.get_args().at(0).at(0) == '#') {
+		if (_parser.get_args().at(0).at(0) == '#')
 			send_message_to_channel(_server, _parser, _user);
-		} else if (_parser.get_args().at(0) == "bot") {
+		else if (_parser.get_args().at(0) == "bot")
 			send_bot(_server, _parser, _user);
-		}
-		else {
+		else
 			send_message_to_user(_server, _parser, _user);
-		}
-
 	}
 	catch (const exception &e) {
 		send(_user.get_fd(), e.what(), strlen(e.what()), 0);
