@@ -208,6 +208,20 @@ string err_473(User user, string channel_name)
     return res;
 }
 
+// ERR_BANNEDFROMCHAN (474): チャンネルに入ることが禁止されている場合に返されます。
+string err_474(User user, string channel_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 474 ";
+    res += user.get_nickname();
+    res += " ";
+    res += channel_name;
+    res += " :Cannot join channel (+b)";
+    res += "\r\n";
+    return res;
+}
+
 // ERR_BADCHANNELKEY (475): チャンネルに入るためのキー（パスワード）が間違っている、または提供されていない場合に返されます。
 string err_475(User user, string channel_name)
 {
