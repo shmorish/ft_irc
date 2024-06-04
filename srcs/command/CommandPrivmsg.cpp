@@ -56,10 +56,27 @@ static void announce(Server &_server, Parser &_parser, User &_user) {
 		send((*it)->get_fd(), message.c_str(), message.size(), 0);
 }
 
-static void send_bot(Server &_server, Parser &_parser, User &_user) {
-	if (_parser.get_args().at(1) == "announce") {
-		announce(_server, _parser, _user);
+static void channel(Server &_server, Parser &_parser, User &_user) {
+	if (_parser.get_args().size() != 2)
+		throw runtime_error(err_411(_user));
+	string userID = USER_IDENTIFIER("bot", "bot");
+	string message = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " ";
+	set<Channel *> channels = _server.get_channels();
+	for (set<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it) {
+		string channel_message = message;
+		channel_message += (*it)->get_channel_name();
+		channel_message += "\r\n";
+		send(_user.get_fd(), channel_message.c_str(), channel_message.size(), 0);
 	}
+}
+
+static void send_bot(Server &_server, Parser &_parser, User &_user) {
+	if (_parser.get_args().at(1) == "announce" || _parser.get_args().at(1) == ":announce")
+		announce(_server, _parser, _user);
+	else if (_parser.get_args().at(1) == "channel" || _parser.get_args().at(1) == ":channel")
+		channel(_server, _parser, _user);
+	else
+		throw runtime_error(err_411(_user));
 }
 
 
