@@ -34,6 +34,7 @@ private:
 	void	dcc();
 	void	sendfile();
 	void	getfile();
+	void	help();
 
 	Server	&_server;
 	Parser	&_parser;

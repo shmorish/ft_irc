@@ -22,6 +22,7 @@ typedef enum CommandType {
     DCC,
     SENDFILE,
     GETFILE,
+    HELP,
 } CommandType;
 
 class Parser {

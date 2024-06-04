@@ -31,6 +31,9 @@ void	Parser::check_command(string &command)
 	else if (command == "INVITE") _command = INVITE;
 	else if (command == "CAP") _command = CAP;
 	// else if (command == "DCC") _command = DCC;
+	else if (command == "SENDFILE") _command = SENDFILE;
+	else if (command == "GETFILE") _command = GETFILE;
+	else if (command == "HELP") _command = HELP;
 	else {
 		string error = "Invalid command: " + command + "\n";
 		send(_fd, error.c_str(), error.size(), 0);
