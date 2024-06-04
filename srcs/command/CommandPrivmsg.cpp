@@ -131,7 +131,6 @@ static void send_bot(Server &_server, Parser &_parser, User &_user) {
 		throw runtime_error(err_696(_user));
 }
 
-
 void Command::privmsg()
 {
 	// check if the user in the channel
