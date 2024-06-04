@@ -81,6 +81,13 @@ static void send_modes_004(int client_sockfd, const string &nick, string nicknam
     send(client_sockfd, msg.c_str(), msg.size(), 0);
 }
 
+static void send_bot_message(int client_sockfd)
+{
+    string userID = USER_IDENTIFIER("bot", "bot");
+    string msg = userID + "bot PRIVMSG bot Hello, welcome to the server!\r\n";
+    send(client_sockfd, msg.c_str(), msg.size(), 0);
+}
+
 void Server::handle_new_client_connections(void)
 {
     struct sockaddr_in client_addr;
@@ -173,6 +180,7 @@ void    Server::recieve_and_execute_commands(size_t i)
                         send_host_info_002(_pollfd_vector[i].fd, "XServer", user->get_nickname(), user->get_username());
                         send_server_created_003(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
                         send_modes_004(_pollfd_vector[i].fd, user->get_nickname(), user->get_nickname(), user->get_username());
+                        send_bot_message(_pollfd_vector[i].fd);
                         user->set_has_sent_welcome_message(true);
                     }
                 }
