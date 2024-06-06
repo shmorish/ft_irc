@@ -72,6 +72,7 @@
 #define ERR_MISSPASS(Client)									"4004 " + Client + " :Please enter the password to connect to the server first. 🚫"
 
 class User;
+string err_331(User user, string channel_name);
 string err_401(User user, string nickname);
 string err_403(User user, string channel_name);
 string err_405(User user);

@@ -19,6 +19,9 @@ void    Command::topic(){
 			throw runtime_error(err_442(_user, channel->get_channel_name()));
 		if(_parser.get_args().size() == 1){
 			string topic = channel->get_topic();
+			if (topic == "")
+				throw runtime_error(err_331(_user, channel->get_channel_name()));
+			topic = channel->get_channel_name() + ":" + topic + "\r\n";
 			send(_user.get_fd(), topic.c_str(), topic.size(), 0);
 		}
 		if(_parser.get_args().size() == 2){

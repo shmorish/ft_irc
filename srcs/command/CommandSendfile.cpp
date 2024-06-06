@@ -1,4 +1,5 @@
 #include "Command.hpp"
+#include <fcntl.h>
 
 // SENDFILE <accepter_nickname> <ファイルの絶対or相対path>
 
@@ -22,28 +23,26 @@ void Command::sendfile()
         // check input file
         std::fstream ifs(_parser.get_args().at(1), std::ios::in);
         if (ifs.fail())
-            throw runtime_error(err_461(_user, "SENDFILE"));
-        
-        // create file
+            throw runtime_error(err_461(_user, "SENDFILE")); /*err num 書き換える*/
+        int fd = open(_parser.get_args().at(1).c_str(), O_DIRECTORY, 0777);
+        if (fd != -1)
+            throw runtime_error("GETFILE: " + _parser.get_args().at(1) + ": Failed to open file\r\n");
+        close(fd);
+
+        // create file class
         size_t pos = _parser.get_args().at(1).find_last_of("/");
         string filename = _parser.get_args().at(1).substr(pos + 1);
+        if (_server.findFileByFilename(filename) != NULL)
+            throw runtime_error(err_461(_user, "SENDFILE")); /*err num 書き換える*/
         _server.get_files().insert(new File(_parser.get_args().at(1), filename));
         File *file = _server.findFileByFilename(filename);
         if (file == NULL)
-            throw runtime_error(err_461(_user, "SENDFILE"));
+            throw runtime_error(err_461(_user, "SENDFILE")); /*err num 書き換える*/
         file->set_sender_fd(_user.get_fd());
         file->set_accepter_fd(_server.findUserByNick(accepter_name)->get_fd());
 
-        // 同一の名前のファイルが存在する場合、削除
-        for (set<File*>::iterator it = _server.get_files().begin(); it != _server.get_files().end(); it++){
-            string tmp_filename = (*it)->get_filename();
-            if (tmp_filename.compare(filename) == 0){
-                _server.get_files().erase(it);
-                delete *it;
-                throw runtime_error("Invalid Filename.\r\n");
-            }
-        }
-        send(_server.findUserByNick(accepter_name)->get_fd(), "SENDFILE", 7, 0);
+        /*~~が君にファイルを送信したよ！みたいなメッセージにしたい*/
+        send(_server.findUserByNick(accepter_name)->get_fd(), "SENDFILE\r\n", 10, 0);
     }
     catch (const exception &e) {
         send(_user.get_fd(), e.what(), strlen(e.what()), 0);
