@@ -39,6 +39,7 @@ private:
 	void	help();
 	void	version();
 	void	ban();
+	void	send_bot();
 
 	Server	&_server;
 	Parser	&_parser;

@@ -107,7 +107,7 @@ static void channel(Server &_server, Parser &_parser, User &_user) {
 		throw runtime_error(err_696(_user));
 }
 
-static void help(Parser &_parser, User &_user) {
+static void help_bot(Parser &_parser, User &_user) {
 	if (_parser.get_args().size() != 2)
 		throw runtime_error(err_461(_user, "bot"));
 
@@ -120,13 +120,23 @@ static void help(Parser &_parser, User &_user) {
 	send(_user.get_fd(), channel_msg.c_str(), channel_msg.size(), 0);
 }
 
-static void send_bot(Server &_server, Parser &_parser, User &_user) {
+/*
+* privmsg bot :sendfile nick path
+* privmsg bot :getfile filename path
+*/
+void Command::send_bot() {
 	if (_parser.get_args().at(1) == "announce" || _parser.get_args().at(1) == ":announce")
 		announce(_server, _parser, _user);
 	else if (_parser.get_args().at(1) == "channel" || _parser.get_args().at(1) == ":channel")
 		channel(_server, _parser, _user);
 	else if (_parser.get_args().at(1) == "help" || _parser.get_args().at(1) == ":help")
-		help(_parser, _user);
+		help_bot(_parser, _user);
+	else if (_parser.get_args().at(1) == "sendfile" || _parser.get_args().at(1) == ":sendfile") {
+		sendfile();
+	}
+	else if (_parser.get_args().at(1) == "getfile" || _parser.get_args().at(1) == ":getfile") {
+		getfile();
+	}
 	else
 		throw runtime_error(err_696(_user));
 }
@@ -140,7 +150,7 @@ void Command::privmsg()
 		if (_parser.get_args().at(0).at(0) == '#')
 			send_message_to_channel(_server, _parser, _user);
 		else if (_parser.get_args().at(0) == "bot")
-			send_bot(_server, _parser, _user);
+			send_bot();
 		else
 			send_message_to_user(_server, _parser, _user);
 	}
