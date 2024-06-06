@@ -34,9 +34,6 @@ void Command::getfile() {
         if (ofs.fail())
             throw runtime_error("GETFILE: " + get_path + "/" + filename + ": Permission denied\r\n"); /*change err num*/
         fstream ifs(file->get_filename(), ios::in);
-        // string userID = USER_IDENTIFIER("bot", "bot");
-        // string mes = userID + "bot PRIVMSG " + file->get_filename() + " 受け取ったよ！\r\n";
-        // send(_user.get_fd(), mes.c_str(), mes.size(), 0);
         if (ifs.fail())
             throw runtime_error("GETFILE: " + file->get_filename() + ": Permission denied\r\n"); /*change err num*/
         send(_user.get_fd(), "GETFILE\r\n", 9, 0);
