@@ -20,6 +20,7 @@ public:
     void set_accepter_fd(int accepter_fd);
     string get_filename();
     string get_accept_path();
+    string get_send_path();
     int get_sender_fd();
     int get_accepter_fd();
 };

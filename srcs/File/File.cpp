@@ -16,6 +16,8 @@ string File::get_filename() { return _filename; }
 
 string File::get_accept_path() { return _accept_path; }
 
+string File::get_send_path() { return _send_path; }
+
 int File::get_sender_fd() { return _sender_fd; }
 
 int File::get_accepter_fd() { return _accepter_fd; }

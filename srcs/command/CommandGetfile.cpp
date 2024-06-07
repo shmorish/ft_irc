@@ -33,7 +33,7 @@ void Command::getfile() {
         fstream ofs(get_path + "/" + filename, ios::out);
         if (ofs.fail())
             throw runtime_error("GETFILE: " + get_path + "/" + filename + ": Permission denied\r\n"); /*change err num*/
-        fstream ifs(file->get_filename(), ios::in);
+        fstream ifs(file->get_send_path(), ios::in);
         if (ifs.fail())
             throw runtime_error("GETFILE: " + file->get_filename() + ": Permission denied\r\n"); /*change err num*/
         send(_user.get_fd(), "GETFILE\r\n", 9, 0);
