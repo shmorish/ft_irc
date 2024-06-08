@@ -371,3 +371,18 @@ string response341(User user, string channel_name, string nickname)
     res += "\r\n";
     return res;
 }
+
+
+string err_800(User user, string channel_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 800 ";
+    res += user.get_nickname();
+    res += " ";
+    res += channel_name;
+    res += " ";
+    res += "Already invited to the channel.";
+    res += "\r\n";
+    return res;
+}
