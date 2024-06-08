@@ -44,7 +44,7 @@ static void announce(Server &_server, Parser &_parser, User &_user) {
 	if (_parser.get_args().size() < 2)
 		throw runtime_error(err_411(_user));
 	string userID = USER_IDENTIFIER("bot", "bot");
-	string message = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " ";
+	string message = userID + " PRIVMSG " + _parser.get_args().at(0) + " ";
 	for (size_t i = 2; i < _parser.get_args().size(); i++) {
 		message += _parser.get_args().at(i);
 		if (i != _parser.get_args().size() - 1)
@@ -58,7 +58,7 @@ static void announce(Server &_server, Parser &_parser, User &_user) {
 
 static void channel_list(Server &_server, Parser &_parser, User &_user) {
 	string userID = USER_IDENTIFIER("bot", "bot");
-	string message = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " ";
+	string message = userID + " PRIVMSG " + _parser.get_args().at(0) + " ";
 	set<Channel *> channels = _server.get_channels();
 	for (set<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it) {
 		string channel_message = message;
@@ -70,7 +70,7 @@ static void channel_list(Server &_server, Parser &_parser, User &_user) {
 
 static void join_channel_list(Server &_server, Parser &_parser, User &_user) {
 	string userID = USER_IDENTIFIER("bot", "bot");
-	string message = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " ";
+	string message = userID + " PRIVMSG " + _parser.get_args().at(0) + " ";
 	set<Channel *> channels = _server.get_channels();
 	for (set<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it) {
 		string channel_message = message;
@@ -83,7 +83,7 @@ static void join_channel_list(Server &_server, Parser &_parser, User &_user) {
 
 static void invite_channel_list(Server &_server, Parser &_parser, User &_user) {
 	string userID = USER_IDENTIFIER("bot", "bot");
-	string message = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " ";
+	string message = userID + " PRIVMSG " + _parser.get_args().at(0) + " ";
 	set<Channel *> channels = _server.get_channels();
 	for (set<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it) {
 		string channel_message = message;
@@ -113,10 +113,10 @@ static void help_bot(Parser &_parser, User &_user) {
 
 	string userID = USER_IDENTIFIER("bot", "bot");
 
-	string announce_msg = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " announce <message>\r\n";
+	string announce_msg = userID + " PRIVMSG " + _parser.get_args().at(0) + " announce <message>\r\n";
 	send(_user.get_fd(), announce_msg.c_str(), announce_msg.size(), 0);
 
-	string channel_msg = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " channel list | channel join | channel invite \r\n";
+	string channel_msg = userID + " PRIVMSG " + _parser.get_args().at(0) + " channel list | channel join | channel invite \r\n";
 	send(_user.get_fd(), channel_msg.c_str(), channel_msg.size(), 0);
 }
 
@@ -145,6 +145,8 @@ void Command::privmsg()
 {
 	// check if the user in the channel
 	try {
+		if (_user.get_ready_to_connect() == false)
+			throw runtime_error(err_451(_user));
 		if (_parser.get_args().size() < 2)
 			throw runtime_error(err_411(_user));
 		if (_parser.get_args().at(0).at(0) == '#')

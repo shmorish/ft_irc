@@ -386,3 +386,87 @@ string err_800(User user, string channel_name)
     res += "\r\n";
     return res;
 }
+
+// NO_SUCH_FILE_OR_DIRECTORY : ファイルが存在しないか、またはディレクトリが存在しない場合に返されます。
+string err_825(User user, string file_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 825 ";
+    res += user.get_nickname();
+    res += " ";
+    res += file_name;
+    res += " :No such file or directory";
+    res += "\r\n";
+    return res;
+}
+
+// ERR_FILE_ALREADY_EXISTS : ファイルが既に存在する場合に返されます。
+string err_826(User user, string file_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 826 ";
+    res += user.get_nickname();
+    res += " ";
+    res += file_name;
+    res += " :File already exists";
+    res += "\r\n";
+    return res;
+}
+
+// ERR_FILE_PERMISSION_DENIED : ファイルにアクセスする権限がない場合に返されます。
+string err_827(User user, string file_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 827 ";
+    res += user.get_nickname();
+    res += " ";
+    res += file_name;
+    res += " :Permission denied";
+    res += "\r\n";
+    return res;
+}
+
+// ERR_NOT_ACCEPTER : ファイルを受け取る権限がない場合に返されます。
+string err_828(User user, string file_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 828 ";
+    res += user.get_nickname();
+    res += " ";
+    res += file_name;
+    res += " :You are not accepter of this file";
+    res += "\r\n";
+    return res;
+}
+
+// ERR_NOT_A_DIRECTORY : ディレクトリが存在しない場合に返されます。
+string err_829(User user, string file_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 829 ";
+    res += user.get_nickname();
+    res += " ";
+    res += file_name;
+    res += " :Not a directory";
+    res += "\r\n";
+    return res;
+}
+
+// ERR_IS_A_DIRECTORY : ファイルがディレクトリの場合に返されます。
+string err_830(User user, string file_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 830 ";
+    res += user.get_nickname();
+    res += " ";
+    res += file_name;
+    res += " :Is a directory";
+    res += "\r\n";
+    return res;
+}

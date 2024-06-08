@@ -95,6 +95,12 @@ string err_476(User user);
 string err_482(User user, string channel_name);
 string err_696(User user);
 string err_800(User user, string channel_name);
+string err_825(User user, string file_name);
+string err_826(User user, string file_name);
+string err_827(User user, string file_name);
+string err_828(User user, string file_name);
+string err_829(User user, string file_name);
+string err_830(User user, string file_name);
 
 //  332, 353, 366, 324
 
@@ -105,5 +111,18 @@ string response324(User user, string channel_name, string mode);
 string response341(User user, string channel_name, string nickname);
 
 string success_response(User user, string command, string arg);
+string bot_success_sendfile();
+string bot_success_getfile();
+
+string bot_err_response(string err_message);
+string bot_err_response401(string nickname);
+string bot_err_response451();
+string bot_err_response461(string command);
+string bot_err_response825(string file_name);
+string bot_err_response826(string file_name);
+string bot_err_response827(string file_name);
+string bot_err_response828(string file_name);
+string bot_err_response829(string file_name);
+string bot_err_response830(string file_name);
 
 #endif
