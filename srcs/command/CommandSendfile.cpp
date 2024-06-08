@@ -35,10 +35,10 @@ void Command::sendfile()
         // create file class
         size_t pos = input_file_path.find_last_of("/");
         string filename = input_file_path.substr(pos + 1);
-        if (_server.findFileByFilename(filename) != NULL)
+        if (_server.findFileByFilename(filename, _user.get_nickname(), accepter_name) != NULL)
             throw runtime_error("SENDFILE: " + filename + "File already exists\r\n");
-        _server.get_files().insert(new File(input_file_path, filename));
-        File *file = _server.findFileByFilename(filename);
+        _server.get_files().insert(new File(input_file_path, filename, _user.get_nickname(), accepter_name));
+        File *file = _server.findFileByFilename(filename, _user.get_nickname(), accepter_name);
         if (file == NULL)
             throw runtime_error("SENDFILE: " + input_file_path + "Failed to create file\r\n");
         file->set_sender_fd(_user.get_fd());

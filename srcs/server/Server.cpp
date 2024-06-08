@@ -303,11 +303,10 @@ Channel* Server::findChannelByName(string name) {
     return NULL;
 }
 
-File* Server::findFileByFilename(string filename) {
+File* Server::findFileByFilename(string filename, string sender, string receiver) {
     for (set<File*>::iterator it = _files.begin(); it != _files.end(); ++it) {
-        if ((*it)->get_filename() == filename) {
+        if ((*it)->get_filename() == filename && (*it)->get_send_nickname() == sender && (*it)->get_accept_nickname() == receiver)
             return *it;
-        }
     }
     return NULL;
 }
