@@ -22,23 +22,25 @@ void Command::sendfile()
             throw runtime_error(err_401(_user, accepter_name));
 
         // check input file
-        std::fstream ifs(_parser.get_args().at(3), std::ios::in);
+        string input_file_path = _parser.get_args().at(3);
+        std::fstream ifs(input_file_path, std::ios::in);
         if (ifs.fail())
-            throw runtime_error("SENDFILE: " + _parser.get_args().at(3) + "Failed to open file\r\n");
-        int fd = open(_parser.get_args().at(3).c_str(), O_DIRECTORY, 0777);
-        if (fd != -1)
-            throw runtime_error("SENDFILE: " + _parser.get_args().at(3) + ": Failed to open file\r\n");
-        close(fd);
+            throw runtime_error(err_825(_user, input_file_path));
+        int fd = open(input_file_path.c_str(), O_DIRECTORY);
+        if (fd != -1) {
+            close(fd);
+            throw runtime_error(err_830(_user, input_file_path));
+        }
 
         // create file class
-        size_t pos = _parser.get_args().at(3).find_last_of("/");
-        string filename = _parser.get_args().at(3).substr(pos + 1);
+        size_t pos = input_file_path.find_last_of("/");
+        string filename = input_file_path.substr(pos + 1);
         if (_server.findFileByFilename(filename) != NULL)
-            throw runtime_error("SENDFILE: " + _parser.get_args().at(3) + "File already exists\r\n");
-        _server.get_files().insert(new File(_parser.get_args().at(3), filename));
+            throw runtime_error("SENDFILE: " + filename + "File already exists\r\n");
+        _server.get_files().insert(new File(input_file_path, filename));
         File *file = _server.findFileByFilename(filename);
         if (file == NULL)
-            throw runtime_error("SENDFILE: " + _parser.get_args().at(3) + "Failed to create file\r\n");
+            throw runtime_error("SENDFILE: " + input_file_path + "Failed to create file\r\n");
         file->set_sender_fd(_user.get_fd());
         file->set_accepter_fd(_server.findUserByNick(accepter_name)->get_fd());
 

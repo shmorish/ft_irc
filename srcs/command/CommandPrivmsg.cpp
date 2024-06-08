@@ -145,6 +145,8 @@ void Command::privmsg()
 {
 	// check if the user in the channel
 	try {
+		if (_user.get_ready_to_connect() == false)
+			throw runtime_error(err_451(_user));
 		if (_parser.get_args().size() < 2)
 			throw runtime_error(err_411(_user));
 		if (_parser.get_args().at(0).at(0) == '#')

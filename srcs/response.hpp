@@ -100,6 +100,7 @@ string err_826(User user, string file_name);
 string err_827(User user, string file_name);
 string err_828(User user, string file_name);
 string err_829(User user, string file_name);
+string err_830(User user, string file_name);
 
 //  332, 353, 366, 324
 

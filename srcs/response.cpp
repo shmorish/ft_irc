@@ -456,3 +456,17 @@ string err_829(User user, string file_name)
     res += "\r\n";
     return res;
 }
+
+// ERR_IS_A_DIRECTORY : ファイルがディレクトリの場合に返されます。
+string err_830(User user, string file_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 830 ";
+    res += user.get_nickname();
+    res += " ";
+    res += file_name;
+    res += " :Is a directory";
+    res += "\r\n";
+    return res;
+}
