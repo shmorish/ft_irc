@@ -1,6 +1,6 @@
 #include "Command.hpp"
 
-void Command::dcc(){}
+void Command::dcc() {}
 
 // void Command::dcc()
 // {

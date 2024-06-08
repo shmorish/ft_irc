@@ -33,16 +33,16 @@ static void is_correct_input(const vector<string> &args, Server &_server, User &
     Channel *channel = _server.findChannelByName(channel_name);
     if (channel == NULL)
         throw runtime_error(err_403(_user, channel_name));
-    if(channel->is_client(_user.get_fd()) == false)
+    if (channel->is_client(_user.get_fd()) == false)
         throw runtime_error(err_442(_user, channel_name));
-    if(channel->is_operator(_user.get_fd()) == false)
+    if (channel->is_operator(_user.get_fd()) == false)
         throw runtime_error(err_482(_user, channel_name));
     string flag = _parser.get_args().at(1);
     if (flag.size() != 2 || (flag.at(0) != '+' && flag.at(0) != '-'))
         throw runtime_error(err_461(_user, "MODE"));
 }
 
-void    Command::mode_command_o(Channel *channel) {
+void Command::mode_command_o(Channel *channel) {
     if (_parser.get_args().size() != 3)
         throw runtime_error(err_461(_user, "MODE"));
     string flag = _parser.get_args().at(1);
@@ -54,7 +54,7 @@ void    Command::mode_command_o(Channel *channel) {
         channel->remove_operator(user->get_fd());
 }
 
-void    Command::mode_command_l(Channel *channel) {
+void Command::mode_command_l(Channel *channel) {
     string flag = _parser.get_args().at(1);
     if (flag.at(0) == '+') {
         if (_parser.get_args().size() != 3)
@@ -67,7 +67,7 @@ void    Command::mode_command_l(Channel *channel) {
             throw runtime_error(err_696(_user));
         if (limit > OPEN_MAX)
             throw runtime_error(err_696(_user));
-        if ((size_t)limit < channel->get_clients().size())
+        if ((size_t) limit < channel->get_clients().size())
             throw runtime_error(err_696(_user));
         channel->set_users_limit(limit);
     } else {
@@ -77,7 +77,7 @@ void    Command::mode_command_l(Channel *channel) {
     }
 }
 
-void    Command::mode_command_t(Channel *channel) {
+void Command::mode_command_t(Channel *channel) {
     string flag = _parser.get_args().at(1);
     Channel::ChannelMode mode = channel->get_mode();
     if (flag.at(0) == '+') {
@@ -89,7 +89,7 @@ void    Command::mode_command_t(Channel *channel) {
     }
 }
 
-void    Command::mode_command_m(Channel *channel) {
+void Command::mode_command_m(Channel *channel) {
     string flag = _parser.get_args().at(1);
     Channel::ChannelMode mode = channel->get_mode();
     if (flag.at(0) == '+') {
@@ -101,7 +101,7 @@ void    Command::mode_command_m(Channel *channel) {
     }
 }
 
-void    Command::mode_command_v(Channel *channel) {
+void Command::mode_command_v(Channel *channel) {
     string flag = _parser.get_args().at(1);
     string nickname = _parser.get_args().at(2);
     if (_parser.get_args().size() != 3)
@@ -113,7 +113,7 @@ void    Command::mode_command_v(Channel *channel) {
         channel->remove_can_talk_in_mod_channel(user->get_fd());
 }
 
-void    Command::mode_command_k(Channel *channel) {
+void Command::mode_command_k(Channel *channel) {
     string flag = _parser.get_args().at(1);
     if (_parser.get_args().size() != 3)
         throw runtime_error(err_461(_user, "MODE"));
@@ -129,7 +129,7 @@ void    Command::mode_command_k(Channel *channel) {
     }
 }
 
-void    Command::mode_command_i(Channel *channel) {
+void Command::mode_command_i(Channel *channel) {
     string flag = _parser.get_args().at(1);
     Channel::ChannelMode mode = channel->get_mode();
     if (flag.at(0) == '+') {
@@ -141,23 +141,28 @@ void    Command::mode_command_i(Channel *channel) {
     }
 }
 
-void    Command::mode(){
+void Command::mode() {
     // MODE #channel_name <mode>
-    try
-    {
+    try {
         is_correct_input(_parser.get_args(), _server, _user, _parser);
         char mode = _parser.get_args().at(1).at(1);
         if (mode != 'o' && mode != 'l' && mode != 't' && mode != 'm' && mode != 'v' && mode != 'k' && mode != 'i')
             throw runtime_error(err_472(_user));
         Channel *channel = _server.findChannelByName(_parser.get_args().at(0));
         if (mode == 'o') mode_command_o(channel);
-        else if (mode == 'l') mode_command_l(channel);
-        else if (mode == 't') mode_command_t(channel);
-        else if (mode == 'm') mode_command_m(channel);
-        else if (mode == 'v') mode_command_v(channel);
-        else if (mode == 'k') mode_command_k(channel);
-        else if (mode == 'i') mode_command_i(channel);
-    } catch(const exception &e) {
+        else if (mode == 'l')
+            mode_command_l(channel);
+        else if (mode == 't')
+            mode_command_t(channel);
+        else if (mode == 'm')
+            mode_command_m(channel);
+        else if (mode == 'v')
+            mode_command_v(channel);
+        else if (mode == 'k')
+            mode_command_k(channel);
+        else if (mode == 'i')
+            mode_command_i(channel);
+    } catch (const exception &e) {
         send(_user.get_fd(), e.what(), strlen(e.what()), 0);
     }
 }

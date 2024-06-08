@@ -1,11 +1,10 @@
 #include "File.hpp"
 
-File::File(string send_path, string filename, string sender, string accepter) : \
-    _filename(filename), _send_path(send_path), \
-    _accept_path(""), _sender_fd(-1), _accepter_fd(-1) {
-        set_send_nickname(sender);
-        set_accept_nickname(accepter);
-    }
+File::File(string send_path, string filename, string sender, string accepter) : _filename(filename), _send_path(send_path),
+                                                                                _accept_path(""), _sender_fd(-1), _accepter_fd(-1) {
+    set_send_nickname(sender);
+    set_accept_nickname(accepter);
+}
 
 File::~File() {}
 
@@ -32,4 +31,3 @@ string File::get_accept_nickname() { return _accept_nickname; }
 int File::get_sender_fd() { return _sender_fd; }
 
 int File::get_accepter_fd() { return _accepter_fd; }
-

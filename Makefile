@@ -2,6 +2,7 @@ NAME		:= ircserv
 PORT		:= 6667
 PSWD		:= password
 INC			:= $(shell find srcs -type d | sed 's/^/-I /')
+HEADERS		:= $(shell find srcs -name "*.hpp"| sed 's/^/.\//')
 SRCS_DIR	:= ./srcs
 SRCS	    := $(shell find srcs -name "*.cpp"| sed 's/^/.\//')
 OBJS_DIR	:= ./objs
@@ -43,6 +44,9 @@ address		: re
 
 run			: all
 	./$(NAME) $(PORT) $(PSWD)
+
+format		:
+	clang-format -i $(SRCS) $(HEADERS)
 
 help		: Makefile
 	@echo "Usage: make [target]"

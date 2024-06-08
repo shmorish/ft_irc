@@ -1,7 +1,6 @@
 #include "Command.hpp"
 
-void Command::ping(void)
-{
+void Command::ping(void) {
     // if (_parser.get_args().size() != 1)
     // {
     //     string error_message = "PING :Not enough parameters\r\n";

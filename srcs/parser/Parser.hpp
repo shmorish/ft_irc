@@ -41,7 +41,7 @@ private:
     int _fd;
     string _password;
     CommandType _command;
-    void    check_command(string &command);
+    void check_command(string &command);
     vector<string> args;
 };
 
