@@ -14,16 +14,16 @@ void Command::getfile() {
         // ファイル名が存在するものか、受取手が正しいか確認
         string filename = _parser.get_args().at(2);
         if (filename.empty())
-            throw runtime_error(err_461(_user, "GETFILE"));
+            throw runtime_error(err_331(_user, "GETFILE")); /*change err num*/
         if (_server.findFileByFilename(filename) == NULL)
-            throw runtime_error(err_401(_user, "GETFILE"));
+            throw runtime_error(err_401(_user, "GETFILE")); /*change err num*/
         if (_user.get_fd() != _server.findFileByFilename(filename)->get_accepter_fd())
-            throw runtime_error("GETFILE: " + filename + ": You are not accepter of this file\r\n");
+            throw runtime_error(err_403(_user, "GETFILE")); /*change err num*/
         File *file = _server.findFileByFilename(filename);
         // 置きたい場所のpathが正しいかどうか、ディレクトリか確認
         string get_path = _parser.get_args().at(3);
         if (get_path.empty())
-            throw runtime_error("GETFILE: " + get_path + ": No such file or directory\r\n");
+            throw runtime_error(err_432(_user, "GETFILE")); /*change err num*/
         int fd = open(get_path.c_str(), O_DIRECTORY, 0777);
         if (fd == -1)
             throw runtime_error("GETFILE: " + get_path + ": Failed to open directory");
@@ -32,10 +32,10 @@ void Command::getfile() {
         file->set_accept_path(get_path);
         fstream ofs(get_path + "/" + filename, ios::out);
         if (ofs.fail())
-            throw runtime_error("GETFILE: " + get_path + "/" + filename + ": Permission denied\r\n");
+            throw runtime_error("GETFILE: " + get_path + "/" + filename + ": Permission denied\r\n"); /*change err num*/
         fstream ifs(file->get_send_path(), ios::in);
         if (ifs.fail())
-            throw runtime_error("GETFILE: " + file->get_filename() + ": Permission denied\r\n");
+            throw runtime_error("GETFILE: " + file->get_filename() + ": Permission denied\r\n"); /*change err num*/
         send(_user.get_fd(), "GETFILE\r\n", 9, 0);
         if (ofs.is_open() && ifs.is_open()) {
             ofs << ifs.rdbuf();
@@ -44,7 +44,7 @@ void Command::getfile() {
         }
         // ~~がファイルを受け取りましたみたいなメッセージを送りたい
         string userID = USER_IDENTIFIER("bot", "bot");
-        string message = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " recieved file！\r\n";
+        string message = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " 受け取ったよ！\r\n";
         send(_user.get_fd(), message.c_str(), message.size(), 0);
         _server.get_files().erase(file);
         delete file;
