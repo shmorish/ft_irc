@@ -47,8 +47,7 @@ void Command::getfile() {
             ofs.close();
         }
         // ~~がファイルを受け取りましたみたいなメッセージを送りたい
-        string userID = USER_IDENTIFIER("bot", "bot");
-        string message = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " recieved file!\r\n";
+        string message = bot_success_getfile();
         send(_user.get_fd(), message.c_str(), message.size(), 0);
         _server.get_files().erase(file);
         delete file;

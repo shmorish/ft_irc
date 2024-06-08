@@ -1,7 +1,6 @@
 #include "response.hpp"
 #include "User.hpp"
-// string message = USER_IDENTIFIER(_user.get_nickname(), _user.get_username());
-// message += _user.get_nickname() + " PRIVMSG " + _parser.get_args().at(0) + " ";
+
 string bot_err_response(string err_message)
 {
     User bot = User(-1);
@@ -11,11 +10,22 @@ string bot_err_response(string err_message)
     string res = USER_IDENTIFIER(bot.get_nickname(), bot.get_username());
     res += bot.get_nickname();
     res += " PRIVMSG ";
+    res += bot.get_nickname();
+    res += " ";
     res += err_message;
     res += " ";
     res += "\r\n";
     return res;
+}
 
+string bot_success_sendfile()
+{
+    return bot_err_response("send file!\r\n");
+}
+
+string bot_success_getfile()
+{
+    return bot_err_response("recieved file!\r\n");
 }
 
 string bot_err_response401(string nickname)

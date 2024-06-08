@@ -111,6 +111,8 @@ string response324(User user, string channel_name, string mode);
 string response341(User user, string channel_name, string nickname);
 
 string success_response(User user, string command, string arg);
+string bot_success_sendfile();
+string bot_success_getfile();
 
 string bot_err_response(string err_message);
 string bot_err_response401(string nickname);

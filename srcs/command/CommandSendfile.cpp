@@ -45,9 +45,7 @@ void Command::sendfile()
         file->set_accepter_fd(_server.findUserByNick(accepter_name)->get_fd());
 
         /*~~が君にファイルを送信したよ！みたいなメッセージにしたい*/
-        // send(_server.findUserByNick(accepter_name)->get_fd(), "SENDFILE\r\n", 10, 0);
-        string userID = USER_IDENTIFIER("bot", "bot");
-        string message = userID + "bot PRIVMSG " + _parser.get_args().at(0) + " send file!\r\n";
+        string message = bot_success_sendfile();
         send(_user.get_fd(), message.c_str(), message.size(), 0);
     }
     catch (const exception &e) {
