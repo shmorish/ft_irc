@@ -33,7 +33,7 @@ void    Command::invite()
         if (channel->is_client(user->get_fd()) == true)
             throw runtime_error(err_443(_user, channel_name));
         else if (channel->is_invited(user->get_fd()) == true)
-            throw runtime_error(err_443(_user, channel_name)); // what is already invited error code ???
+            throw runtime_error(err_800(_user, channel_name));
         else {
             channel->add_invited(user->get_fd());
             string res = response341(_user, channel_name, invite_nickname);
