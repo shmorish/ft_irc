@@ -3,23 +3,20 @@
 
 extern bool server_running;
 
-Server::Server(long port, const string &password) : _port(port), _password(password), _server_sockfd()
-{
+Server::Server(long port, const string &password) : _port(port), _password(password), _server_sockfd() {
     DEBUG_MSG("Port Number =", _port);
     DEBUG_MSG("Password    =", _password);
-    (void)_port;
+    (void) _port;
 }
 
-Server::~Server()
-{
+Server::~Server() {
 }
 
-void Server::setup(void)
-{
+void Server::setup(void) {
     _server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (_server_sockfd == -1) {
-		throw runtime_error("ERROR: socket: ");
-	}
+    if (_server_sockfd == -1) {
+        throw runtime_error("ERROR: socket: ");
+    }
     DEBUG_MSG("Server socket created fd -> ", _server_sockfd);
 
     _server_addr.sin_family = AF_INET;
@@ -27,12 +24,11 @@ void Server::setup(void)
     _server_addr.sin_addr.s_addr = INADDR_ANY;
 
     int enable_SO_REU = 1;
-    if (setsockopt(_server_sockfd, SOL_SOCKET, SO_REUSEADDR, &enable_SO_REU, sizeof(int)) == -1)
-    {
+    if (setsockopt(_server_sockfd, SOL_SOCKET, SO_REUSEADDR, &enable_SO_REU, sizeof(int)) == -1) {
         close(_server_sockfd);
         throw runtime_error("ERROR: setsockopt: ");
     }
-    if (bind(_server_sockfd, (const struct sockaddr *)&_server_addr, (socklen_t)sizeof(_server_addr)) == -1) {
+    if (bind(_server_sockfd, (const struct sockaddr *) &_server_addr, (socklen_t) sizeof(_server_addr)) == -1) {
         close(_server_sockfd);
         throw runtime_error("ERROR: bind: ");
     }
@@ -50,8 +46,7 @@ void Server::setup(void)
     _pollfd_vector.push_back(server_pollfd);
 }
 
-static void send_welcome_message_001(int fd, string nickname, string username)
-{
+static void send_welcome_message_001(int fd, string nickname, string username) {
     string msg = USER_IDENTIFIER(nickname, username);
     msg += RPL_WELCOME(fd, nickname);
     // cout << "Sending welcome message to client [" << fd << "]" << endl;
@@ -59,40 +54,35 @@ static void send_welcome_message_001(int fd, string nickname, string username)
     send(fd, msg.c_str(), msg.size(), 0);
 }
 
-static void send_host_info_002(int client_sockfd, const string &servername, string nickname, string username)
-{
+static void send_host_info_002(int client_sockfd, const string &servername, string nickname, string username) {
     string msg = USER_IDENTIFIER(nickname, username);
     msg += RPL_YOURHOST(servername, nickname);
     send(client_sockfd, msg.c_str(), msg.size(), 0);
 }
 
-static void send_server_created_003(int client_sockfd, string nickname, string username)
-{
+static void send_server_created_003(int client_sockfd, string nickname, string username) {
     string date = SERVER_DATE;
     string msg = USER_IDENTIFIER(nickname, username);
     msg += RPL_CREATED(date, nickname);
     send(client_sockfd, msg.c_str(), msg.size(), 0);
 }
 
-static void send_modes_004(int client_sockfd, const string &nick, string nickname, string username)
-{
+static void send_modes_004(int client_sockfd, const string &nick, string nickname, string username) {
     string msg = USER_IDENTIFIER(nickname, username);
     msg += RPL_MYINFO(nick);
     send(client_sockfd, msg.c_str(), msg.size(), 0);
 }
 
-static void send_bot_message(int client_sockfd)
-{
+static void send_bot_message(int client_sockfd) {
     string userID = USER_IDENTIFIER("bot", "bot");
     string msg = userID + "bot PRIVMSG bot Hello, welcome to the server!\r\n";
     send(client_sockfd, msg.c_str(), msg.size(), 0);
 }
 
-void Server::handle_new_client_connections(void)
-{
+void Server::handle_new_client_connections(void) {
     struct sockaddr_in client_addr;
     socklen_t client_addr_len = sizeof(client_addr);
-    int client_sockfd = accept(_server_sockfd, (struct sockaddr *)&client_addr, &client_addr_len);
+    int client_sockfd = accept(_server_sockfd, (struct sockaddr *) &client_addr, &client_addr_len);
     if (client_sockfd == -1) {
         close(_server_sockfd);
         throw runtime_error("ERROR: accept");
@@ -110,20 +100,17 @@ void Server::handle_new_client_connections(void)
     _users.insert(new_user);
 }
 
-static vector<string> split(const string &str, char delim)
-{
+static vector<string> split(const string &str, char delim) {
     vector<string> result;
     stringstream ss(str);
     string item;
-    while (getline(ss, item, delim))
-    {
+    while (getline(ss, item, delim)) {
         result.push_back(item);
     }
     return result;
 }
 
-vector<string> Server::recieve_command(int client_sockfd, size_t i)
-{
+vector<string> Server::recieve_command(int client_sockfd, size_t i) {
     char buffer[BUFSIZ + 1] = {0};
     ssize_t bytes_read = recv(client_sockfd, buffer, sizeof(buffer), 0);
     if (bytes_read == EOF) {
@@ -134,7 +121,7 @@ vector<string> Server::recieve_command(int client_sockfd, size_t i)
     if (bytes_read == 0) {
         string msg = "QUIT\n";
         Parser parser = Parser(msg, _pollfd_vector[i].fd, _password);
-        User* user = findUserByFd(_pollfd_vector[i].fd);
+        User *user = findUserByFd(_pollfd_vector[i].fd);
         Command command(*this, parser, *user);
         string server_msg = "client -> fd [" + to_string(client_sockfd) + "] client disconnected";
         throw runtime_error(server_msg);
@@ -146,11 +133,10 @@ vector<string> Server::recieve_command(int client_sockfd, size_t i)
     return commands;
 }
 
-int Server::make_polls()
-{
+int Server::make_polls() {
     // const int timeout = -1; // wait infinitely
     const int timeout = 0; // wait indefinitely for an event
-    int numReadyForIo = poll(&_pollfd_vector[0], (nfds_t)_pollfd_vector.size(), timeout);
+    int numReadyForIo = poll(&_pollfd_vector[0], (nfds_t) _pollfd_vector.size(), timeout);
     if (numReadyForIo == -1) {
         close(_server_sockfd);
         throw runtime_error("Server Stopped");
@@ -158,19 +144,17 @@ int Server::make_polls()
     return numReadyForIo;
 }
 
-void    Server::recieve_and_execute_commands(size_t i)
-{
-    try
-    {
+void Server::recieve_and_execute_commands(size_t i) {
+    try {
         // string msg = recieve_command(_pollfd_vector[i].fd, i);
         vector<string> commands = recieve_command(_pollfd_vector[i].fd, i);
         for (size_t j = 0; j < commands.size(); j++) {
             string msg = commands[j];
-            if (msg.size() == 0) continue ;
+            if (msg.size() == 0) continue;
             while (msg[0] == ' ') msg.erase(0, 1);
-            if (msg.size() == 0 || msg == "\n") continue ;
+            if (msg.size() == 0 || msg == "\n") continue;
             Parser parser = Parser(msg, _pollfd_vector[i].fd, _password);
-            User* user = findUserByFd(_pollfd_vector[i].fd);
+            User *user = findUserByFd(_pollfd_vector[i].fd);
             Command command(*this, parser, *user);
             print_log(_pollfd_vector[i].fd, msg);
             if (findUserByFd(_pollfd_vector[i].fd) != NULL) {
@@ -200,16 +184,13 @@ void    Server::recieve_and_execute_commands(size_t i)
             // }
         }
         // ↑
-    }
-    catch (const exception &e)
-    {
+    } catch (const exception &e) {
         cerr << e.what() << endl;
-        return ;
+        return;
     }
 }
 
-void    Server::check_all_polls()
-{
+void Server::check_all_polls() {
     for (size_t i = 0; i < _pollfd_vector.size(); i++) {
         if (_pollfd_vector[i].revents & POLLIN) {
             if (_pollfd_vector[i].fd == _server_sockfd)
@@ -220,8 +201,7 @@ void    Server::check_all_polls()
     }
 }
 
-void Server::close_server()
-{
+void Server::close_server() {
     for (set<User *>::iterator it = _users.begin(); it != _users.end(); ++it) {
         delete *it;
     }
@@ -233,11 +213,10 @@ void Server::close_server()
     close(_server_sockfd);
 }
 
-void Server::sendMsgToChannel(string channel_name, string msg)
-{
-    Channel* channel = findChannelByName(channel_name);
+void Server::sendMsgToChannel(string channel_name, string msg) {
+    Channel *channel = findChannelByName(channel_name);
     if (channel == NULL) {
-        return ;
+        return;
     }
     set<int> clients = channel->get_clients();
     for (set<int>::iterator it = clients.begin(); it != clients.end(); ++it) {
@@ -245,10 +224,8 @@ void Server::sendMsgToChannel(string channel_name, string msg)
     }
 }
 
-void Server::run()
-{
-    while (server_running)
-    {
+void Server::run() {
+    while (server_running) {
         make_polls();
         check_all_polls();
     }
@@ -256,28 +233,28 @@ void Server::run()
     cout << "Server stopped" << endl;
 }
 
-string Server::get_password() const{
+string Server::get_password() const {
     return _password;
 }
 
-set<User *> &Server::get_users(){
+set<User *> &Server::get_users() {
     return _users;
 }
 
-set<Channel *> &Server::get_channels(){
+set<Channel *> &Server::get_channels() {
     return _channels;
 }
 
-set<File *> &Server::get_files(){
+set<File *> &Server::get_files() {
     return _files;
 }
 
-void Server::set_own_addr(void *addr){
+void Server::set_own_addr(void *addr) {
     own_addr = addr;
 }
 
-User* Server::findUserByFd(int fd) {
-    for (set<User*>::iterator it = _users.begin(); it != _users.end(); ++it) {
+User *Server::findUserByFd(int fd) {
+    for (set<User *>::iterator it = _users.begin(); it != _users.end(); ++it) {
         if ((*it)->get_fd() == fd) {
             return *it;
         }
@@ -285,8 +262,8 @@ User* Server::findUserByFd(int fd) {
     return NULL;
 }
 
-User* Server::findUserByNick(string nick) {
-    for (set<User*>::iterator it = _users.begin(); it != _users.end(); ++it) {
+User *Server::findUserByNick(string nick) {
+    for (set<User *>::iterator it = _users.begin(); it != _users.end(); ++it) {
         if ((*it)->get_nickname() == nick) {
             return *it;
         }
@@ -294,8 +271,8 @@ User* Server::findUserByNick(string nick) {
     return NULL;
 }
 
-Channel* Server::findChannelByName(string name) {
-    for (set<Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+Channel *Server::findChannelByName(string name) {
+    for (set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
         if ((*it)->get_channel_name() == name) {
             return *it;
         }
@@ -303,8 +280,8 @@ Channel* Server::findChannelByName(string name) {
     return NULL;
 }
 
-File* Server::findFileByFilename(string filename, string sender, string receiver) {
-    for (set<File*>::iterator it = _files.begin(); it != _files.end(); ++it) {
+File *Server::findFileByFilename(string filename, string sender, string receiver) {
+    for (set<File *>::iterator it = _files.begin(); it != _files.end(); ++it) {
         if ((*it)->get_filename() == filename && (*it)->get_send_nickname() == sender && (*it)->get_accept_nickname() == receiver)
             return *it;
     }
@@ -321,11 +298,11 @@ void Server::print_log(int fd, string msg) {
     cout << "Current Command: " << endl;
     cout << "  [fd]: " << fd << " " << msg << endl;
     cout << "Users: " << endl;
-    for (set<User*>::iterator it = _users.begin(); it != _users.end(); ++it) {
+    for (set<User *>::iterator it = _users.begin(); it != _users.end(); ++it) {
         cout << "  [fd]: " << (*it)->get_fd() << " " << (*it)->get_nickname() << endl;
     }
     cout << "Channels: " << endl;
-    for (set<Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+    for (set<Channel *>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
         Channel *channel = *it;
         cout << "  [name]: " << channel->get_channel_name() << endl;
         enum Channel::ChannelMode mode = channel->get_mode();

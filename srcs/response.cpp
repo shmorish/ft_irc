@@ -2,8 +2,7 @@
 #include "User.hpp"
 
 // RPL_NOTOPIC (331): チャンネルにトピックが設定されていない場合に返されます。
-string err_331(User user, string channel_name)
-{
+string err_331(User user, string channel_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 331 ";
@@ -16,8 +15,7 @@ string err_331(User user, string channel_name)
 }
 
 // ERR_NOSUCHNICK (401): 指定されたニックネームが存在しない場合に返されます。
-string err_401(User user, string nickname)
-{
+string err_401(User user, string nickname) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 401 ";
@@ -30,8 +28,7 @@ string err_401(User user, string nickname)
 }
 
 // ERR_NOSUCHCHANNEL (403): 存在しない、または参加していないチャンネルから退出しようとした場合に返されます。
-string err_403(User user, string channel_name)
-{
+string err_403(User user, string channel_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 403 ";
@@ -44,8 +41,7 @@ string err_403(User user, string channel_name)
 }
 
 // ERR_TOOMANYCHANNELS (405): ユーザーが同時に参加できるチャンネルの最大数に達している場合に返されます。
-string err_405(User user)
-{
+string err_405(User user) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 405 ";
@@ -55,8 +51,7 @@ string err_405(User user)
     return res;
 }
 
-string err_411(User user)
-{
+string err_411(User user) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 411 ";
@@ -67,8 +62,7 @@ string err_411(User user)
 }
 
 // ERR_NONICKNAMEGIVEN (431): ニックネームが指定されていない場合に返されます。
-string err_431(User user)
-{
+string err_431(User user) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 431 ";
@@ -79,8 +73,7 @@ string err_431(User user)
 }
 
 // ERR_ERRONEUSNICKNAME (432): ニックネームが無効な形式である場合に返されます。
-string err_432(User user, string nickname)
-{
+string err_432(User user, string nickname) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 432 ";
@@ -93,8 +86,7 @@ string err_432(User user, string nickname)
 }
 
 // ERR_NICKNAMEINUSE (433): ユーザーが指定したニックネームを既に他のユーザーが使用している場合に返されます。
-string err_433(User user, string nickname)
-{
+string err_433(User user, string nickname) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 433 ";
@@ -107,8 +99,7 @@ string err_433(User user, string nickname)
 }
 
 // ERR_NOTONCHANNEL (442): ユーザーが指定したチャンネルに実際には参加していない場合にこのエラーが返されます。
-string err_442(User user, string channel_name)
-{
+string err_442(User user, string channel_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 442 ";
@@ -121,8 +112,7 @@ string err_442(User user, string channel_name)
 }
 
 // ERR_USERONCHANNEL (443): ユーザーが既に指定したチャンネルに参加している場合に返されます。
-string err_443(User user, string channel_name)
-{
+string err_443(User user, string channel_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 443 ";
@@ -135,8 +125,7 @@ string err_443(User user, string channel_name)
 }
 
 // ERR_NOTREGISTERED (451): "You have not registered" というメッセージを伴い、クライアントがネットワークに対してユーザー名（NICK）や実際の名前（USERコマンドの一部）の登録が完了していない状態でコマンドを実行しようとしたときに発生します。
-string err_451(User user)
-{
+string err_451(User user) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 451 ";
@@ -147,8 +136,7 @@ string err_451(User user)
 }
 
 // ERR_NEEDMOREPARAMS (461): コマンドに必要なパラメータが不足している場合に送られます。
-string err_461(User user, string command)
-{
+string err_461(User user, string command) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 461 ";
@@ -162,8 +150,7 @@ string err_461(User user, string command)
 }
 
 // ERR_ALREADYREGISTERED (462): ユーザーが既に登録されている場合に返されます。
-string err_462(User user)
-{
+string err_462(User user) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 462 ";
@@ -173,8 +160,7 @@ string err_462(User user)
     return res;
 }
 
-string err_464(User user)
-{
+string err_464(User user) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 464 ";
@@ -184,8 +170,7 @@ string err_464(User user)
     return res;
 }
 
-string err_471(User user, string channel_name)
-{
+string err_471(User user, string channel_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 471 ";
@@ -197,8 +182,7 @@ string err_471(User user, string channel_name)
     return res;
 }
 
-string err_472(User user)
-{
+string err_472(User user) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 472 ";
@@ -209,8 +193,7 @@ string err_472(User user)
 }
 
 // ERR_INVITEONLYCHAN (473): チャンネルが招待制で、ユーザーが招待されていない場合に返されます。
-string err_473(User user, string channel_name)
-{
+string err_473(User user, string channel_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 473 ";
@@ -223,8 +206,7 @@ string err_473(User user, string channel_name)
 }
 
 // ERR_BANNEDFROMCHAN (474): チャンネルに入ることが禁止されている場合に返されます。
-string err_474(User user, string channel_name)
-{
+string err_474(User user, string channel_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 474 ";
@@ -237,8 +219,7 @@ string err_474(User user, string channel_name)
 }
 
 // ERR_BADCHANNELKEY (475): チャンネルに入るためのキー（パスワード）が間違っている、または提供されていない場合に返されます。
-string err_475(User user, string channel_name)
-{
+string err_475(User user, string channel_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 475 ";
@@ -251,8 +232,7 @@ string err_475(User user, string channel_name)
 }
 
 // ERR_BADCHANMASK (476): 指定されたチャンネル名が無効な形式である場合に返されます。
-string err_476(User user)
-{
+string err_476(User user) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 476 ";
@@ -263,8 +243,7 @@ string err_476(User user)
 }
 
 // ERR_CHANOPRIVSNEEDED (482): ユーザーがチャンネルのオペレータ権限を持っていない場合に返されます。
-string err_482(User user, string channel_name)
-{
+string err_482(User user, string channel_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 482 ";
@@ -278,8 +257,7 @@ string err_482(User user, string channel_name)
 
 // 332, 353, 366, 324
 // join
-string response332(User user, string channel_name, string topic)
-{
+string response332(User user, string channel_name, string topic) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 332 ";
@@ -292,8 +270,7 @@ string response332(User user, string channel_name, string topic)
     return res;
 }
 
-string response353(User user, string channel_name, string members)
-{
+string response353(User user, string channel_name, string members) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 353 ";
@@ -306,8 +283,7 @@ string response353(User user, string channel_name, string members)
     return res;
 }
 
-string response366(User user, string channel_name)
-{
+string response366(User user, string channel_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 366 ";
@@ -319,8 +295,7 @@ string response366(User user, string channel_name)
     return res;
 }
 
-string response324(User user, string channel_name, string mode)
-{
+string response324(User user, string channel_name, string mode) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 324 ";
@@ -334,8 +309,7 @@ string response324(User user, string channel_name, string mode)
 }
 
 // ERR_INVALIDMODEPARAM (696) : チャンネルモードのパラメータが無効な場合に返されます。
-string err_696(User user)
-{
+string err_696(User user) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 696 ";
@@ -345,8 +319,7 @@ string err_696(User user)
     return res;
 }
 
-string success_response(User user, string command, string arg)
-{
+string success_response(User user, string command, string arg) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " ";
@@ -358,8 +331,7 @@ string success_response(User user, string command, string arg)
 }
 
 // RPL_INVITING (341) : ユーザーが指定したチャンネルに招待を送信した場合に返されます。
-string response341(User user, string channel_name, string nickname)
-{
+string response341(User user, string channel_name, string nickname) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 341 ";
@@ -372,9 +344,7 @@ string response341(User user, string channel_name, string nickname)
     return res;
 }
 
-
-string err_800(User user, string channel_name)
-{
+string err_800(User user, string channel_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 800 ";
@@ -388,8 +358,7 @@ string err_800(User user, string channel_name)
 }
 
 // NO_SUCH_FILE_OR_DIRECTORY : ファイルが存在しないか、またはディレクトリが存在しない場合に返されます。
-string err_825(User user, string file_name)
-{
+string err_825(User user, string file_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 825 ";
@@ -402,8 +371,7 @@ string err_825(User user, string file_name)
 }
 
 // ERR_FILE_ALREADY_EXISTS : ファイルが既に存在する場合に返されます。
-string err_826(User user, string file_name)
-{
+string err_826(User user, string file_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 826 ";
@@ -416,8 +384,7 @@ string err_826(User user, string file_name)
 }
 
 // ERR_FILE_PERMISSION_DENIED : ファイルにアクセスする権限がない場合に返されます。
-string err_827(User user, string file_name)
-{
+string err_827(User user, string file_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 827 ";
@@ -430,8 +397,7 @@ string err_827(User user, string file_name)
 }
 
 // ERR_NOT_ACCEPTER : ファイルを受け取る権限がない場合に返されます。
-string err_828(User user, string file_name)
-{
+string err_828(User user, string file_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 828 ";
@@ -444,8 +410,7 @@ string err_828(User user, string file_name)
 }
 
 // ERR_NOT_A_DIRECTORY : ディレクトリが存在しない場合に返されます。
-string err_829(User user, string file_name)
-{
+string err_829(User user, string file_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 829 ";
@@ -458,8 +423,7 @@ string err_829(User user, string file_name)
 }
 
 // ERR_IS_A_DIRECTORY : ファイルがディレクトリの場合に返されます。
-string err_830(User user, string file_name)
-{
+string err_830(User user, string file_name) {
     string res;
     res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
     res += " 830 ";

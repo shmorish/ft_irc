@@ -3,8 +3,7 @@
 
 // SENDFILE <accepter_nickname> <ファイルの絶対or相対path>
 
-static void is_correct_input(const vector<string> &args, User _user)
-{
+static void is_correct_input(const vector<string> &args, User _user) {
     if (args.size() != 4)
         throw runtime_error(bot_err_response461("SENDFILE"));
     if (_user.get_ready_to_connect() == false)
@@ -12,8 +11,7 @@ static void is_correct_input(const vector<string> &args, User _user)
 }
 
 // privmsg bot :sendfile nick path
-void Command::sendfile()
-{
+void Command::sendfile() {
     try {
         // check input
         is_correct_input(_parser.get_args(), _user);
@@ -47,8 +45,7 @@ void Command::sendfile()
         /*~~が君にファイルを送信したよ！みたいなメッセージにしたい*/
         string message = bot_success_sendfile();
         send(_user.get_fd(), message.c_str(), message.size(), 0);
-    }
-    catch (const exception &e) {
+    } catch (const exception &e) {
         send(_user.get_fd(), e.what(), strlen(e.what()), 0);
     }
 }

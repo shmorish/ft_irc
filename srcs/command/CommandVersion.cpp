@@ -1,7 +1,6 @@
 #include "Command.hpp"
 
-void Command::version()
-{
+void Command::version() {
     string res = USER_IDENTIFIER(_user.get_nickname(), _user.get_username());
     res += " 351 ";
     res += _user.get_nickname();

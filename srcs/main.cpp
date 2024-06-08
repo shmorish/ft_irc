@@ -1,10 +1,9 @@
 #include "Server.hpp"
 #include "utils.hpp"
 
-bool    server_running = true;
+bool server_running = true;
 
-long checkPort(const char *port)
-{
+long checkPort(const char *port) {
     if (!port || *port == '\0')
         throw invalid_argument("Invalid port number");
     char *endPtr;
@@ -14,8 +13,7 @@ long checkPort(const char *port)
     return port_num;
 }
 
-string checkPassword(const char *password)
-{
+string checkPassword(const char *password) {
     if (!password || *password == '\0')
         throw invalid_argument("Invalid password");
     // if (strlen(password) < 8)
@@ -29,16 +27,14 @@ string checkPassword(const char *password)
     return password;
 }
 
-void    sigintHandler(int signum)
-{
-    (void)signum;
+void sigintHandler(int signum) {
+    (void) signum;
     endl(cout);
     cout << "Exiting..." << endl;
     server_running = false;
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 
     if (argc != 3) {
         cerr << "usage: " << argv[0] << " <port> <password>" << endl;
