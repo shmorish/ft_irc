@@ -1,27 +1,27 @@
 #include "Command.hpp"
 #include <fcntl.h>
 
-// GETFILE 受け取るfilename ファイルを置きたい場所の絶対path
-
-// privmsg bot :getfile filename path
+// privmsg bot :getfile nickname filename path
+// privmsg  0  1        2        3        4
 void Command::getfile() {
     try {
         // ユーザーが接続しているか確認
         if (_user.get_ready_to_connect() == false)
             throw runtime_error(bot_err_response451());
-        if (_parser.get_args().size() != 4)
+        if (_parser.get_args().size() != 5)
             throw runtime_error(bot_err_response461("GETFILE"));
         // ファイル名が存在するものか、受取手が正しいか確認
-        string filename = _parser.get_args().at(2);
+        string sender_nick = _parser.get_args().at(2);
+        string filename = _parser.get_args().at(3);
         if (filename.empty())
             throw runtime_error(bot_err_response461("GETFILE"));
-        File *file = _server.findFileByFilename(filename);
+        File *file = _server.findFileByFilename(filename, sender_nick, _user.get_nickname());
         if (file == NULL)
             throw runtime_error(bot_err_response825(filename));
         if (_user.get_fd() != file->get_accepter_fd())
             throw runtime_error(bot_err_response828(filename));
         // 置きたい場所のpathが正しいかどうか、ディレクトリか確認
-        string get_path = _parser.get_args().at(3);
+        string get_path = _parser.get_args().at(4);
         if (get_path.empty())
             throw runtime_error(bot_err_response461("GETFILE"));
         int fd = open(get_path.c_str(), O_DIRECTORY);

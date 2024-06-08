@@ -29,7 +29,6 @@ class Server
         void setup();
         void run();
         void handle_new_client_connections();
-        // void handle_client_disconnection(int client_sockfd);
         vector<string> recieve_command(int client_sockfd, size_t i);
         int  make_polls();
         void check_all_polls();
@@ -42,7 +41,7 @@ class Server
         User* findUserByFd(int fd);
         User* findUserByNick(string nickname);
         Channel* findChannelByName(string name);
-        File* findFileByFilename(string filename);
+        File* findFileByFilename(string filename, string sender, string receiver);
         void removeUser(User *user);
         void close_server();
         void sendMsgToChannel(string channel_name, string msg);
