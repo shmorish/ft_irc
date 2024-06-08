@@ -112,4 +112,15 @@ string response341(User user, string channel_name, string nickname);
 
 string success_response(User user, string command, string arg);
 
+string bot_err_response(string err_message);
+string bot_err_response401(string nickname);
+string bot_err_response451();
+string bot_err_response461(string command);
+string bot_err_response825(string file_name);
+string bot_err_response826(string file_name);
+string bot_err_response827(string file_name);
+string bot_err_response828(string file_name);
+string bot_err_response829(string file_name);
+string bot_err_response830(string file_name);
+
 #endif
