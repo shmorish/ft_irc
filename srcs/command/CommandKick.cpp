@@ -27,7 +27,8 @@ void	Command::kick() {
 		User *kick_user = _server.findUserByNick(client_name);
 		string res = success_response(*kick_user, "PART", channel_name);
 		_server.sendMsgToChannel(channel_name, res);
-		res = success_response(_user, "KICK", channel_name);
+		string mess = channel_name + " " + client_name + " " + _parser.get_args().at(2);
+		res = success_response(_user, "KICK", mess);
 		_server.sendMsgToChannel(channel_name, res);
 		channel->remove_client(client_fd);
 		channel->remove_can_talk_in_mod_channel(client_fd);

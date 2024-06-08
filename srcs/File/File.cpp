@@ -1,22 +1,24 @@
 #include "File.hpp"
 
-File::File() : _key(""), _path(""), _send_fd(-1), _accept_fd(-1) {}
+File::File(string send_path, string filename) : \
+    _filename(filename), _send_path(send_path), \
+    _accept_path(""), _sender_fd(-1), _accepter_fd(-1) {}
 
 File::~File() {}
 
-void File::set_filename(string filename) { _key = filename; }
+void File::set_accept_path(string path) { _accept_path = path; }
 
-void File::set_path(string path) { _path = path; }
+void File::set_sender_fd(int send_fd) { _sender_fd = send_fd; }
 
-void File::set_send_fd(int send_fd) { _send_fd = send_fd; }
+void File::set_accepter_fd(int accept_fd) { _accepter_fd = accept_fd; }
 
-void File::set_accept_fd(int accept_fd) { _accept_fd = accept_fd; }
+string File::get_filename() { return _filename; }
 
-string File::get_filename() { return _key; }
+string File::get_accept_path() { return _accept_path; }
 
-string File::get_path() { return _path; }
+string File::get_send_path() { return _send_path; }
 
-int File::get_send_fd() { return _send_fd; }
+int File::get_sender_fd() { return _sender_fd; }
 
-int File::get_accept_fd() { return _accept_fd; }
+int File::get_accepter_fd() { return _accepter_fd; }
 

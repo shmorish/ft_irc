@@ -5,11 +5,13 @@
 #include "Channel.hpp"
 #include "Parser.hpp"
 #include "User.hpp"
+#include "File.hpp"
 #include "utils.hpp"
 
 class Server;
 class Parser;
 class User;
+class File;
 
 class Command {
 public:
@@ -34,6 +36,10 @@ private:
 	void	dcc();
 	void	sendfile();
 	void	getfile();
+	void	help();
+	void	version();
+	void	ban();
+	void	send_bot();
 
 	Server	&_server;
 	Parser	&_parser;

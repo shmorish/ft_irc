@@ -5,6 +5,7 @@
 # include "Channel.hpp"
 # include "User.hpp"
 # include "Command.hpp"
+# include "File.hpp"
 
 using namespace std;
 
@@ -18,6 +19,7 @@ using namespace std;
 
 class Channel;
 class User;
+class File;
 
 class Server
 {
@@ -35,10 +37,12 @@ class Server
         string get_password() const;
         set<User *> &get_users();
         set<Channel *> &get_channels();
+        set<File *> &get_files();
         void set_own_addr(void *addr);
         User* findUserByFd(int fd);
         User* findUserByNick(string nickname);
         Channel* findChannelByName(string name);
+        File* findFileByFilename(string filename);
         void removeUser(User *user);
         void close_server();
         void sendMsgToChannel(string channel_name, string msg);
@@ -55,6 +59,7 @@ class Server
         map<int, string>        _clients; // unuse
         set<Channel *>            _channels;
         set<User *>               _users;
+        set<File *>               _files;
 };
 
 #endif

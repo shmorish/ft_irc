@@ -38,6 +38,8 @@ static void check_valid_channel_name(const vector<string> &args, User _user, Ser
 	if (channel != NULL) {
 		if (channel->is_client(_user.get_fd()) == true)
 			throw runtime_error(err_443(_user, channel_name));
+		if (channel->is_banned(_user.get_fd()) == true)
+			throw runtime_error(err_474(_user, channel_name));
 		if (channel->channel_is_full() == true)
 			throw runtime_error(err_471(_user, channel_name));
 	}

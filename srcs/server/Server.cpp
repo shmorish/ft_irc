@@ -18,7 +18,7 @@ void Server::setup(void)
 {
     _server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_server_sockfd == -1) {
-		throw runtime_error("ERROR: socket: " + string(strerror(errno)));
+		throw runtime_error("ERROR: socket: ");
 	}
     DEBUG_MSG("Server socket created fd -> ", _server_sockfd);
 
@@ -30,16 +30,16 @@ void Server::setup(void)
     if (setsockopt(_server_sockfd, SOL_SOCKET, SO_REUSEADDR, &enable_SO_REU, sizeof(int)) == -1)
     {
         close(_server_sockfd);
-        throw runtime_error("ERROR: setsockopt: " + string(strerror(errno)));
+        throw runtime_error("ERROR: setsockopt: ");
     }
     if (bind(_server_sockfd, (const struct sockaddr *)&_server_addr, (socklen_t)sizeof(_server_addr)) == -1) {
         close(_server_sockfd);
-        throw runtime_error("ERROR: bind: " + string(strerror(errno)));
+        throw runtime_error("ERROR: bind: ");
     }
     DEBUG_MSG("Server socket binded to port -> ", _port);
     if (listen(_server_sockfd, SOMAXCONN) == -1) {
         close(_server_sockfd);
-        throw runtime_error("ERROR: listen: " + string(strerror(errno)));
+        throw runtime_error("ERROR: listen: ");
     }
     DEBUG_MSG("Server socket listening on port -> ", _port);
 
@@ -81,6 +81,13 @@ static void send_modes_004(int client_sockfd, const string &nick, string nicknam
     send(client_sockfd, msg.c_str(), msg.size(), 0);
 }
 
+static void send_bot_message(int client_sockfd)
+{
+    string userID = USER_IDENTIFIER("bot", "bot");
+    string msg = userID + "bot PRIVMSG bot Hello, welcome to the server!\r\n";
+    send(client_sockfd, msg.c_str(), msg.size(), 0);
+}
+
 void Server::handle_new_client_connections(void)
 {
     struct sockaddr_in client_addr;
@@ -88,7 +95,7 @@ void Server::handle_new_client_connections(void)
     int client_sockfd = accept(_server_sockfd, (struct sockaddr *)&client_addr, &client_addr_len);
     if (client_sockfd == -1) {
         close(_server_sockfd);
-        throw runtime_error("ERROR: accept: " + string(strerror(errno)));
+        throw runtime_error("ERROR: accept");
     }
     cout << "New client connected with fd [" << client_sockfd << "]" << endl;
     struct pollfd client_pollfd;
@@ -120,10 +127,9 @@ vector<string> Server::recieve_command(int client_sockfd, size_t i)
     char buffer[BUFSIZ + 1] = {0};
     ssize_t bytes_read = recv(client_sockfd, buffer, sizeof(buffer), 0);
     if (bytes_read == EOF) {
-        if (errno == EAGAIN || errno == EWOULDBLOCK) {return (vector<string>());}
         close(client_sockfd);
         close(_server_sockfd);
-        throw runtime_error("ERROR: recv: " + string(strerror(errno)));
+        throw runtime_error("ERROR: recv");
     }
     if (bytes_read == 0) {
         string msg = "QUIT\n";
@@ -148,7 +154,6 @@ int Server::make_polls()
     if (numReadyForIo == -1) {
         close(_server_sockfd);
         throw runtime_error("Server Stopped");
-        // throw runtime_error("ERROR: poll: " + string(strerror(errno)));
     }
     return numReadyForIo;
 }
@@ -175,6 +180,7 @@ void    Server::recieve_and_execute_commands(size_t i)
                         send_host_info_002(_pollfd_vector[i].fd, "XServer", user->get_nickname(), user->get_username());
                         send_server_created_003(_pollfd_vector[i].fd, user->get_nickname(), user->get_username());
                         send_modes_004(_pollfd_vector[i].fd, user->get_nickname(), user->get_nickname(), user->get_username());
+                        send_bot_message(_pollfd_vector[i].fd);
                         user->set_has_sent_welcome_message(true);
                     }
                 }
@@ -262,6 +268,10 @@ set<Channel *> &Server::get_channels(){
     return _channels;
 }
 
+set<File *> &Server::get_files(){
+    return _files;
+}
+
 void Server::set_own_addr(void *addr){
     own_addr = addr;
 }
@@ -293,6 +303,15 @@ Channel* Server::findChannelByName(string name) {
     return NULL;
 }
 
+File* Server::findFileByFilename(string filename) {
+    for (set<File*>::iterator it = _files.begin(); it != _files.end(); ++it) {
+        if ((*it)->get_filename() == filename) {
+            return *it;
+        }
+    }
+    return NULL;
+}
+
 void Server::removeUser(User *user) {
     _users.erase(user);
     delete user;
@@ -301,17 +320,45 @@ void Server::removeUser(User *user) {
 void Server::print_log(int fd, string msg) {
     cout << "----- Server Log -----" << endl;
     cout << "Current Command: " << endl;
-    cout << "  [fd " << fd << "]: " << msg << endl;
+    cout << "  [fd]: " << fd << " " << msg << endl;
     cout << "Users: " << endl;
     for (set<User*>::iterator it = _users.begin(); it != _users.end(); ++it) {
-        cout << "  [fd " << (*it)->get_fd() << "]: " << (*it)->get_nickname() << endl;
+        cout << "  [fd]: " << (*it)->get_fd() << " " << (*it)->get_nickname() << endl;
     }
     cout << "Channels: " << endl;
     for (set<Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
-        cout << "  [name] " << (*it)->get_channel_name() << endl;
-        set<int> clients = (*it)->get_clients();
+        Channel *channel = *it;
+        cout << "  [name]: " << channel->get_channel_name() << endl;
+        enum Channel::ChannelMode mode = channel->get_mode();
+        cout << "    [Channel Mode]: ";
+        if (mode == (0))
+            cout << "NONE ";
+        if (mode & (1 << 0))
+            cout << "INVITE_ONLY ";
+        if (mode & (1 << 1))
+            cout << "MODERATED ";
+        if (mode & (1 << 2))
+            cout << "TOPIC_OP_ONLY ";
+        if (mode & (1 << 3))
+            cout << "NEED_PASSWORD ";
+        cout << endl;
+        set<int> clients = channel->get_clients();
         for (set<int>::iterator it2 = clients.begin(); it2 != clients.end(); ++it2) {
-            cout << "    [fd] " << *it2 << ":" << findUserByFd(*it2)->get_nickname() << endl;
+            string nickname = findUserByFd(*it2)->get_nickname();
+            if (channel->is_operator(*it2))
+                cout << "    [Operat] " << *it2 << ":" << nickname << endl;
+            else
+                cout << "    [Client] " << *it2 << ":" << nickname << endl;
+        }
+        set<int> invited = channel->get_invited();
+        for (set<int>::iterator it2 = invited.begin(); it2 != invited.end(); ++it2) {
+            string nickname = findUserByFd(*it2)->get_nickname();
+            cout << "    [Invite] " << *it2 << ":" << nickname << endl;
+        }
+        set<int> banned = channel->get_banned();
+        for (set<int>::iterator it2 = banned.begin(); it2 != banned.end(); ++it2) {
+            string nickname = findUserByFd(*it2)->get_nickname();
+            cout << "    [Banned] " << *it2 << ":" << nickname << endl;
         }
     }
     cout << "----------------------" << endl;

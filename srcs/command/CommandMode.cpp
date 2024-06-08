@@ -84,7 +84,7 @@ void    Command::mode_command_t(Channel *channel) {
         mode = Channel::ChannelMode(mode | Channel::TopicOpOnly);
         channel->set_mode(mode);
     } else {
-        mode = Channel::ChannelMode(mode & Channel::TopicOpOnly);
+        mode = Channel::ChannelMode(mode & ~Channel::TopicOpOnly);
         channel->set_mode(mode);
     }
 }
@@ -96,7 +96,7 @@ void    Command::mode_command_m(Channel *channel) {
         mode = Channel::ChannelMode(mode | Channel::Moderated);
         channel->set_mode(mode);
     } else {
-        mode = Channel::ChannelMode(mode & Channel::Moderated);
+        mode = Channel::ChannelMode(mode & ~Channel::Moderated);
         channel->set_mode(mode);
     }
 }
@@ -123,7 +123,7 @@ void    Command::mode_command_k(Channel *channel) {
         channel->set_mode(mode);
         channel->set_password(_parser.get_args().at(2));
     } else {
-        mode = Channel::ChannelMode(mode & Channel::NeedPassword);
+        mode = Channel::ChannelMode(mode & ~Channel::NeedPassword);
         channel->set_mode(mode);
         channel->set_password("");
     }
@@ -136,7 +136,7 @@ void    Command::mode_command_i(Channel *channel) {
         mode = Channel::ChannelMode(mode | Channel::InviteOnly);
         channel->set_mode(mode);
     } else {
-        mode = Channel::ChannelMode(mode & Channel::InviteOnly);
+        mode = Channel::ChannelMode(mode & ~Channel::InviteOnly);
         channel->set_mode(mode);
     }
 }
@@ -161,4 +161,3 @@ void    Command::mode(){
         send(_user.get_fd(), e.what(), strlen(e.what()), 0);
     }
 }
-

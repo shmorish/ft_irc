@@ -21,6 +21,8 @@ void    Command::invite()
         Channel* channel = _server.findChannelByName(channel_name);
         if(channel == NULL)
             throw runtime_error(err_403(_user, channel_name));
+        if ((channel->get_mode() & channel->InviteOnly) == 0)
+            throw runtime_error(err_482(_user, channel_name)); // このエラーは違うかも
         if(channel->is_operator(_user.get_fd()) == false)
             throw runtime_error(err_482(_user, channel_name));
         if(channel->channel_is_full() == true)
