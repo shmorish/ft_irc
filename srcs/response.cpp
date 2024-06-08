@@ -1,6 +1,20 @@
 #include "response.hpp"
 #include "User.hpp"
 
+// RPL_NOTOPIC (331): チャンネルにトピックが設定されていない場合に返されます。
+string err_331(User user, string channel_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 331 ";
+    res += user.get_nickname();
+    res += " ";
+    res += channel_name;
+    res += " :No topic is set";
+    res += "\r\n";
+    return res;
+}
+
 // ERR_NOSUCHNICK (401): 指定されたニックネームが存在しない場合に返されます。
 string err_401(User user, string nickname)
 {
@@ -204,6 +218,20 @@ string err_473(User user, string channel_name)
     res += " ";
     res += channel_name;
     res += " :Cannot join channel (+i)";
+    res += "\r\n";
+    return res;
+}
+
+// ERR_BANNEDFROMCHAN (474): チャンネルに入ることが禁止されている場合に返されます。
+string err_474(User user, string channel_name)
+{
+    string res;
+    res = USER_IDENTIFIER(user.get_nickname(), user.get_username());
+    res += " 474 ";
+    res += user.get_nickname();
+    res += " ";
+    res += channel_name;
+    res += " :Cannot join channel (+b)";
     res += "\r\n";
     return res;
 }
