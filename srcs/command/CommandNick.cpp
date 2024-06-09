@@ -84,6 +84,8 @@ void Command::nick() {
         process_title_arguments(_parser.get_args(), _user);
         // ニックネームが長すぎるかどうかをチェック
         string nickname = _parser.get_args().at(0);
+        if (nickname == "bot")
+            throw runtime_error(err_433(_user, nickname));
         check_nickname_length(nickname, _user);
         // nicknameに使える文字を選別 (A-Z, a-z, 0-9, []\^_{|}` )
         check_nickname_characters(nickname, _user);
