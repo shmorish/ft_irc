@@ -2,7 +2,6 @@
 #include <fcntl.h>
 
 // SENDFILE <accepter_nickname> <ファイルの絶対or相対path>
-
 static void is_correct_input(const vector<string> &args, User _user) {
     if (args.size() != 4)
         throw runtime_error(bot_err_response461("SENDFILE"));
@@ -34,11 +33,11 @@ void Command::sendfile() {
         size_t pos = input_file_path.find_last_of("/");
         string filename = input_file_path.substr(pos + 1);
         if (_server.findFileByFilename(filename, _user.get_nickname(), accepter_name) != NULL)
-            throw runtime_error("SENDFILE: " + filename + "File already exists\r\n");
+            throw runtime_error(bot_error_already(filename));
         _server.get_files().insert(new File(input_file_path, filename, _user.get_nickname(), accepter_name));
         File *file = _server.findFileByFilename(filename, _user.get_nickname(), accepter_name);
         if (file == NULL)
-            throw runtime_error("SENDFILE: " + input_file_path + "Failed to create file\r\n");
+            throw runtime_error(bot_error_failed(input_file_path));
         file->set_sender_fd(_user.get_fd());
         file->set_accepter_fd(_server.findUserByNick(accepter_name)->get_fd());
 
