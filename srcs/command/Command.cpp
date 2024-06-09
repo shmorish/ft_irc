@@ -19,8 +19,6 @@ Command::Command(Server &server, Parser &parser, User &user_class) : _server(ser
         ping();
     else if (cmd == PONG)
         pong();
-    else if (cmd == TIME)
-        show_time();
     else if (cmd == KICK)
         kick();
     else if (cmd == MODE)
@@ -29,14 +27,16 @@ Command::Command(Server &server, Parser &parser, User &user_class) : _server(ser
         topic();
     else if (cmd == INVITE)
         invite();
+    else if (cmd == TIME)
+        show_time();
     else if (cmd == CAP)
         cap();
-    else if (cmd == HELP)
-        help();
     else if (cmd == VERSION)
         version();
     else if (cmd == BAN)
         ban();
+    else if (cmd == HELP)
+        help();
     else
         throw runtime_error("Invalid command");
 }
