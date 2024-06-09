@@ -1,13 +1,12 @@
 #ifndef USER_HPP
-# define USER_HPP
+#define USER_HPP
 
-# include "utils.hpp"
+#include "utils.hpp"
 
-# define CONNECTABLE_CHANNEL_MAX 20
-# define MAX_CHANNEL_NAME_LEN 50
+#define CONNECTABLE_CHANNEL_MAX 20
+#define MAX_CHANNEL_NAME_LEN 50
 
-class User
-{
+class User {
 private:
     string _nickname;
     string _username;

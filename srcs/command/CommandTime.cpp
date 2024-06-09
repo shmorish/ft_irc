@@ -1,7 +1,6 @@
 #include "Command.hpp"
 
-void Command::show_time()
-{
+void Command::show_time() {
     time_t rawtime;
     struct tm *timeinfo;
     char buffer[80];

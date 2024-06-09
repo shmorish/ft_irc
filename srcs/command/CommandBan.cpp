@@ -1,8 +1,7 @@
 #include "Command.hpp"
 
 // BAN #channel_name <client_name> [reason]
-void Command::ban()
-{
+void Command::ban() {
     try {
         if (_parser.get_args().size() != 3)
             throw runtime_error(err_461(_user, "BAN"));
@@ -14,7 +13,7 @@ void Command::ban()
         User *banned_user = _server.findUserByNick(banned_nickname);
         kick();
         channel->add_banned(banned_user->get_fd());
-    } catch(const exception &e) {
-		send(_user.get_fd(), e.what(), strlen(e.what()), 0);
-	}
+    } catch (const exception &e) {
+        send(_user.get_fd(), e.what(), strlen(e.what()), 0);
+    }
 }
