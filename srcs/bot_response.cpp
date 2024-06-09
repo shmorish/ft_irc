@@ -18,11 +18,19 @@ string bot_err_response(string err_message) {
 }
 
 string bot_success_sendfile() {
-    return bot_err_response("send file!\r\n");
+    return bot_err_response("send file!");
 }
 
 string bot_success_getfile() {
-    return bot_err_response("recieved file!\r\n");
+    return bot_err_response("recieved file!");
+}
+
+string bot_error_already(string filename) {
+    return bot_err_response(filename + " already exists!");
+}
+
+string bot_error_failed(string path) {
+    return bot_err_response(path + " failed to create file!");
 }
 
 string bot_err_response401(string nickname) {
@@ -34,7 +42,7 @@ string bot_err_response451() {
 }
 
 string bot_err_response461(string command) {
-    return bot_err_response(command + ":Not enough parameters");
+    return bot_err_response(command + " :Not enough parameters");
 }
 
 // NO_SUCH_FILE_OR_DIRECTORY : ファイルが存在しないか、またはディレクトリが存在しない場合に返されます。
