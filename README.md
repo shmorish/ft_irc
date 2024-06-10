@@ -99,22 +99,6 @@ irssi
         The channel is used to send a message to a channel
     </li>
     <li>
-        <strong>PRIVMSG</strong>: <em>bot announce &lt;message&gt;</em><br>
-        The bot is used to send a message to all users in server
-    </li>
-    <li>
-        <strong>PRIVMSG</strong>: <em>bot &lt;channel list | channel join | channel invite&gt;</em><br>
-        The bot is used to see the list of channels, joining channel, or invited channel
-    </li>
-    <li>
-        <strong>PRIVMSG</strong>: <em>bot sendfile &lt;nickname&gt; &lt;filename_path&gt;</em><br>
-        The bot is used to send a file to a user
-    </li>
-    <li>
-        <strong>PRIVMSG</strong>: <em>bot getfile &lt;nickname&gt; &lt;filename_path&gt;</em><br>
-        The bot is used to get a file from a user
-    </li>
-    <li>
         <strong>QUIT</strong>: <em>&lt;message&gt;</em><br>
         The message is used to leave the server
     </li>
@@ -162,3 +146,22 @@ irssi
     </li>
 </ul>
 
+### For Bonus
+<ul>
+    <li>
+        <strong>PRIVMSG</strong>: <em>bot announce &lt;message&gt;</em><br>
+        The bot is used to send a message to all users in server
+    </li>
+    <li>
+        <strong>PRIVMSG</strong>: <em>bot &lt;channel list | channel join | channel invite&gt;</em><br>
+        The bot is used to see the list of channels, joining channel, or invited channel
+    </li>
+    <li>
+        <strong>PRIVMSG</strong>: <em>bot sendfile &lt;nickname&gt; &lt;filename_path&gt;</em><br>
+        The bot is used to send a file to a user
+    </li>
+    <li>
+        <strong>PRIVMSG</strong>: <em>bot getfile &lt;nickname&gt; &lt;filename_path&gt;</em><br>
+        The bot is used to get a file from a user
+    </li>
+</ul>
